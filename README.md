@@ -1,6 +1,4 @@
-
-
-<img src = 'logo/hex.svg' align = "center" height = "200" alt = "banner" />
+<img src = 'logo/hex.svg' align = "center" height = "200"/>
 
 ### SEMs with lavaan
 
