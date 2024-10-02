@@ -1,6 +1,6 @@
 
 
-<img src = 'logo/hex.svg' align = "right" height = "139" />
+<img src = 'logo/hex.svg' align = "right" height = "200" />
 
 ### SEMs with lavaan
 
