@@ -1,0 +1,17 @@
+\documentclass[tikz, border = 10pt]{standalone}
+\usetikzlibrary{positioning}
+\renewcommand{\familydefault}{\sfdefault} 
+\definecolor{orange}{HTML}{CB6015}
+
+\begin{document}
+\begin{tikzpicture}
+
+\node[inner sep=0pt] (hexSticker) at (0,0)
+     {\includegraphics[width=.25\textwidth]{hex.pdf}};
+
+\node [inner sep = 2pt, font = \huge, align = center, color = orange] (X) 
+     [left = 50px of hexSticker] 
+     {Reproducing published\\Structural Equation Models\\with lavaan};
+
+\end{tikzpicture}
+\end{document}
