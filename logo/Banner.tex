@@ -1,6 +1,6 @@
 \documentclass[tikz, border = 10pt]{standalone}
-\input{../Jose_2013/tex/SEMstyles.tex}
-\usetikzlibrary{positioning, quotes, calc, arrows.meta, bending, shapes, backgrounds}
+
+\usetikzlibrary{positioning, quotes, calc, arrows.meta, shapes}
 \renewcommand{\familydefault}{\sfdefault} 
 \definecolor{orange}{HTML}{CB6015}
 
@@ -16,13 +16,13 @@ regression/.style = {-{Stealth[length = 2mm]}, shorten > = 1pt, inner sep = 2pt}
 	}
 
 %% Hexagon
-\node (hexagon) [draw, color = black!40, fill = orange, line width = 2pt, regular polygon, regular polygon sides = 6, rotate = 30, minimum size=5.08cm, ] {};
+\node (hexagon) [draw, color = black!35, fill = orange, line width = 2pt, regular polygon, regular polygon sides = 6, rotate = 30, minimum size=5.08cm] {};
 
 %% SEM
 % Manifest
-\node at (-1.8, -0.2) [manifest] (X) {X};
-\node at (1.8, -0.2) [manifest] (Y) {Y};
-\node at (-.1, 1.8) [manifest] (M) {M};
+\node at (-1.65, -0.2) [manifest] (X) {X};
+\node at (1.65, -0.2) [manifest] (Y) {Y};
+\node at (-.1, 1.65) [manifest] (M) {M};
 
 % The regressions
 \path [regression] (X) edge ["\large{c$'$}"] (Y);
@@ -36,10 +36,10 @@ regression/.style = {-{Stealth[length = 2mm]}, shorten > = 1pt, inner sep = 2pt}
 \path [regression] (e1) edge (M.north east);
 
 %% Label
-\draw (0, -1.2) node [text = white] {\bf\large{SEMs with lavaan}};
+\draw (0, -1.1) node [text = white] {\bf\large{SEMs with lavaan}};
 
 %% Heading
-\node at (-10, 0) [inner sep = 2pt, font = \huge, align = center, color = orange] (header) 
+\node at (-14, 0) [inner sep = 2pt, font = \Huge, align = center, color = orange, scale = 1.25] (header) 
      {Reproducing published\\Structural Equation Models\\with lavaan};
 
 \end{tikzpicture}
