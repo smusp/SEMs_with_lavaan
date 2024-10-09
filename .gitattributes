@@ -1,3 +1,4 @@
 Jose_2013/*.html linguist-documentation
+Jose_2013/images/*.svg linguist-documentation
 Kurbanoglu_2021/*.html linguist-documentation
-Kurbanoglu_2021/Kurbanoglu_2021_files*/* linguist-documentation
+Kurbanoglu_2021/images/*.svg linguist-documentation
