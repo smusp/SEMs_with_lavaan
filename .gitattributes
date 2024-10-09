@@ -2,3 +2,4 @@
 *.js linguist-documentation
 *.html linguist-documentation
 *.md linguist-documentation
+*.qmd linguist-documentation
