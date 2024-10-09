@@ -3,3 +3,4 @@
 *.html linguist-documentation
 *.md linguist-documentation
 *.qmd linguist-documentation
+*.css linguist-documentation
