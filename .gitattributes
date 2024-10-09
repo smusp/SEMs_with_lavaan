@@ -1,2 +1,3 @@
-Jose_2013/*.html -linguist-detectable
-Kurbanoglu_2021/*.html -linguist-detectable
+Jose_2013/*.html linguist-documentation
+Kurbanoglu_2021/*.html linguist-documentation
+Kurbanoglu_2021/Kurbanoglu_2021_files*/* linguist-documentation
