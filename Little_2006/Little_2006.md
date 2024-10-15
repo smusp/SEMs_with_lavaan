@@ -39,7 +39,7 @@ The symbols are:
 - $\upkappa$ - latent means
 - $\uptau$ - indicator intercepts
 
-<img src="images/scaling.svg" data-fig-align="left" />
+<img src="images/Scaling.svg" data-fig-align="left" />
 
 <br />
 

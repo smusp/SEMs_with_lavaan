@@ -40,7 +40,7 @@ The symbols are:
  - $\upkappa$ - latent means
  - $\uptau$ - indicator intercepts
 
-![](images/scaling.svg){fig-align="left"}
+![](images/Scaling.svg){fig-align="left"}
 
 <br />
 
