@@ -15,6 +15,8 @@ are not available; in particular, how to obtain a matrix of covariances
 from the summary data (correlations and standard deviations), and then
 how to use the covariance matrix to replicate the analysis.
 
+<br />
+
 #### Load relevant packages
 
 First, load the lavaan and semmcci packages.
@@ -23,6 +25,8 @@ First, load the lavaan and semmcci packages.
 library(lavaan)
 library(semmcci)  # For Monte Carlo CIs
 ```
+
+<br />
 
 #### Get the data
 
@@ -60,6 +64,8 @@ lavaan package.
 cov = lavaan::getCov(vcor, sds = sd, names = labels)
 ```
 
+<br />
+
 #### The model
 
 The model is given in Figure 1 (p. 51), reproduced below.
@@ -87,6 +93,8 @@ model <- "
    total := cpr + (a * b)
 "
 ```
+
+<br />
 
 #### Fit the model and get the results
 

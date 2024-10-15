@@ -25,6 +25,8 @@ New York, NY: Guilford Press.
 
 This example shows how to obtain a three-variable mediation analysis using lavaan; including how to obtaining indirect and total effects. In Chapter 3 (Basic Mediation, pp. 43-92), Jose describes a basic mediation model involving three variables: Positive Life Events; Happiness; and Gratitude. Positive Life Events has a direct effect on Happiness, but also Positive Life Events has an indirect effect on Happiness via Gratitude.
 
+<br />
+
 #### Load relevant packages
 
 First, load the lavaan and haven packages.
@@ -35,6 +37,8 @@ First, load the lavaan and haven packages.
 library(lavaan)
 library(haven)   # To read SPSS data files
 ```
+
+<br />
 
 #### Get the data
 
@@ -55,6 +59,8 @@ The labels for the three variables are:
 * ple - Positive Life Events 
 * grat - Gratitude
 * shs - Happiness 
+
+<br />
 
 #### The model
 The model is given in Figure 3.3 (p. 46), reproduced below.
@@ -81,6 +87,8 @@ model <- "
   total := cpr + (a * b) 
 "
 ```
+
+<br />
 
 #### Fit the model and get the results
 
@@ -116,8 +124,8 @@ parameterEstimates(fit_boot, boot.ci.type = "perc")
 
 
 ```{r, echo = FALSE, include = FALSE, eval = TRUE, purl = FALSE}
-input = knitr::current_input()
-output = "mediation.r"
+input <- knitr::current_input()
+output <- "mediation.r"
 knitr::purl(input, output, documentation = 0, quiet = TRUE)
 ```
 

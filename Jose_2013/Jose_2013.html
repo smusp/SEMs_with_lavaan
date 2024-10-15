@@ -135,6 +135,7 @@ h1, h2, h3, h4 {
 </div>
 <p>Jose, P. (2013). Doing Statistical Mediation and Moderation. New York, NY: Guilford Press.</p>
 <p>This example shows how to obtain a three-variable mediation analysis using lavaan; including how to obtaining indirect and total effects. In Chapter 3 (Basic Mediation, pp.&nbsp;43-92), Jose describes a basic mediation model involving three variables: Positive Life Events; Happiness; and Gratitude. Positive Life Events has a direct effect on Happiness, but also Positive Life Events has an indirect effect on Happiness via Gratitude.</p>
+<p><br></p>
 <section id="load-relevant-packages" class="level4">
 <h4 class="anchored" data-anchor-id="load-relevant-packages">Load relevant packages</h4>
 <p>First, load the lavaan and haven packages.</p>
@@ -142,6 +143,7 @@ h1, h2, h3, h4 {
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)   <span class="co"># To read SPSS data files</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p><br></p>
 </section>
 <section id="get-the-data" class="level4">
 <h4 class="anchored" data-anchor-id="get-the-data">Get the data</h4>
@@ -159,6 +161,7 @@ h1, h2, h3, h4 {
 <li>grat - Gratitude</li>
 <li>shs - Happiness</li>
 </ul>
+<p><br></p>
 </section>
 <section id="the-model" class="level4">
 <h4 class="anchored" data-anchor-id="the-model">The model</h4>
@@ -185,6 +188,7 @@ h1, h2, h3, h4 {
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="st">  total := cpr + (a * b) </span></span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p><br></p>
 </section>
 <section id="fit-the-model-and-get-the-results" class="level4">
 <h4 class="anchored" data-anchor-id="fit-the-model-and-get-the-results">Fit the model and get the results</h4>
