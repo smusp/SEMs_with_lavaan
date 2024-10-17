@@ -428,7 +428,7 @@ m3_short <- '
 m3_short_fit <- sem(m3_short, sample.cov = cov, sample.nobs = n, 
       sample.mean = means, effect.coding = TRUE, 
       group.equal = c("loadings", "intercepts"))
-summary(m1_short_fit, standardized = TRUE, fit.measures = TRUE)
+summary(m3_short_fit, standardized = TRUE, fit.measures = TRUE)
 ```
 
 <br />
