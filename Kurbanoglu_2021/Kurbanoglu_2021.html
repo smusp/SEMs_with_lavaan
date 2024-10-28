@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -134,11 +134,12 @@ h1, h2, h3, h4 {
 </style>
 </div>
 <p>Kurbanoglu, N. &amp; Takunyaci, M. (2021). A structural equation model on relationship between self-efficacy, physics laboratory anxiety and attitudes. <em>Journal of Family, Counseling and Education</em>, <em>6</em>(1), 47-56.</p>
-<p>This example shows how to obtain a three-variable mediation analysis using lavaan; including how to obtaining indirect and total effects. The three variables are: Self-Efficacy; Physics Laboratory Attitudes; and Physics Laboratory Anxiety. Anxiety has a direct effct on Self-Efficacy, but also Anxiety has an indirect effect on Self-Efficacy via Attitudes. This example also shows how to use summary data when the raw sample data are not available; in particular, how to obtain a matrix of covariances from the summary data (correlations and standard deviations), and then how to use the covariance matrix to replicate the analysis.</p>
+<p><br></p>
+<p>This example shows how to obtain a basic three-variable mediation analysis using <strong>lavaan</strong>, and how to obtaining indirect and total effects. The three variables are: Self-Efficacy; Physics Laboratory Attitudes; and Physics Laboratory Anxiety. Anxiety has a direct effect on Self-Efficacy, but also Anxiety has an indirect effect on Self-Efficacy via Attitudes. This example also shows how to use summary data when the raw sample data are not available; in particular, how to obtain a matrix of variances and covariances from the summary data (correlations and standard deviations), and then how to use the covariance matrix to replicate the analysis.</p>
 <p><br></p>
 <section id="load-relevant-packages" class="level4">
 <h4 class="anchored" data-anchor-id="load-relevant-packages">Load relevant packages</h4>
-<p>First, load the lavaan and semmcci packages.</p>
+<p>First, load the <strong>lavaan</strong> and <strong>semmcci</strong> packages.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(semmcci)  <span class="co"># For Monte Carlo CIs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -147,16 +148,17 @@ h1, h2, h3, h4 {
 </section>
 <section id="get-the-data" class="level4">
 <h4 class="anchored" data-anchor-id="get-the-data">Get the data</h4>
-<p>Sample data is not available, but the authors provide correlations, means, and standard deviations in Table 1 (p.&nbsp;50), and the sample size on page 49. From these, the variance-covariance matrix can be obtained. The correlations do not need to be in the form of a matrix. All that is required is a vector of the lower triangle of correlations with ones along the diagonal.</p>
+<p>Sample data is not available, but Table 1 (p.&nbsp;50) gives correlations, means, and standard deviations, and the sample size is given on page 49. From these, the variance/covariance matrix can be obtained. The correlations do not need to be in the form of a matrix. All that is required is a vector of the lower triangle of correlations with ones along the diagonal.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>vcor <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>          <span class="fl">0.30</span>,  <span class="dv">1</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>         <span class="sc">-</span><span class="fl">0.42</span>, <span class="sc">-</span><span class="fl">0.32</span>,  <span class="dv">1</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>sd <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">8.81</span>, <span class="fl">7.95</span>, <span class="fl">18.30</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">56.57</span>, <span class="fl">40.39</span>, <span class="fl">68.22</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">513</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cor <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>   <span class="dv">1</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>   <span class="fl">0.30</span>,  <span class="dv">1</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fl">0.42</span>, <span class="sc">-</span><span class="fl">0.32</span>,  <span class="dv">1</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">8.81</span>, <span class="fl">7.95</span>, <span class="fl">18.30</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">56.57</span>, <span class="fl">40.39</span>, <span class="fl">68.22</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">513</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The three variables need labels (making sure the order is the same as in Table 1). The labels used here are:</p>
+<p>The three variables need names, making sure the order is the same as in Table 1. The names used here are:</p>
 <ul>
 <li>SE - Self-Efficacy<br>
 </li>
@@ -165,11 +167,11 @@ h1, h2, h3, h4 {
 <li>Anx - Physics Laboratory Anxiety</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Att"</span>, <span class="st">"SE"</span>, <span class="st">"Anx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Att"</span>, <span class="st">"SE"</span>, <span class="st">"Anx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>To get the covariance matrix, I use the <code>getCov()</code> function from the lavaan package.</p>
+<p>To get the variance/covariance matrix, I use the <code>getCov()</code> function from the <strong>lavaan</strong> package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cov <span class="ot">=</span> lavaan<span class="sc">::</span><span class="fu">getCov</span>(vcor, <span class="at">sds =</span> sd, <span class="at">names =</span> labels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cov <span class="ot">&lt;-</span> lavaan<span class="sc">::</span><span class="fu">getCov</span>(cor, <span class="at">sds =</span> sds, <span class="at">names =</span> names)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 </section>
@@ -181,43 +183,44 @@ h1, h2, h3, h4 {
 <p><img src="images/Mediation.svg" class="img-fluid quarto-figure quarto-figure-left figure-img"></p>
 </figure>
 </div>
-<p>The authors do not estimate the indirect effect; only the “a” and “b” paths. Using lavaan, indirect effect can be estimated using the <code>:=</code> operator. In the diagram, the effects are labelled are a, b, and c<span class="math inline">\('\)</span>, in the model statement they are labelled a, b, and cpr.</p>
+<p>K&amp;T do not estimate the indirect effect; only the “a” and “b” paths. In <strong>lavaan</strong>, indirect effects can be estimated using the <code>:=</code> operator. In the diagram, the effects are labelled are a, b, and c<span class="math inline">\('\)</span>; in the model statement, they are labelled a, b, and cpr. The labels are used later to obtain the indirect and total effects.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">"</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="st">   # direct effect</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">   Anx ~ cpr * SE   # c prime</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # direct effect</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">  Anx ~ cpr * SE   # c prime</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="st">   # via the mediator</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="st">   Att ~ a * SE</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="st">   Anx ~ b * Att</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="st">  # effects via the mediator</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="st">  Att ~ a * SE</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="st">  Anx ~ b * Att</span></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="st">   # indirect effect (a * b)</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="st">   ab := a * b</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="st">  # indirect effect (a * b)</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="st">  ab := a * b</span></span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="st">   # total effect</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="st">   total := cpr + (a * b)</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="st">  # total effect</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="st">  total := cpr + (a * b)</span></span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 </section>
 <section id="fit-the-model-and-get-the-results" class="level4">
 <h4 class="anchored" data-anchor-id="fit-the-model-and-get-the-results">Fit the model and get the results</h4>
-<p>The authors present standardised estimates and R<sup>2</sup> values; so they are requested here (for standardised estimates, see “std.all” column in the output).</p>
+<p>K&amp;T present standardised estimates and R<sup>2</sup> values; so they are requested here (for standardised estimates, see “std.all” column in the output).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">sample.cov =</span> cov, <span class="at">sample.nobs =</span> n)</span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">sample.cov =</span> covs, <span class="at">sample.nobs =</span> n)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">rsquare =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>I’ve requested a selection of fit measures. Why fit measures? Afterall, the model is a saturated model, and all fit measures should indicate a perfect fit. Something has gone awry for the authors. At the bottom of page 50, they state that the model is saturated. As a consequence, <span class="math inline">\(\chi\)</span><sup>2</sup> and RMSEA should be 0, and GFI, AGF, CFI, NFI, RFI, and IFI should all be 1; yet the authors give values to indicate a less than perfect fit. I’m not sure how this could have come about, or why the error was not picked up during review.</p>
+<p>I’ve requested a selection of fit measures. Why fit measures? Afterall, the model is a saturated model, and all fit measures should indicate a perfect fit. Something has gone awry for K&amp;T. At the bottom of page 50, they state that the model is saturated. As a consequence, <span class="math inline">\(\chi\)</span><sup>2</sup> and RMSEA should be zero, and GFI, AGF, CFI, NFI, RFI, and IFI should all be one; yet values are given (p.&nbsp;50) to indicate a less than perfect fit. I’m not sure how this could have come about, or why the error was not picked up during review.</p>
 <p>If the intercepts are required, include <code>sample.mean = means</code> in the <code>sem()</code> function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">sample.cov =</span> cov, <span class="at">sample.mean =</span> means, <span class="at">sample.nobs =</span> n)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">rsquare =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit_intercepts <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">sample.cov =</span> covs, <span class="at">sample.nobs =</span> n, </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">sample.mean =</span> means)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_intercepts, <span class="at">rsquare =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Do not rely on the t-tests, especially for indirect effects. Often bootstrap confidence intervals are calculated, but bootstrapping requires the raw sample data. Instead, Monte Carlo confidence intervals can be calculated using the <code>MC()</code> function from the semmcci package.</p>
+<p>Do not rely on the t-tests, especially for indirect effects. Often bootstrap confidence intervals are calculated, but bootstrapping requires the raw sample data. Instead, Monte Carlo confidence intervals can be calculated using the <code>MC()</code> function from the <strong>semmcci</strong> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>semmcci<span class="sc">::</span><span class="fu">MC</span>(fit, <span class="at">R =</span> <span class="dv">50000</span>, <span class="at">alpha =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The R script with minimal commenting is available in <a href="mediation.r">mediation.r</a>.</p>
+<p>The R script with minimal commenting is available in <a href="Kurbanoglu_Mediation.r">Kurbanoglu_Mediation.r</a>.</p>
 </section>
 
 </main>

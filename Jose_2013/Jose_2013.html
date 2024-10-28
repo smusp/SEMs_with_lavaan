@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -133,12 +133,13 @@ h1, h2, h3, h4 {
 }
 </style>
 </div>
-<p>Jose, P. (2013). Doing Statistical Mediation and Moderation. New York, NY: Guilford Press.</p>
-<p>This example shows how to obtain a three-variable mediation analysis using lavaan; including how to obtaining indirect and total effects. In Chapter 3 (Basic Mediation, pp.&nbsp;43-92), Jose describes a basic mediation model involving three variables: Positive Life Events; Happiness; and Gratitude. Positive Life Events has a direct effect on Happiness, but also Positive Life Events has an indirect effect on Happiness via Gratitude.</p>
+<p>Jose, P. (2013). <em>Doing Statistical Mediation and Moderation</em>. New York, NY: Guilford Press.</p>
+<p><br></p>
+<p>This example shows how to obtain a basic three-variable mediation analysis using <strong>lavaan</strong> and how to obtain indirect and total effects. In Chapter 3 (Basic Mediation, pp.&nbsp;43-92), Jose describes a basic mediation model involving three variables: Positive Life Events; Happiness; and Gratitude. Positive Life Events has a direct effect on Happiness, but also Positive Life Events has an indirect effect on Happiness via Gratitude.</p>
 <p><br></p>
 <section id="load-relevant-packages" class="level4">
 <h4 class="anchored" data-anchor-id="load-relevant-packages">Load relevant packages</h4>
-<p>First, load the lavaan and haven packages.</p>
+<p>First, load the <strong>lavaan</strong> and <strong>haven</strong> packages.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)   <span class="co"># To read SPSS data files</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -147,15 +148,16 @@ h1, h2, h3, h4 {
 </section>
 <section id="get-the-data" class="level4">
 <h4 class="anchored" data-anchor-id="get-the-data">Get the data</h4>
-<p>The data are available at the Guilford Press site (note that the url given on page 48 is not longer a valid link). The data are contained in an SPSS data file. The haven package allows R to read SPSS data files. Examine the file structure, in particular, noting the variable names. These will be needed by lavaan.</p>
+<p>The data are available at the Guilford Press site (note: the url on page 48 is no longer a valid link). The data are contained in an SPSS data file. I use the <strong>haven</strong> package to read SPSS data files. Examine the file structure, in particular, noting the variable names. These will be needed by <strong>lavaan</strong>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(haven<span class="sc">::</span><span class="fu">read_spss</span>(<span class="st">"http://www.guilford.com/add/jose/mediation_example.sav"</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dataset)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dataset)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"http://www.guilford.com/add/jose/mediation_example.sav"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(haven<span class="sc">::</span><span class="fu">read_spss</span>(url))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dataset)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dataset)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The labels for the three variables are:</p>
+<p>The names for the three variables are:</p>
 <ul>
 <li>ple - Positive Life Events</li>
 <li>grat - Gratitude</li>
@@ -171,13 +173,13 @@ h1, h2, h3, h4 {
 <p><img src="images/Mediation.svg" class="img-fluid quarto-figure quarto-figure-left figure-img"></p>
 </figure>
 </div>
-<p>Using lavaan, mediation effects can be estimated using the <code>:=</code> operator. In the diagram, the effects are labelled are a, b, and c<span class="math inline">\('\)</span>, in the model statement they are labelled a, b, and cpr.</p>
+<p>In <strong>lavaan</strong>, mediation effects can be estimated using the <code>:=</code> operator. In the diagram, the effects are labelled a, b, and c<span class="math inline">\('\)</span>; in the model statement, they are labelled a, b, and cpr. The labels are used later to obtain the indirect and total effects.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">"</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # direct effect</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # indirect effect</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="st">  shs ~ cpr * ple</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="st">  # mediator</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="st">  #  effects via the mediator</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="st">  grat ~ a * ple</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="st">  shs ~  b * grat</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
@@ -197,19 +199,19 @@ h1, h2, h3, h4 {
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> dataset)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">rsquare =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Jose conducts mediation analysis using regressions. He presents the results of the regression analyses in a series of tables: 3.2 to 3.5 (pp.&nbsp;49-52). The unstandardised and standardised coefficients in the tables agree with the lavaan output.</p>
-<p>In the regression summary tables, Jose presents the constant (that is, the intercept). If the intercepts are required, include <code>meanstructure = TRUE</code> in lavaan’s <code>sem()</code> function.</p>
+<p>Jose conducts mediation analysis using regressions. The results are presented in a series of tables: 3.2 to 3.5 (pp.&nbsp;49-52). The unstandardised and standardised coefficients in the tables agree with the <strong>lavaan</strong> output.</p>
+<p>The regression summary table show the constants (that is, the intercepts). If intercepts are required, include <code>meanstructure = TRUE</code> in the <code>sem()</code> function.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit_intercepts <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> dataset, <span class="at">meanstructure =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_intercepts, <span class="at">rsquare =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Jose shows how to calculate and test the statistical significance of Sobel’s z-value (that is, testing the significance of the indirect effect) on pages 53 and 54. Do not rely on that test, similarly do not rely of the t-test for the indirect effect given in the lavaan output. It is better to calculate confidence intervals, although the symmetric confidence intervals presented in Table 3.7 (p.&nbsp;55) are no better than the test for Sobel’s z-value. The asymmetric CIs presented in Table 3.8 (p.&nbsp;56) are possibly better. In lavaan, bootstrap CIs can be calculated.</p>
+<p>Jose shows how to calculate and test the statistical significance of Sobel’s z-value (that is, testing the significance of the indirect effect) on pages 53 and 54. Do not rely on that test, similarly do not rely of the t-test for the indirect effect given in the <strong>lavaan</strong> output. It is better to calculate confidence intervals, although the symmetric confidence intervals presented in Table 3.7 (p.&nbsp;55) are no better than the test for Sobel’s z-value. The asymmetric CIs presented in Table 3.8 (p.&nbsp;56) are possibly better. In <strong>lavaan</strong>, bootstrap CIs can be calculated.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit_boot <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> dataset, <span class="at">se =</span> <span class="st">"bootstrap"</span>, <span class="at">bootstrap =</span> <span class="dv">2000</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_boot, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">ci =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">parameterEstimates</span>(fit_boot, <span class="at">boot.ci.type =</span> <span class="st">"perc"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The R script with minimal commenting is available in <a href="mediation.r">mediation.r</a>.</p>
+<p>The R script with minimal commenting is available in <a href="Jose_Mediation.r">Jose_Mediation.r</a>.</p>
 </section>
 
 </main>
