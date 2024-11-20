@@ -11,10 +11,10 @@ This example shows how to set constraints for different methods of
 identification and scaling in latent variable models. Though invariance
 is not a topic of discussion, the example shows how to set constraints
 for strong metric invariance. Also, the example shows how to use summary
-data in a two- group model.
+data in a two-group model.
 
-Little et al discuss methods for identification and scaling of latent
-variables in SEMs. These methods are:
+LS&C discuss methods for identification and scaling of latent variables
+in SEMs. These methods are:
 
 - Reference Group Method - For each construct, the latent variance is
   fixed to one and the latent mean is fixed to zero. With strong metric
@@ -105,20 +105,20 @@ the names a little.
 names = c("Pos1", "Pos2", "Pos3", "Neg1", "Neg2", "Neg3")
 ```
 
-Use the `getCov()` function from the **lavaan** package to obtain the
-variance/covariance matrix for each group.
+Combine the (co)variances, means, and sample sizes into lists.
 
 ``` r
-cov7 <- getCov(cor7, sds = sd7, names = names)
-cov8 <- getCov(cor8, sds = sd8, names = names)
-```
-
-Combine the covariances, means, and sample sizes into lists.
-
-``` r
-cov <- list("Grade 7" = cov7, "Grade 8" = cov8)
+cor <- list("Grade 7" = cor7, "Grade 8" = cor8)
 means <- list(means7, means8)
 n <- list(n7, n8)
+```
+
+Use the `getCov()` function from the **lavaan** package to obtain the
+full variance/covariance matrix for each group (using the `lapply()`
+function to return the two (co)variance matrices in a list).
+
+``` r
+cov <- lapply(cor, getCov, names = names)
 ```
 
 <br />
@@ -141,13 +141,14 @@ in each group.
 When constructing the model statment, there are some points to be
 considered.
 
-First, the constraints applying to latent means and variances apply only
-in the first group. In the model statement, pre-multiply the mean or the
-variance by a vector containing the constraints; like this: `c(1,NA)` -
-the `1` forces the parameter in the first group to be constrained to 1;
-the `NA` forces the parameter in the second group to be estimated.
+First, the constraints applying to latent means and variances apply in
+the first group only. In the model statement, pre-multiply the mean or
+the variance by a vector containing the constraints; like this:
+`c(1,NA)` - the `1` forces the parameter in the first group to be
+constrained to 1; the `NA` forces the parameter in the second group to
+be estimated.
 
-Second, LS&G state that the data display strong metric invariance
+Second, LS&C state that the data display strong metric invariance
 (p. 63); that is, the corresponding loadings and intercepts are equal
 across the groups. There is no need to be concerned with these
 constraints when constructing the model statement - they will be set up
@@ -279,7 +280,7 @@ m2c <- "
   # Measurement Model
   #   - Free the first loading in Pos so it can be estimated
   #   - Constrain 3rd indicator in Pos to 1 in both groups
-  #   - Constrain 1st indicator is Neg to 1 in both groups
+  #   - Constrain 1st indicator in Neg to 1 in both groups
   Pos =~ NA*Pos1 + Pos2 + c(1,1)*Pos3
   Neg =~ c(1,1)*Neg1 + Neg2 + Neg3
 
@@ -355,11 +356,11 @@ The model with the equality constraints is shown below.
 <img src="images/Scaling3.svg" data-fig-align="left" />
 
 In the model statement, the loadings and the intercepts are labelled
-(see the “\# Measurement Model” and the “\# Indicator intercepts”
-sections in the model statement) so that the labels can be used to
-impose the constraints. Constraints are imposed on the loadings and the
-intercepts using the `==` operator - see the “\# Constraints” section in
-the model statement.
+(see the “Measurement Model” and the “Indicator intercepts” sections in
+the model statement) so that the labels can be used to impose the
+constraints. Constraints are imposed on the loadings and the intercepts
+using the `==` operator - see the “Constraints” section in the model
+statement.
 
 Same points as before: **lavaan** will add indicator variances
 automatically; Constraints concerning strong metric invariance will be
@@ -444,15 +445,14 @@ summary(m3_short_fit, standardized = TRUE, fit.measures = TRUE)
 
 ### Fit measures
 
-LS&G state that the models “produce overall model fit statistics that
+LS&C state that the models “produce overall model fit statistics that
 are identical” (p. 66). The following shows how to extract fit measures
 from all models presented here, and present them in a table.
 
 ``` r
 # A function to extract fit measures
-GetFit <- function(fit) {
-   fitMeasures(fit, 
-      c("chisq", "df", "pvalue", "cfi", "tli", "rmsea"))
+GetFit <- function(fit, ...) {
+   fitMeasures(fit, ...)
 }
 
 # Add the fitted lavaan objects to a list
@@ -465,8 +465,11 @@ names(models) = c(
    "Method 2c", "lavaan Default",
    "Method 3", "Method 3 Shortcut")
 
+# Select the fit measures
+measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea") 
+
 # Get a table of fit measures  
-do.call(rbind, lapply(models, GetFit))
+do.call(rbind, lapply(models, GetFit, measures))
 ```
 
 Compare the fit measures with those presented on page 66.

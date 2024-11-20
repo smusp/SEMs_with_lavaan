@@ -79,8 +79,8 @@ The model is given in Figure 1 (p. 51), reproduced below.
 K&T do not estimate the indirect effect; only the “a” and “b” paths. In
 **lavaan**, indirect effects can be estimated using the `:=` operator.
 In the diagram, the effects are labelled are a, b, and c$'$; in the
-model statement, they are labelled a, b, and cpr. The labels are used
-later to obtain the indirect and total effects.
+model statement, they are labelled a, b, and cpr. The labels can then be
+used to obtain the indirect and total effects.
 
 ``` r
 model <- "
@@ -108,33 +108,33 @@ requested here (for standardised estimates, see “std.all” column in the
 output).
 
 ``` r
-fit <- sem(model, sample.cov = covs, sample.nobs = n)
+fit <- sem(model, sample.cov = cov, sample.nobs = n)
 summary(fit, rsquare = TRUE, standardized = TRUE, fit.measures = TRUE)
 ```
 
 I’ve requested a selection of fit measures. Why fit measures? Afterall,
-the model is a saturated model, and all fit measures should indicate a
-perfect fit. Something has gone awry for K&T. At the bottom of page 50,
-they state that the model is saturated. As a consequence,
-$\chi$<sup>2</sup> and RMSEA should be zero, and GFI, AGF, CFI, NFI,
-RFI, and IFI should all be one; yet values are given (p. 50) to indicate
-a less than perfect fit. I’m not sure how this could have come about, or
-why the error was not picked up during review.
+the model is saturated, and all fit measures should indicate a perfect
+fit. Something has gone awry for K&T. At the bottom of page 50, they
+state that the model is saturated. As a consequence, $\chi$<sup>2</sup>
+and RMSEA should be zero, and GFI, AGF, CFI, NFI, RFI, and IFI should
+all be one; yet values are given (p. 50) to indicate a less than perfect
+fit. I’m not sure how this could have come about, or why the error was
+not picked up during review.
 
 If the intercepts are required, include `sample.mean = means` in the
 `sem()` function.
 
 ``` r
-fit_intercepts <- sem(model, sample.cov = covs, sample.nobs = n, 
+fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n, 
    sample.mean = means)
 summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
 ```
 
 Do not rely on the t-tests, especially for indirect effects. Often
 bootstrap confidence intervals are calculated, but bootstrapping
-requires the raw sample data. Instead, Monte Carlo confidence intervals
-can be calculated using the `MC()` function from the **semmcci**
-package.
+requires the raw sample data. Instead of bootstrap CIs, calculate Monte
+Carlo CIs. Monte Carlo CIs can be calculated using the `MC()` function
+from the **semmcci** package.
 
 ``` r
 semmcci::MC(fit, R = 50000, alpha = 0.05)

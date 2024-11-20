@@ -41,15 +41,14 @@ n8 <- 379
 names = c("Pos1", "Pos2", "Pos3", "Neg1", "Neg2", "Neg3")
 
 
-## Get the variance/covariance matrices
-cov7 <- getCov(cor7, sds = sd7, names = names)
-cov8 <- getCov(cor8, sds = sd8, names = names)
-
-
 ## Combine into lists
-cov <- list("Grade 7" = cov7, "Grade 8" = cov8)
+cor <- list("Grade 7" = cor7, "Grade 8" = cor8)
 means <- list(means7, means8)
 n <- list(n7, n8)
+
+
+## Get the variance/covariance matrices
+cov <- lapply(cor, getCov, names = names)
 
 
 ## Reference-Group Method
@@ -109,7 +108,7 @@ m2c <- "
   # Measurement Model
   #   - Free the first loading in Pos so it can be estimated
   #   - Constrain 3rd indicator in Pos to 1 in both groups
-  #   - Constrain 1st indicator is Neg to 1 in both groups
+  #   - Constrain 1st indicator in Neg to 1 in both groups
   Pos =~ NA*Pos1 + Pos2 + c(1,1)*Pos3
   Neg =~ c(1,1)*Neg1 + Neg2 + Neg3
 
@@ -212,9 +211,8 @@ summary(m3_short_fit, standardized = TRUE, fit.measures = TRUE)
 
 ## Get fit measures
 # A function to extract fit measures
-GetFit <- function(fit) {
-   fitMeasures(fit, 
-      c("chisq", "df", "pvalue", "cfi", "tli", "rmsea"))
+GetFit <- function(fit, ...) {
+   fitMeasures(fit, ...)
 }
 
 # Add the fitted lavaan objects to a list
@@ -227,5 +225,8 @@ names(models) = c(
    "Method 2c", "lavaan Default",
    "Method 3", "Method 3 Shortcut")
 
+# Select the fit measures
+measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea") 
+
 # Get a table of fit measures  
-do.call(rbind, lapply(models, GetFit))
+do.call(rbind, lapply(models, GetFit, measures))

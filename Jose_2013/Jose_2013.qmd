@@ -71,7 +71,7 @@ The model is given in Figure 3.3 (p. 46), reproduced below.
 
 ![](images/Mediation.svg){fig-align="left"}
 
-In **lavaan**, mediation effects can be estimated using the `:=` operator. In the diagram, the effects are labelled a, b, and c$'$; in the model statement, they are labelled a, b, and cpr. The labels are used later to obtain the indirect and total effects.
+In **lavaan**, mediation effects can be estimated using the `:=` operator. In the diagram, the effects are labelled a, b, and c$'$; in the model statement, they are labelled a, b, and cpr. The labels can then be  used to obtain the indirect and total effects.
 
 ```{r echo = -2:-1, eval = FALSE}
 

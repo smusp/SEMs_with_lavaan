@@ -30,10 +30,10 @@
 \path [regression] (NEG7) edge ["$\uplambda_5$"] (neg72.115);
 \path [regression] (NEG7) edge ["$\uplambda_6$"] (neg73.110);
 
-%% Latent variances ans covariance
+%% Latent variances and covariance
 \path [covariance] (POS7.35) edge ["$\upphi_{7,12}$", bend left = 40] (NEG7.145);
-\path [variance] (POS7.120) edge ["$\upphi_{7,11}$", above, bend left = 110, looseness = 3] (POS7.60);
-\path [variance] (NEG7.120) edge ["$\upphi_{7,22}$", above, bend left = 110, looseness = 3] (NEG7.60);
+\path [variance] (POS7.120) edge ["$\upphi_{7,11}$", above, outer sep = 1pt, bend left = 110, looseness = 3] (POS7.60);
+\path [variance] (NEG7.120) edge ["$\upphi_{7,22}$", above, outer sep = 1pt, bend left = 110, looseness = 3] (NEG7.60);
 
 %% Residuals
 \node [residual2] (e71) [above left = .65cm of pos71, xshift = 1mm] {};
@@ -45,14 +45,14 @@
 \node [residual2] (e73) [above left = .65cm of pos73, xshift = 1mm] {};
 \path [regression] (e73) edge ["$\uptheta_{7,3}$", pos = 0] (pos73.north west);
 
-\node [residual2] (e74) [above right = .65cm of neg71] {};
-\path [regression] (e74) edge ["$\uptheta_{7,4}$", pos = 0.1] (neg71.north east);
+\node [residual2] (e74) [above right = .65cm of neg71, xshift = -1mm] {};
+\path [regression] (e74) edge ["$\uptheta_{7,4}$", pos = 0] (neg71.north east);
 
-\node [residual2] (e75) [above right = .65cm of neg72] {};
-\path [regression] (e75) edge ["$\uptheta_{7,5}$", pos = 0.1] (neg72.north east);
+\node [residual2] (e75) [above right = .65cm of neg72, xshift = -1mm] {};
+\path [regression] (e75) edge ["$\uptheta_{7,5}$", pos = 0] (neg72.north east);
 
-\node [residual2] (e76) [above right = .65cm of neg73] {};
-\path [regression] (e76) edge ["$\uptheta_{7,6}$", pos = 0.1] (neg73.north east);
+\node [residual2] (e76) [above right = .65cm of neg73, xshift = -1mm] {};
+\path [regression] (e76) edge ["$\uptheta_{7,6}$", pos = 0] (neg73.north east);
 
 %% latent means
 \node [constant, black!30] (M7) [below = 1.5cm of $(pos73)!0.5!(neg71)$] {1};
@@ -60,13 +60,13 @@
 \path [regression, black!30] (M7) edge ["$\upkappa_{7,2}$", pos = .6] (NEG7);
 
 %% Intercepts
-\path [regression, black!30] (M7) edge ["$\uptau_{1}$"] (pos71.south east);
+\path [regression, black!30] (M7.175) edge ["$\uptau_{1}$"] (pos71.south east);
 \path [regression, black!30] (M7) edge ["$\uptau_{2}$"] (pos72.south east);
 \path [regression, black!30] (M7) edge ["$\uptau_{3}$"] (pos73);
 
 \path [regression, black!30] (M7) edge ["$\uptau_{4}$"] (neg71);
 \path [regression, black!30] (M7) edge ["$\uptau_{5}$"] (neg72.south west);
-\path [regression, black!30] (M7) edge ["$\uptau_{6}$"] (neg73.south west);
+\path [regression, black!30] (M7.5) edge ["$\uptau_{6}$"] (neg73.south west);
 
 
 %%%% Grade 8 %%%%%%%%%%%
@@ -93,29 +93,29 @@
 \path [regression] (NEG8) edge ["$\uplambda_5$"] (neg82.115);
 \path [regression] (NEG8) edge ["$\uplambda_6$"] (neg83.110);
 
-%% Latent variances ans covariance
+%% Latent variances and covariance
 \path [covariance] (POS8.35) edge ["$\upphi_{8,12}$", bend left = 40] (NEG8.145);
-\path [variance] (POS8.120) edge ["$\upphi_{8,11}$", above, bend left = 110, looseness = 3] (POS8.60);
-\path [variance] (NEG8.120) edge ["$\upphi_{8,22}$", above, bend left = 110, looseness = 3] (NEG8.60);
+\path [variance] (POS8.120) edge ["$\upphi_{8,11}$", above, outer sep = 1pt, bend left = 110, looseness = 3] (POS8.60);
+\path [variance] (NEG8.120) edge ["$\upphi_{8,22}$", above, outer sep = 1pt, bend left = 110, looseness = 3] (NEG8.60);
 
 %% Residuals
-\node [residual2] (e81) [above left = .6cm of pos81, xshift = 1mm] {};
+\node [residual2] (e81) [above left = .65cm of pos81, xshift = 1mm] {};
 \path [regression] (e81) edge ["$\uptheta_{8,1}$", pos = 0] (pos81.north west);
 
-\node [residual2] (e82) [above left = .6cm of pos82, xshift = 1mm] {};
+\node [residual2] (e82) [above left = .65cm of pos82, xshift = 1mm] {};
 \path [regression] (e82) edge ["$\uptheta_{8,2}$", pos = 0] (pos82.north west);
 
-\node [residual2] (e83) [above left = .6cm of pos83, xshift = 1mm] {};
+\node [residual2] (e83) [above left = .65cm of pos83, xshift = 1mm] {};
 \path [regression] (e83) edge ["$\uptheta_{8,3}$", pos = 0] (pos83.north west);
 
-\node [residual2] (e84) [above right = .6cm of neg81] {};
-\path [regression] (e84) edge ["$\uptheta_{8,4}$", pos = 0.1] (neg81.north east);
+\node [residual2] (e84) [above right = .65cm of neg81, xshift = -1mm] {};
+\path [regression] (e84) edge ["$\uptheta_{8,4}$", pos = 0] (neg81.north east);
 
-\node [residual2] (e85) [above right = .6cm of neg82] {};
-\path [regression] (e85) edge ["$\uptheta_{8,5}$", pos = 0.1] (neg82.north east);
+\node [residual2] (e85) [above right = .65cm of neg82, xshift = -1mm] {};
+\path [regression] (e85) edge ["$\uptheta_{8,5}$", pos = 0] (neg82.north east);
 
-\node [residual2] (e86) [above right = .6cm of neg83] {};
-\path [regression] (e86) edge ["$\uptheta_{8,6}$", pos = 0.1] (neg83.north east);
+\node [residual2] (e86) [above right = .65cm of neg83, xshift = -1mm] {};
+\path [regression] (e86) edge ["$\uptheta_{8,6}$", pos = 0] (neg83.north east);
 
 %% latent means
 \node [constant, black!30] (M8) [below = 1.5cm of $(pos83)!0.5!(neg81)$] {1};
@@ -123,13 +123,13 @@
 \path [regression, black!30] (M8) edge ["$\upkappa_{8,2}$", pos = .6] (NEG8);
 
 %% Intercepts
-\path [regression, black!30] (M8) edge ["$\uptau_{1}$"] (pos81.south east);
+\path [regression, black!30] (M8.175) edge ["$\uptau_{1}$"] (pos81.south east);
 \path [regression, black!30] (M8) edge ["$\uptau_{2}$"] (pos82.south east);
 \path [regression, black!30] (M8) edge ["$\uptau_{3}$"] (pos83);
 
 \path [regression, black!30] (M8) edge ["$\uptau_{4}$"] (neg81);
 \path [regression, black!30] (M8) edge ["$\uptau_{5}$"] (neg82.south west);
-\path [regression, black!30] (M8) edge ["$\uptau_{6}$"] (neg83.south west);
+\path [regression, black!30] (M8.5) edge ["$\uptau_{6}$"] (neg83.south west);
 
 
 \matrix [matrix of nodes, draw, cells = {anchor = west}] at (0, 4) {

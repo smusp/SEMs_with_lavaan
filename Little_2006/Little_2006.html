@@ -135,8 +135,8 @@ h1, h2, h3, h4 {
 </div>
 <p>Little, T., Slegers, D., &amp; Card, N. (2006). A non-arbitrary method of identifying and scaling latent variables in SEM and MACS models. <em>Structural Equation Modeling</em>, <em>13</em>(1), 59-72.</p>
 <p><br></p>
-<p>This example shows how to set constraints for different methods of identification and scaling in latent variable models. Though invariance is not a topic of discussion, the example shows how to set constraints for strong metric invariance. Also, the example shows how to use summary data in a two- group model.</p>
-<p>Little et al discuss methods for identification and scaling of latent variables in SEMs. These methods are:</p>
+<p>This example shows how to set constraints for different methods of identification and scaling in latent variable models. Though invariance is not a topic of discussion, the example shows how to set constraints for strong metric invariance. Also, the example shows how to use summary data in a two-group model.</p>
+<p>LS&amp;C discuss methods for identification and scaling of latent variables in SEMs. These methods are:</p>
 <ul>
 <li>Reference Group Method - For each construct, the latent variance is fixed to one and the latent mean is fixed to zero. With strong metric invariance (invariance of loadings and intercepts), latent means and variances are freely estimated in subsequent groups.</li>
 <li>Marker Variable Method - For each construct, the loading of one indicator is fixed to one, and the intercept for the chosen indicator is fixed to zero. With strong metric invariance, these constraints apply in both groups.</li>
@@ -199,16 +199,15 @@ h1, h2, h3, h4 {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>names <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Pos1"</span>, <span class="st">"Pos2"</span>, <span class="st">"Pos3"</span>, <span class="st">"Neg1"</span>, <span class="st">"Neg2"</span>, <span class="st">"Neg3"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Use the <code>getCov()</code> function from the <strong>lavaan</strong> package to obtain the variance/covariance matrix for each group.</p>
+<p>Combine the (co)variances, means, and sample sizes into lists.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cov7 <span class="ot">&lt;-</span> <span class="fu">getCov</span>(cor7, <span class="at">sds =</span> sd7, <span class="at">names =</span> names)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cov8 <span class="ot">&lt;-</span> <span class="fu">getCov</span>(cor8, <span class="at">sds =</span> sd8, <span class="at">names =</span> names)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cor <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="st">"Grade 7"</span> <span class="ot">=</span> cor7, <span class="st">"Grade 8"</span> <span class="ot">=</span> cor8)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">list</span>(means7, means8)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">list</span>(n7, n8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Combine the covariances, means, and sample sizes into lists.</p>
+<p>Use the <code>getCov()</code> function from the <strong>lavaan</strong> package to obtain the full variance/covariance matrix for each group (using the <code>lapply()</code> function to return the two (co)variance matrices in a list).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cov <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="st">"Grade 7"</span> <span class="ot">=</span> cov7, <span class="st">"Grade 8"</span> <span class="ot">=</span> cov8)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">list</span>(means7, means8)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">list</span>(n7, n8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cov <span class="ot">&lt;-</span> <span class="fu">lapply</span>(cor, getCov, <span class="at">names =</span> names)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 </section>
@@ -223,8 +222,8 @@ h1, h2, h3, h4 {
 </figure>
 </div>
 <p>When constructing the model statment, there are some points to be considered.</p>
-<p>First, the constraints applying to latent means and variances apply only in the first group. In the model statement, pre-multiply the mean or the variance by a vector containing the constraints; like this: <code>c(1,NA)</code> - the <code>1</code> forces the parameter in the first group to be constrained to 1; the <code>NA</code> forces the parameter in the second group to be estimated.</p>
-<p>Second, LS&amp;G state that the data display strong metric invariance (p.&nbsp;63); that is, the corresponding loadings and intercepts are equal across the groups. There is no need to be concerned with these constraints when constructing the model statement - they will be set up in the next step. (Strictly, the intercepts do not even need to be mentioned in the model statement - <strong>lavaan</strong> will add them automatically when <code>sample.means</code> are in the model. But they are left in the statement below because intercepts are implicated in constraints in models to follow.)</p>
+<p>First, the constraints applying to latent means and variances apply in the first group only. In the model statement, pre-multiply the mean or the variance by a vector containing the constraints; like this: <code>c(1,NA)</code> - the <code>1</code> forces the parameter in the first group to be constrained to 1; the <code>NA</code> forces the parameter in the second group to be estimated.</p>
+<p>Second, LS&amp;C state that the data display strong metric invariance (p.&nbsp;63); that is, the corresponding loadings and intercepts are equal across the groups. There is no need to be concerned with these constraints when constructing the model statement - they will be set up in the next step. (Strictly, the intercepts do not even need to be mentioned in the model statement - <strong>lavaan</strong> will add them automatically when <code>sample.means</code> are in the model. But they are left in the statement below because intercepts are implicated in constraints in models to follow.)</p>
 <p>Third, strong metric invariance places no constraints on indicator variances - they are freely estimated in each group. But again, there is not need to be concerned with or even to mention them when constructing the model statement - <strong>lavaan</strong> will add them automatically.</p>
 <p>Finally, <strong>lavaan</strong>’s default marker-variable method has to be explicitely disabled by pre-multiplying the first indicator for both constructs by <code>NA</code>.</p>
 <div class="cell">
@@ -311,7 +310,7 @@ h1, h2, h3, h4 {
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # Measurement Model</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Free the first loading in Pos so it can be estimated</span></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Constrain 3rd indicator in Pos to 1 in both groups</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Constrain 1st indicator is Neg to 1 in both groups</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Constrain 1st indicator in Neg to 1 in both groups</span></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos =~ NA*Pos1 + Pos2 + c(1,1)*Pos3</span></span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg =~ c(1,1)*Neg1 + Neg2 + Neg3</span></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
@@ -376,7 +375,7 @@ h1, h2, h3, h4 {
 <p><img src="images/Scaling3.svg" class="img-fluid quarto-figure quarto-figure-left figure-img"></p>
 </figure>
 </div>
-<p>In the model statement, the loadings and the intercepts are labelled (see the “# Measurement Model” and the “# Indicator intercepts” sections in the model statement) so that the labels can be used to impose the constraints. Constraints are imposed on the loadings and the intercepts using the <code>==</code> operator - see the “# Constraints” section in the model statement.</p>
+<p>In the model statement, the loadings and the intercepts are labelled (see the “Measurement Model” and the “Indicator intercepts” sections in the model statement) so that the labels can be used to impose the constraints. Constraints are imposed on the loadings and the intercepts using the <code>==</code> operator - see the “Constraints” section in the model statement.</p>
 <p>Same points as before: <strong>lavaan</strong> will add indicator variances automatically; Constraints concerning strong metric invariance will be attended to in the next step; and the default marker-variable method has to be explicitely disabled.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="st">"</span></span>
@@ -448,26 +447,28 @@ h1, h2, h3, h4 {
 </section>
 <section id="fit-measures" class="level3">
 <h3 class="anchored" data-anchor-id="fit-measures">Fit measures</h3>
-<p>LS&amp;G state that the models “produce overall model fit statistics that are identical” (p.&nbsp;66). The following shows how to extract fit measures from all models presented here, and present them in a table.</p>
+<p>LS&amp;C state that the models “produce overall model fit statistics that are identical” (p.&nbsp;66). The following shows how to extract fit measures from all models presented here, and present them in a table.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A function to extract fit measures</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>GetFit <span class="ot">&lt;-</span> <span class="cf">function</span>(fit) {</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">fitMeasures</span>(fit, </span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"chisq"</span>, <span class="st">"df"</span>, <span class="st">"pvalue"</span>, <span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>))</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the fitted lavaan objects to a list</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>   m1_fit, m1_short_fit, </span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>   m2c_fit, m2c_default_fit, </span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>   m3_fit, m3_short_fit)</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(models) <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>   <span class="st">"Method 1"</span>, <span class="st">"Method 1 Shortcut"</span>, </span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>   <span class="st">"Method 2c"</span>, <span class="st">"lavaan Default"</span>,</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>   <span class="st">"Method 3"</span>, <span class="st">"Method 3 Shortcut"</span>)</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Get a table of fit measures  </span></span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(models, GetFit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>GetFit <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, ...) {</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">fitMeasures</span>(fit, ...)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the fitted lavaan objects to a list</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>   m1_fit, m1_short_fit, </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>   m2c_fit, m2c_default_fit, </span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>   m3_fit, m3_short_fit)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(models) <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>   <span class="st">"Method 1"</span>, <span class="st">"Method 1 Shortcut"</span>, </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>   <span class="st">"Method 2c"</span>, <span class="st">"lavaan Default"</span>,</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>   <span class="st">"Method 3"</span>, <span class="st">"Method 3 Shortcut"</span>)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Select the fit measures</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>measures <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"chisq"</span>, <span class="st">"df"</span>, <span class="st">"pvalue"</span>, <span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>) </span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Get a table of fit measures  </span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(models, GetFit, measures))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Compare the fit measures with those presented on page 66.</p>
 <p>The R script with minimal commenting is available in <a href="Little_Scaling.r">Little_Scaling.r</a>.</p>

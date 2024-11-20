@@ -46,12 +46,12 @@ model <- "
 
 
 ## Fit the model and get the summary
-fit <- sem(model, sample.cov = covs, sample.nobs = n)
+fit <- sem(model, sample.cov = cov, sample.nobs = n)
 summary(fit, rsquare = TRUE, standardized = TRUE, fit.measures = TRUE)
 
 
 ## To get the intercepts
-fit_intercepts <- sem(model, sample.cov = covs, sample.nobs = n, 
+fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n, 
    sample.mean = means)
 summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
 
