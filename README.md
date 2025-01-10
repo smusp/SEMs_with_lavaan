@@ -7,3 +7,5 @@
   Three variable mediation using summary data
 - [Little_2006](https://github.com/smusp/SEMs_with_lavaan/tree/main/Little_2006)
   Methods of identification and scaling
+- [Green_2023](https://github.com/smusp/SEMs_with_lavaan/tree/main/Green_2023)
+  SEM approaches for analyzing means
