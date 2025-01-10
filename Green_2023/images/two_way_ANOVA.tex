@@ -1,0 +1,37 @@
+\documentclass[tikz, border = 10pt]{standalone}
+\input{../../Jose_2013/images/SEMstyles.tex}
+
+\begin{document}
+\begin{tikzpicture}
+
+\newcommand\gap{1.5}            % separation between dependents
+\newcommand{\strat}{{"No strategy", "Discussion", "Exercise"}}
+\newcommand{\gend}{{"Male", "Female"}}
+
+\foreach \i in {1,...,6} {
+   %% Dependent
+   \tikzmath{\x = (1 + \gap) * (\i - 1);}        % x-coord for Dependents
+   \node [manifest] (y\i) at (\x, 0) {y};
+
+   %% Residuals
+   \node[residual2] (e\i) [below right = 4mm and 2mm of y\i] {e};
+   \path[regression] (e\i) edge (y\i.south east) ;
+
+   %% Means
+   \node [constant] (const\i) [above = 1.5cm of y\i] {1};
+   \path[regression] (const\i) edge ["a$_\i$"] (y\i);
+
+   %% Groups
+   \tikzmath{\firstrow = \strat[mod((\i-1), 3)]; \secondrow = \gend[int((\i-1)/3)];}
+   \node [group] (gp\i) [above = 0.5cm of const\i] {Group \i:\\\firstrow\\\secondrow};
+}
+
+%% Separators
+\foreach \i in {1,2,3,4,5} {
+   \tikzmath{\j = int(\i+1);}
+   \coordinate (M) at ($(y\i)!0.5!(y\j)$);
+   \draw [style = densely dashed, thin] ($(M)!4.6cm!270:(y\i)$) -- ($(M)!1.25cm!90:(y\i)$);
+}
+
+\end{tikzpicture}
+\end{document}
