@@ -24,14 +24,14 @@ n <- 513
 names <- c("Att", "SE", "Anx")
 
 
-## Get the variance/covariance matrix
+## Get the co/variance matrix
 cov <- lavaan::getCov(cor, sds = sds, names = names)
 
 
 ## The model from Figure 1
 model <- "
   # direct effect
-  Anx ~ cpr * SE   # c prime
+  Anx ~ cpr * SE
 
   # effects via the mediator
   Att ~ a * SE
@@ -48,6 +48,7 @@ model <- "
 ## Fit the model and get the summary
 fit <- sem(model, sample.cov = cov, sample.nobs = n)
 summary(fit, rsquare = TRUE, standardized = TRUE, fit.measures = TRUE)
+    ## Check with Figure 1
 
 
 ## To get the intercepts

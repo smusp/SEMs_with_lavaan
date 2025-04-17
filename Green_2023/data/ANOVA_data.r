@@ -2,7 +2,8 @@
 ### Data for Tables 21.1, 21.2, 21.3, 21.4 ###
 
 ## Get the data
-df = read.csv("./data/satisfactionI.csv", header = TRUE)
+path = here("Green_2023", "data", "satisfactionI.csv") 
+df = read.csv(path, header = TRUE)
 head(df)
 
 ## x - Coping Strategy (a - No strategy; b - Discussion; c - Exercise)

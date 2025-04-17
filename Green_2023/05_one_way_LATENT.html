@@ -57,16 +57,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="05_one_way_latent_files/libs/clipboard/clipboard.min.js"></script>
-<script src="05_one_way_latent_files/libs/quarto-html/quarto.js"></script>
-<script src="05_one_way_latent_files/libs/quarto-html/popper.min.js"></script>
-<script src="05_one_way_latent_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="05_one_way_latent_files/libs/quarto-html/anchor.min.js"></script>
-<link href="05_one_way_latent_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="05_one_way_latent_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="05_one_way_latent_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="05_one_way_latent_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="05_one_way_latent_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="05_one_way_LATENT_files/libs/clipboard/clipboard.min.js"></script>
+<script src="05_one_way_LATENT_files/libs/quarto-html/quarto.js"></script>
+<script src="05_one_way_LATENT_files/libs/quarto-html/popper.min.js"></script>
+<script src="05_one_way_LATENT_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="05_one_way_LATENT_files/libs/quarto-html/anchor.min.js"></script>
+<link href="05_one_way_LATENT_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="05_one_way_LATENT_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="05_one_way_LATENT_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="05_one_way_LATENT_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="05_one_way_LATENT_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -104,7 +104,7 @@ window.Quarto = {
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="05_one_way_latent.md"><i class="bi bi-file-code"></i>Github (GFM)</a></li></ul></div></div>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="05_one_way_LATENT.md"><i class="bi bi-file-code"></i>Github (GFM)</a></li></ul></div></div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -143,9 +143,11 @@ h1, h2, h3, h4, h5 {
 <h4 class="anchored" data-anchor-id="load-package-and-get-the-data">Load package and get the data</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/satisfactionII.csv"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)             <span class="co"># Relative paths</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>path <span class="ot">=</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Green_2023"</span>, <span class="st">"data"</span>, <span class="st">"satisfactionII.csv"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(path, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The variables used in this example are:</p>
 <ul>
@@ -154,15 +156,15 @@ h1, h2, h3, h4, h5 {
 </ul>
 <p><br></p>
 </section>
-<section id="structural-equation-modeling" class="level3">
-<h3 class="anchored" data-anchor-id="structural-equation-modeling">Structural Equation Modeling</h3>
+<section id="structural-equation-modeling-using-lavaan" class="level3">
+<h3 class="anchored" data-anchor-id="structural-equation-modeling-using-lavaan">Structural Equation Modeling using <strong>lavaan</strong></h3>
 <p>The SEM model for the one-way ANOVA of a latent variable is shown in Fig 21.3 (p.&nbsp;403), and is reproduced below. The diagram shows the “Less Constrained” model.</p>
 <div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/one_way_LATENT.svg" class="img-fluid quarto-figure quarto-figure-left figure-img"></p>
 </figure>
 </div>
-<p>For purposes of identification and scaling, the loading for the first indicator is constrained to one. (TLG claim that the loading for the 4th indicator is constrained to one. However, when the 4th loading is constrained to one, I do not get the same results as given in Table 21.6 (in particular the latent variance), nor do I get the means (given in the discussion on p.&nbsp;405); whereas I get agreement with the Table and the text when I constrain the 1st loading to one.)</p>
+<p>For purposes of identification and scaling, the loading for the first indicator is constrained to one. (TLG claim that the loading for the 4th indicator is constrained to one. However, when the 4th loading is constrained to one, I do not get the same results as given in Table 21.6 (in particular the latent variance), nor do I get the means (given in the discussion on page 405); whereas I get agreement with the Table and the text when I constrain the 1st loading to one.)</p>
 <p>Also for the purposes of identification and scaling, the latent mean for the first group is constrained to zero. For the “Less Constrained” model, the latent means for the other groups (a2 and a3) are freely estimated.</p>
 <p>TLG assume strict measurement invariance:</p>
 <ul>
@@ -219,21 +221,22 @@ h1, h2, h3, h4, h5 {
 <section id="fit-the-models-and-get-the-results" class="level4">
 <h4 class="anchored" data-anchor-id="fit-the-models-and-get-the-results">Fit the models and get the results</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, sem, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"x"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get model summaries</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Contrast model fits</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the models </span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, sem, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"x"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Get model summaries</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Contrast model fits</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Compare with <span class="math inline">\(\upchi\)</span><sup>2</sup> test in the “All measures” row in Table 21.6.</p>
-<p>One could scroll through the model summaries to find the latent means and error variances for the “Less Constrained” model, and compare them with Table 21.6. They are also needed to calculate effect sizes (given in the first column on p.&nbsp;405).</p>
+<p>One could scroll through the model summaries to find the latent means and error variances for the “Less Constrained” model, and compare them with Table 21.6. They are also needed to calculate effect sizes (given in the first column on page 405).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> (<span class="fl">0.664</span> <span class="sc">-</span> <span class="dv">0</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fl">8.135</span>); d1    <span class="co"># "no strategy" vs "discussion"</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>d2 <span class="ot">&lt;-</span> (<span class="fl">1.945</span> <span class="sc">-</span> <span class="dv">0</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fl">8.135</span>); d2    <span class="co"># "no strategy" vs "exercise"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>But it is probably safer to extract latent means and error variances from a list of parameter estimates.</p>
+<p>But it is probably safer to extract latent means and error variances from a list of parameter estimates, then substitute into the formula for effect size.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> <span class="fu">lavInspect</span>(fit[[<span class="st">"Less Constrained"</span>]], <span class="st">"est"</span>); estimates</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Note: latent means are in element "alpha"</span></span>
@@ -245,16 +248,16 @@ h1, h2, h3, h4, h5 {
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> (LatentMeans[<span class="dv">2</span>] <span class="sc">-</span> LatentMeans[<span class="dv">1</span>]) <span class="sc">/</span> <span class="fu">sqrt</span>(LatentVar[<span class="dv">1</span>]); d1   <span class="co"># "no strategy" vs "discussion"</span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>d2 <span class="ot">&lt;-</span> (LatentMeans[<span class="dv">3</span>] <span class="sc">-</span> LatentMeans[<span class="dv">1</span>]) <span class="sc">/</span> <span class="fu">sqrt</span>(LatentVar[<span class="dv">1</span>]); d2   <span class="co"># "no strategy" vs "exercise"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Compare the effect sizes with those given on p.&nbsp;405, and the means and error variances with those in Table 21.6.</p>
+<p>Compare the effect sizes with those given on page 405, and the means and error variances with those in Table 21.6.</p>
 <p><br></p>
 </section>
 </section>
 <section id="more-flexible-tests-of-differences-in-means-on-latent-variables" class="level3">
 <h3 class="anchored" data-anchor-id="more-flexible-tests-of-differences-in-means-on-latent-variables">More Flexible Tests of Differences in Means on Latent Variables</h3>
 <p>The second and third rows of Table 21.6 follow after a discussion in the section headed “More Flexible Tests of Differences in Means on Latent Variables” (pp.&nbsp;406-407).</p>
-<p>In this sectin, TLG assume partial strong invariance:</p>
+<p>In this section, TLG assume partial strong invariance:</p>
 <ul>
-<li>Constrain one loading for one indicator to equality across groups</li>
+<li>Constrain the loading for one indicator to equality across groups</li>
 <li>Constrain that indicator’s intercept to equality across groups</li>
 <li>The other loadings and intercepts are freely estimated</li>
 </ul>
@@ -267,8 +270,8 @@ h1, h2, h3, h4, h5 {
 <p>For the “More Constrained” model, the latent means are constrained to equality across the groups; for the “Less Constrained” model, the latent means differ.</p>
 <p>The purpose of these examples is to demonstrate that “if a latent variable has only a single referent variable, the means and variances of the latent variable are a function of only the means and variances of this variable” (p.&nbsp;406).</p>
 <p><br></p>
-<section id="model-that-applies-to-the-2nd-row-in-table-21.6-one-measure---y_mathsf1" class="level4">
-<h4 class="anchored" data-anchor-id="model-that-applies-to-the-2nd-row-in-table-21.6-one-measure---y_mathsf1">Model that applies to the 2nd row in Table 21.6: “One measure - Y<span class="math inline">\(_\mathsf{1}\)</span>”</h4>
+<section id="model-that-applies-to-the-2nd-row-in-table-21.6-one-measure---y_1" class="level4">
+<h4 class="anchored" data-anchor-id="model-that-applies-to-the-2nd-row-in-table-21.6-one-measure---y_1">Model that applies to the 2nd row in Table 21.6: “One measure - Y<span class="math inline">\(_1\)</span>”</h4>
 <p>The selected indicator is the first - “y1”.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model statements</span></span>
@@ -313,29 +316,30 @@ h1, h2, h3, h4, h5 {
 </div>
 <p>Fit the models and get the latent means, latent error variances, and the <span class="math inline">\(\upchi\)</span><sup>2</sup> test.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, sem, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"x"</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Model summaries</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the latent means and latent error variances for "Less Constrained" model</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> <span class="fu">lavInspect</span>(fit[[<span class="st">"Less Constrained"</span>]], <span class="st">"est"</span>); estimates</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>LatentMeans <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(estimates, <span class="st">"[["</span>, <span class="st">"alpha"</span>)); LatentMeans</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>LatentVar <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(estimates, <span class="st">'[['</span>, <span class="st">'psi'</span>)); LatentVar</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Contrast model fits</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the models </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, sem, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"x"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Model summaries</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the latent means and latent error variances for "Less Constrained" model</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> <span class="fu">lavInspect</span>(fit[[<span class="st">"Less Constrained"</span>]], <span class="st">"est"</span>); estimates</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>LatentMeans <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(estimates, <span class="st">"[["</span>, <span class="st">"alpha"</span>)); LatentMeans</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>LatentVar <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(estimates, <span class="st">'[['</span>, <span class="st">'psi'</span>)); LatentVar</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Contrast model fits</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Compare with the latent means and error variances, and the <span class="math inline">\(\upchi\)</span><sup>2</sup> test in the 2nd row in Table 21.6.</p>
 <p>Consider the three columns of Table 21.6 dealing with means, variances and residual variances of one measure - in this case, “y1”.</p>
 <p>I need sample means and covariances - they can be extract from a list of sample statistics. I need estimated indicator intercepts and residual variances - they can be extracted from <code>estimates</code>. Also I need estimated latent means and error variances - they have already been extracted.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample statistics</span></span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get sample statistics</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sampstat <span class="ot">&lt;-</span> <span class="fu">lavInspect</span>(fit[[<span class="st">"Less Constrained"</span>]], <span class="st">"sampstat"</span>); sampstat</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Means are in element "mean"</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Variances are the diagonal elements in element "cov"</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimated model parameters</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Get estimated model parameters</span></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>estimates</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Residual variances for the measures are the diagonal elements in element "theta"</span></span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Intercepts for the measures are in element "nu"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -351,11 +355,11 @@ h1, h2, h3, h4, h5 {
 <li>Alternatively, the “y1” intercepts (which are constrained to equality) when added to the latent means give the “y1” means</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract y1 Means from sampstats</span></span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract y1 means from sampstats</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>MeansY1 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, <span class="fu">lapply</span>(sampstat, <span class="st">"[["</span>, <span class="st">"mean"</span>))</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>MeansY1 <span class="ot">&lt;-</span> MeansY1[<span class="dv">1</span>,]; MeansY1   <span class="co"># Compare with 2nd row in Table 21.6</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Differences between y1 means</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Differences between y1 means are differencs between latent means</span></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>MeansY1[<span class="dv">2</span>] <span class="sc">-</span> MeansY1[<span class="dv">1</span>]</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>MeansY1[<span class="dv">3</span>] <span class="sc">-</span> MeansY1[<span class="dv">1</span>]</span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
@@ -363,7 +367,7 @@ h1, h2, h3, h4, h5 {
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>LatentMeans</span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Alternatively, the y1 intercepts (which are constrained to equality)</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># added to the latent means give the y1 Means</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># added to the latent means give the y1 means</span></span>
 <span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>intercepts <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, <span class="fu">lapply</span>(estimates, <span class="st">"[["</span>, <span class="st">"nu"</span>))[<span class="dv">1</span>,<span class="dv">1</span>]; intercepts</span>
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>intercepts <span class="sc">+</span> LatentMeans; MeansY1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -386,7 +390,7 @@ h1, h2, h3, h4, h5 {
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>ResidVarY1 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">lapply</span>(estimates, <span class="st">'[['</span>, <span class="st">'theta'</span>), diag)</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>ResidVarY1 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(ResidVarY1, <span class="st">'['</span>, <span class="dv">1</span>)); ResidVarY1 <span class="co"># Compare with 2nd row in Table 21.6</span></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Differences between y1 variances and y1 residual variances</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Differences between y1 variances and y1 residual variances are latent error variances</span></span>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>VarY1 <span class="sc">-</span> ResidVarY1</span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare with the latent error variances</span></span>
@@ -395,10 +399,10 @@ h1, h2, h3, h4, h5 {
 <p><br></p>
 </section>
 </section>
-<section id="model-that-applies-to-the-3rd-row-in-table-21.6-one-measure---y_mathsf2" class="level4">
-<h4 class="anchored" data-anchor-id="model-that-applies-to-the-3rd-row-in-table-21.6-one-measure---y_mathsf2">Model that applies to the 3rd row in Table 21.6: “One measure - Y<span class="math inline">\(_\mathsf{2}\)</span>”</h4>
+<section id="model-that-applies-to-the-3rd-row-in-table-21.6-one-measure---y_2" class="level4">
+<h4 class="anchored" data-anchor-id="model-that-applies-to-the-3rd-row-in-table-21.6-one-measure---y_2">Model that applies to the 3rd row in Table 21.6: “One measure - Y<span class="math inline">\(_2\)</span>”</h4>
 <p>The selected indicator is the second - “y2”.</p>
-<p>The is the same as before, except the constraints on the loadings and intercepts apply to the second indicator.</p>
+<p>This is the same as before, except the constraints on the loadings and intercepts apply to the second indicator.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model statements</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>common <span class="ot">&lt;-</span> <span class="st">"</span></span>
@@ -442,29 +446,30 @@ h1, h2, h3, h4, h5 {
 </div>
 <p>Fit the models and get the latent means, latent error variances, and the <span class="math inline">\(\upchi\)</span><sup>2</sup> test.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, sem, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"x"</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Model summaries</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the latent means and latent error variances for "Less Constrained" model</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> <span class="fu">lavInspect</span>(fit[[<span class="st">"Less Constrained"</span>]], <span class="st">"est"</span>); estimates</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>LatentMeans <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(estimates, <span class="st">"[["</span>, <span class="st">"alpha"</span>)); LatentMeans</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>LatentVar <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(estimates, <span class="st">'[['</span>, <span class="st">'psi'</span>)); LatentVar</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Contrast model fits</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the models </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, sem, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"x"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Model summaries</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the latent means and latent error variances for "Less Constrained" model</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> <span class="fu">lavInspect</span>(fit[[<span class="st">"Less Constrained"</span>]], <span class="st">"est"</span>); estimates</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>LatentMeans <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(estimates, <span class="st">"[["</span>, <span class="st">"alpha"</span>)); LatentMeans</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>LatentVar <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(estimates, <span class="st">'[['</span>, <span class="st">'psi'</span>)); LatentVar</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Contrast model fits</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Compare with the latent means and error variances, and the <span class="math inline">\(\upchi\)</span><sup>2</sup> test in the 3rd row in Table 21.6.</p>
 <p>Consider the three columns of Table 21.6 dealing with means, variances and residual variances of one measure - in this case, “y2”.</p>
-<p>I need sample means and covariances - they can be extract them from a list of sample statistics. I need estimated indicator intercepts and residual variances - they can be extracted from <code>estimates</code>. Also I need estimated latent means and error variances - they have already been extracted.</p>
+<p>I need sample means and covariances - they can be extract from a list of sample statistics. I need estimated indicator intercepts and residual variances - they can be extracted from <code>estimates</code>. Also I need estimated latent means and error variances - they have already been extracted.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample statistics</span></span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get sample statistics</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>sampstat <span class="ot">&lt;-</span> <span class="fu">lavInspect</span>(fit[[<span class="st">"Less Constrained"</span>]], <span class="st">"sampstat"</span>); sampstat</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Means are in element "mean"</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Variances are the diagonal elements in element "cov"</span></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimated model parameters</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Get estimated model parameters</span></span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>estimates</span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Residual variances for the measures are the diagonal elements in element "theta"</span></span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Intercepts for the measures are in element "nu"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -483,7 +488,7 @@ h1, h2, h3, h4, h5 {
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>MeansY2 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, <span class="fu">lapply</span>(sampstat, <span class="st">"[["</span>, <span class="st">"mean"</span>))</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>MeansY2 <span class="ot">&lt;-</span> MeansY2[<span class="dv">2</span>,]; MeansY2   <span class="co"># Compare with 3rd row in Table 21.6</span></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Differences between y2 means</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Differences between y2 means are differencs between latent means</span></span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>MeansY2[<span class="dv">2</span>] <span class="sc">-</span> MeansY2[<span class="dv">1</span>]</span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>MeansY2[<span class="dv">3</span>] <span class="sc">-</span> MeansY2[<span class="dv">1</span>]</span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
@@ -491,7 +496,7 @@ h1, h2, h3, h4, h5 {
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>LatentMeans</span>
 <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Alternatively, the y2 intercepts (which are constrained to equality)</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># added to the latent means give the Y2 Means</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># added to the latent means give the Y2 means</span></span>
 <span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>intercepts <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, <span class="fu">lapply</span>(estimates, <span class="st">"[["</span>, <span class="st">"nu"</span>))[<span class="dv">2</span>,<span class="dv">1</span>]; intercepts</span>
 <span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>intercepts <span class="sc">+</span> LatentMeans; MeansY2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -514,7 +519,7 @@ h1, h2, h3, h4, h5 {
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>ResidVarY2 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">lapply</span>(estimates, <span class="st">'[['</span>, <span class="st">'theta'</span>), diag)</span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>ResidVarY2 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(ResidVarY2, <span class="st">'['</span>, <span class="dv">2</span>)); ResidVarY2 <span class="co"># Compare with 3rd row in Table 21.6</span></span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Differences between y2 variances and y2 residual variances</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Differences between y2 variances and y2 residual variances are latent error variances</span></span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>VarY2 <span class="sc">-</span> ResidVarY2</span>
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare with the latent error variances</span></span>

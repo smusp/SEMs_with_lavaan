@@ -7,15 +7,17 @@
 
 ## Load packages
 library(lavaan)
-library(restriktor)   # to restrict means
+library(here)         # Relative paths
 library(DescTools)    # Cramer's V
 
 ## Get the data
-source("./data/ANOVA_data.r")
+path = here::here("Green_2023", "data", "ANOVA_data.r")
+source(path)
 head(df)
 
 
 ## Cramer's V
+## Check with page 394
 DescTools::CramerV(df$g, df$x)
 
 
@@ -33,10 +35,12 @@ chisq.test(df$g, df$x)$stdres
 
 
 ## Cell means and cell frequencies
-means <- tapply(df$y, list(df$g, df$x), mean); means     # cell means
-freq <- table(df$g, df$x); freq                          # cell frequencies
+## Check cell means and frequencies in Table 21.3
+means <- tapply(df$y, list(df$g, df$x), mean); means     # Cell means
+freq <- table(df$g, df$x); freq                          # Cell frequencies
 
 
+## Check unweighted and weighted means in Table 21.3
 # Unweighted marginal means
 apply(means, 1, mean)      # Gender
 apply(means, 2, mean)      # Coping Strategy
@@ -46,99 +50,12 @@ tapply(df$y, df$g, mean)     # Gender
 tapply(df$y, df$x, mean)     # Coping Strategy   
 
 
-## Less Constrained model
-lc <- lm(y ~ -1 + sg, df)
-summary(lc)
-
-
-## Gender main effect - unweighted means
-constraints <- "(sgaf + sgbf + sgcf) == (sgam + sgbm + sgcm)"
-test <- iht(lc, constraints = constraints, type = "A", test = "F"); test
-
-test$df; test$df.residual
-
-
-## Coping Strategy main effect - unweighted means
-constraints <- "(sgaf + sgam) == (sgbf + sgbm)
-                (sgbf + sgbm) == (sgcf + sgcm)"
-test <- iht(lc, constraints = constraints, type = "A", test = "F"); test
-
-test$df; test$df.residual
-
-
-## Gender main effect - weighted means
-freq                     # cell frequencies to construct constraints
-constraints <- "(3/12*sgaf + 3/12*sgbf + 6/12*sgcf) == (6/12*sgam + 3/12*sgbm + 3/12*sgcm)"
-test <- iht(lc, constraints = constraints, type = "A", test = "F"); test
-
-test$df; test$df.residual
-
-
-## Coping Strategy main effect - weighted means
-freq                     # cell frequencies to construct constraints
-constraints <- "(3/9*sgaf + 6/9*sgam) == (3/6*sgbf + 3/6*sgbm)
-                (3/6*sgbf + 3/6*sgbm) == (6/9*sgcf + 3/9*sgcm)"
-test <- iht(lc, constraints = constraints, type = "A", test = "F"); test
-
-test$df; test$df.residual
-
-
-## Interaction: Gender X Coping Strategy
-constraints <- "(sgaf - sgam) == (sgbf - sgbm) 
-                (sgbf - sgbm) == (sgcf - sgcm)"
-test <- iht(lc, constraints = constraints, type = "A", test = "F"); test
-
-test$df; test$df.residual
-
-
-## Dummy variables formulation
-# Less constrained model
-lc <- lm(y ~ -1 + af + bf + cf + am + bm + cm, df)
-summary(lc)
-
-
-# More constrained models
-# Gender main effect - unweighted means
-constraints <- "(af + bf + cf) == (am + bm + cm)"
-test <- iht(lc, constraints = constraints, type = "A", test = "F"); test
-
-test$df; test$df.residual
-
-# Coping Strategy main effect - unweighted means
-constraints <- "(af + am) == (bf + bm)
-                (bf + bm) == (cf + cm)"
-test <- iht(lc, constraints = constraints, type = "A", test = "F"); test
-
-test$df; test$df.residual
-
-# Gender main effect - weighted means
-freq
-constraints <- "(3/12*af + 3/12*bf + 6/12*cf) == (6/12*am + 3/12*bm + 3/12*cm)"
-test <- iht(lc, constraints = constraints, type = "A", test = "F"); test
-
-test$df; test$df.residual
-
-# Coping Strategy main effect - weighted means
-constraints <- "(3/9*af + 6/9*am) == (3/6*bf + 3/6*bm)
-                (3/6*bf + 3/6*bm) == (6/9*cf + 3/9*cm)"
-test <- iht(lc, constraints = constraints, type = "A", test = "F"); test
-
-test$df; test$df.residual
-
-# Interaction: Gender X Coping Strategy
-constraints <- "(af - am) == (bf - bm) 
-                (bf - bm) == (cf - cm)"
-test <- iht(lc, constraints = constraints, type = "A", test = "F"); test
-
-test$df; test$df.residual
-
-
 ### Two-way ANOVA - SEM
-unique(df$sg)    # order in which groups appear in lavaan output
+unique(df$sg)    # Order in which groups appear in lavaan output
 
 # Less Constrained model
 lc <- "y ~ c(am, af, bm, bf, cm, cf)*1       # Means
-       y ~~ c(e, e, e, e, e, e)*y"           # Variances
+       y ~~ c(e, e, e, e, e, e)*y            # Variances"
 
 lc.fit <- sem(lc, data = df, group = "sg")
 summary(lc.fit)
@@ -167,7 +84,7 @@ anova(strat_unw.fit, lc.fit)   # Compare the two models
 
 
 # Gender main effect - weighted means
-freq
+freq                     # To assist with constructing constraints 
 constraints <- "(3*af + 3*bf + 6*cf)/12 == (6*am + 3*bm + 3*cm)/12"
 gend_w = c(lc, constraints)
 
@@ -200,4 +117,4 @@ inter <- c(lc, constraints)
 inter.fit <- sem(inter, data = df, group = "sg")
 summary(inter.fit)
 
-anova(inter.fit, lc.fit) 
+anova(inter.fit, lc.fit)     # Compare the two models

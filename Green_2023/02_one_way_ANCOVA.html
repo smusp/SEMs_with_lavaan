@@ -134,142 +134,32 @@ h1, h2, h3, h4 {
 </style>
 </div>
 <p>Thompson, M., Lie, Y. &amp; Green, S. (2023). Flexible structural equation modeling approaches for analyzing means. In R. Hoyle (Ed.), <em>Handbook of structural equation modeling</em> (2nd ed., pp.&nbsp;385-408). New York, NY: Guilford Press.</p>
-<p>This example shows the OLS regression approach and the SEM approach to Part 2: One-way ANCOVA. Results are reported in Table 21.2 (p.&nbsp;393).</p>
-<p>The data file (<code>satisfactionI.csv</code> in the <code>data</code> folder) needs manipulation before it can be used: the format needs to be changed from “long” to “wide”; dummy variables need to be set up for the groups; and the pre or before Life Satisfaction scores need to be centered. These manipulations are completed in <code>ANOVA_data.r</code>.</p>
+<p><br></p>
+<p>This example shows the SEM approach to Part 2: One-way ANCOVA. Results are reported in Table 21.2 (p.&nbsp;393).</p>
+<p>The data file (<code>satisfactionI.csv</code> in the <code>data</code> folder) needs manipulation before it can be used: the format needs to be changed from “long” to “wide”; and the pre or before Life Satisfaction scores need to be centered. These manipulations are completed in <code>ANOVA_data.r</code>.</p>
 <p><br></p>
 <section id="load-relevant-packages-and-get-the-data" class="level4">
 <h4 class="anchored" data-anchor-id="load-relevant-packages-and-get-the-data">Load relevant packages and get the data</h4>
 <p>Load the relevant packages, and run <code>ANOVA_data.r</code> to get the data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(restriktor)   <span class="co"># to restrict means</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)         <span class="co"># Relative paths</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./data/ANOVA_data.r"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>path <span class="ot">=</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Green_2023"</span>, <span class="st">"data"</span>, <span class="st">"ANOVA_data.r"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(path)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The variables used in this example are:</p>
 <ul>
 <li>x - Coping Strategy (“a” - no strategy; “b” - discussion; “c” - exercise)</li>
 <li>y - dependent variable (“after” self-satisfaction scores)</li>
 <li>preC - pre-score grand mean centered</li>
-<li>x1, x2, x3 - dummy coded variables (1, 0) for “Coping Strategy”</li>
 </ul>
 <p>The steps are the same as with the one_way_ANOVA. The only difference is the addition of the covariate, preC.</p>
 <p><br></p>
 </section>
-<section id="ols-regression-using-cell-means-formulation" class="level3">
-<h3 class="anchored" data-anchor-id="ols-regression-using-cell-means-formulation">OLS regression using cell-means formulation</h3>
-<section id="the-models" class="level4">
-<h4 class="anchored" data-anchor-id="the-models">The models</h4>
-<p>Model statements</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>   <span class="st">"More Constrained"</span> <span class="ot">=</span> <span class="st">"y ~ 1 + preC"</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>   <span class="st">"Less Constrained"</span> <span class="ot">=</span> <span class="st">"y ~ -1 + preC + x"</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="fit-the-models-and-get-the-results" class="level4">
-<h4 class="anchored" data-anchor-id="fit-the-models-and-get-the-results">Fit the models and get the results</h4>
-<p>Fit the models and get the summaries.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, lm, <span class="at">data =</span> df)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The “OLS regression” sections of Table 21.2 show the means, pooled error variances, and the F test.</p>
-<p>The summaries give “Estimates” or “Intercept”. These are the means. Compare with the means in Table 21.2.</p>
-<p>Get the pooled error variances.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>aovTable <span class="ot">&lt;-</span> <span class="fu">lapply</span>(fit, anova); aovTable</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ErrorVar <span class="ot">&lt;-</span> aovTable <span class="sc">|&gt;</span> </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"["</span>, <span class="fu">c</span>(<span class="st">"Df"</span>, <span class="st">"Sum Sq"</span>, <span class="st">"Mean Sq"</span>)) <span class="sc">|&gt;</span>      <span class="co"># extract df, SS, and MS</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="cf">function</span>(x) x[<span class="fu">dim</span>(x)[<span class="dv">1</span>], ])                <span class="co"># extract the last row in each data frame</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>ErrorVar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Compare “Mean Sq” with the pooled error variances in Table 21.2.</p>
-<p>Get the F test.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Compare with the F statistic and p-value in Table 21.2. Note: df used in the calculation of F are correct; however df cited with the F statistic are incorrect.</p>
-<p>Get R<sup>2</sup> (see Equation 21.9).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Rsquare <span class="ot">&lt;-</span> ErrorVar <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"Sum Sq"</span>) <span class="sc">|&gt;</span>                        <span class="co"># Extract SSE</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">Reduce</span>(<span class="cf">function</span>(mc, lc)  (mc <span class="sc">-</span> lc) <span class="sc">/</span> mc, <span class="at">x =</span> _)  <span class="co"># Substitute into Eq 21.9</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>Rsquare</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><br></p>
-</section>
-</section>
-<section id="ols-regression-using-dummy-variables" class="level3">
-<h3 class="anchored" data-anchor-id="ols-regression-using-dummy-variables">OLS Regression using dummy variables</h3>
-<section id="the-models-1" class="level4">
-<h4 class="anchored" data-anchor-id="the-models-1">The models</h4>
-<p>Model statements</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>   <span class="st">"More Constrained"</span> <span class="ot">=</span> <span class="st">"y ~ -1 + preC + I(x1 + x2 + x3)"</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>   <span class="st">"Less Constrained"</span> <span class="ot">=</span> <span class="st">"y ~ -1 + preC + x1 + x2 + x3"</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="fit-the-model-and-get-the-results" class="level4">
-<h4 class="anchored" data-anchor-id="fit-the-model-and-get-the-results">Fit the model and get the results</h4>
-<p>Fitting the models and getting the results proceeds as before.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, lm, df)               <span class="co"># Run the models</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)                        <span class="co"># Get the summaries - note the means</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>aovTable <span class="ot">&lt;-</span> <span class="fu">lapply</span>(fit, anova); aovTable    <span class="co"># anova tables - Note: SS and MS for Residuals</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>ErrorVar <span class="ot">&lt;-</span> aovTable <span class="sc">|&gt;</span> </span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"["</span>, <span class="fu">c</span>(<span class="st">"Df"</span>, <span class="st">"Sum Sq"</span>, <span class="st">"Mean Sq"</span>)) <span class="sc">|&gt;</span>  <span class="co"># extract df, SS, and MS</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="cf">function</span>(x) x[<span class="fu">dim</span>(x)[<span class="dv">1</span>], ])            <span class="co"># extract the last row in each data frame</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>ErrorVar                                         <span class="co"># Mean Sq is pooled error variance</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)                    <span class="co"># F test to compare the two fits</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>Rsquare <span class="ot">&lt;-</span> ErrorVar <span class="sc">|&gt;</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"Sum Sq"</span>) <span class="sc">|&gt;</span>                         <span class="co"># Extract SSE</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>   <span class="fu">Reduce</span>(<span class="cf">function</span>(mc, lc)  (mc <span class="sc">-</span> lc) <span class="sc">/</span> mc, <span class="at">x =</span> _)   <span class="co"># Substitute into Eq 21.9</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>Rsquare</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><br></p>
-</section>
-</section>
-<section id="regression-using-the-restriktor-package" class="level3">
-<h3 class="anchored" data-anchor-id="regression-using-the-restriktor-package">Regression using the restriktor package</h3>
-<p>Using cell means</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>lc <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> preC <span class="sc">+</span> x, df)   <span class="co"># Less Constrained model</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lc)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"xa == xb</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="st">                xb == xc"</span>  <span class="co"># constrain the means to equality</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>               </span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare the fit for the two models           </span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">iht</span>(lc, <span class="at">constraints =</span> constraints, <span class="at">type =</span> <span class="st">"A"</span>, <span class="at">test =</span> <span class="st">"F"</span>); test</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>df; test<span class="sc">$</span>df.residual</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Using dummy variables</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>lc <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> preC <span class="sc">+</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3, df)  <span class="co"># Less Constrained model</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lc)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"x1 == x2</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="st">                x2 == x3"</span>  <span class="co"># constrain the means to equality</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                </span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare the fit for the two models                 </span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">iht</span>(lc, <span class="at">constraints =</span> constraints, <span class="at">type =</span> <span class="st">"A"</span>, <span class="at">test =</span> <span class="st">"F"</span>); test</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>df; test<span class="sc">$</span>df.residual</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><br></p>
-</section>
-<section id="structural-equation-modeling" class="level3">
-<h3 class="anchored" data-anchor-id="structural-equation-modeling">Structural Equation Modeling</h3>
+<section id="structural-equation-modeling-using-lavaan" class="level3">
+<h3 class="anchored" data-anchor-id="structural-equation-modeling-using-lavaan">Structural Equation Modeling using <strong>lavaan</strong></h3>
 <p>The SEM model for one-way ANCOVA is shown below. The diagram shows the “Less Constrained” model - the three means, represented by the label on the arrows connecting the “1” to the dependent variable, differ. To be consistent with the ANCOVA assumptions of homogeneity of variances and homogeneity of regression slopes, the residual variances and the coefficients for the covariate (preC) are constrained to be equal.</p>
 <div class="quarto-figure quarto-figure-left">
 <figure class="figure">
@@ -278,61 +168,61 @@ h1, h2, h3, h4 {
 </div>
 <p>The model statements are shown below. The “More Constrained” model constrains the means to equality. The “Less Constrained” model allows the means to differ across the groups. In both cases the residual variances and the coefficients for the covariate are constrained to equality.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="st">"More Constrained"</span> <span class="ot">=</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"y ~ c(a, a, a)*1           # Means</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="st">   y ~ c(b, b, b)*preC        # Covariate</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="st">   y ~~ c(e, e, e)*y"</span>,        <span class="co"># Variances</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="st">"Less Constrained"</span> <span class="ot">=</span> </span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"y ~ c(a1, a2, a3)*1</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="st">   y ~ c(b, b, b)*preC</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="st">   y ~~ c(e, e, e)*y"</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="st">"More Constrained"</span> <span class="ot">=</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"y ~ c(a, a, a)*1         # Means</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st">   y ~ c(b, b, b)*preC      # Covariate</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st">   y ~~ c(e, e, e)*y        # Variances"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">"Less Constrained"</span> <span class="ot">=</span> </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"y ~ c(a1, a2, a3)*1</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="st">   y ~ c(b, b, b)*preC</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="st">   y ~~ c(e, e, e)*y"</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
-<section id="fit-the-models-and-get-the-results-1" class="level4">
-<h4 class="anchored" data-anchor-id="fit-the-models-and-get-the-results-1">Fit the models and get the results</h4>
+<section id="fit-the-models-and-get-the-results" class="level4">
+<h4 class="anchored" data-anchor-id="fit-the-models-and-get-the-results">Fit the models and get the results</h4>
 <p>The <code>lapply()</code> function applies the <code>sem()</code> function to the two elements of the <code>models</code> list (with <code>data</code> set to <code>df</code>, and <code>group</code> set to the <code>"x"</code> variable).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, sem, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"x"</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, sem, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"x"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The “SEM” sections of Table 21.2 show the means, pooled error variances, and the <span class="math inline">\(\upchi\)</span><sup>2</sup> test.</p>
-<p>Scroll through the summaries to find the “Intercepts”, or extract the means from the list of estimates of model parameter.</p>
+<p>Scroll through the summaries to find the “Intercepts”, or extract the means from the list of estimates of model parameters.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> <span class="fu">lapply</span>(fit, lavInspect, <span class="st">"est"</span>); estimates    <span class="co"># Means are in element "alpha"</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">names</span>(models)) {</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>   means[[i]] <span class="ot">&lt;-</span> estimates[[i]] <span class="sc">|&gt;</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"alpha"</span>) <span class="sc">|&gt;</span>        <span class="co"># Means for Y and preC</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span>              <span class="co"># Means for Y</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">unlist</span>()</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>   }   </span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>means</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> <span class="fu">lapply</span>(fit, lavInspect, <span class="st">"est"</span>); estimates    <span class="co"># Means are in element "alpha"</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">names</span>(models)) {</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>   means[[i]] <span class="ot">&lt;-</span> estimates[[i]] <span class="sc">|&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"alpha"</span>) <span class="sc">|&gt;</span>        <span class="co"># Means for Y and preC</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span>              <span class="co"># Means for Y</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">unlist</span>()</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>   }   </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>means</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Compare with the means in the “SEM” section of Table 21.2.</p>
 <p>The pooled error variances are also extracted from the list of estimates. Recall that error variances are constrained to equality, and therefore, the estimates for one group only (here, group “a”) are extracted.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ErrorVar <span class="ot">&lt;-</span> estimates <span class="sc">|&gt;</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"a"</span>) <span class="sc">|&gt;</span>          <span class="co"># Extract group "a" estimates</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"psi"</span>)  <span class="sc">|&gt;</span>       <span class="co"># Extract "psi" element</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="dv">1</span>, <span class="dv">1</span>)            <span class="co"># 1st column, 1st row of 'psi'</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>ErrorVar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ErrorVar <span class="ot">&lt;-</span> estimates <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"a"</span>) <span class="sc">|&gt;</span>          <span class="co"># Extract group "a" estimates</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"psi"</span>)  <span class="sc">|&gt;</span>       <span class="co"># Extract "psi" element</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="dv">1</span>, <span class="dv">1</span>)            <span class="co"># 1st column, 1st row of "psi"</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>ErrorVar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Compare with pooled error variances in Table 21.2.</p>
 <p>To perform the <span class="math inline">\(\upchi\)</span><sup>2</sup> test (to compare the fit of the two models), apply the <code>anova()</code> function to the two models.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Compare with the <span class="math inline">\(\upchi\)</span><sup>2</sup> statistic and p value in Table 21.2.</p>
 <p>In Equation 21.9 (p.&nbsp;394), TLG give calculations for R<sup>2</sup>. As was the case with the one-way ANOVA, the relevant SSEs can be obtained from the error variances (see <code>ErrorVar</code>) by multiplying error variance by sample size. But again, the multiplication is not needed because sample size will cancel out; that is, substitute the error variances into Equation 21.9.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Rsquare <span class="ot">&lt;-</span> ErrorVar <span class="sc">|&gt;</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">Reduce</span>(<span class="cf">function</span>(mc, lc) (mc <span class="sc">-</span> lc)<span class="sc">/</span>mc, <span class="at">x =</span> _)  <span class="co"># Substitute into Eq 21.9  </span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(Rsquare)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Rsquare <span class="ot">&lt;-</span> ErrorVar <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">Reduce</span>(<span class="cf">function</span>(mc, lc) (mc <span class="sc">-</span> lc)<span class="sc">/</span>mc, <span class="at">x =</span> _)  <span class="co"># Substitute into Eq 21.9  </span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(Rsquare)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 <p>The R script with minimal commenting is available in <a href="02_one_way_ANCOVA.r">02_one_way_ANCOVA.r</a>.</p>

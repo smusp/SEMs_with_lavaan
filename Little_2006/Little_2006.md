@@ -8,36 +8,36 @@ identifying and scaling latent variables in SEM and MACS models.
 <br />
 
 This example shows how to set constraints for different methods of
-identification and scaling in latent variable models. Though invariance
-is not a topic of discussion, the example shows how to set constraints
-for strong metric invariance. Also, the example shows how to use summary
-data in a two-group model.
+identification and scaling in latent variable models, and, though
+invariance is not a topic of discussion, the example shows how to set
+constraints for strong metric invariance in a two-group model. Also, the
+example shows how to use summary data (correlations, standard
+deviations, and means) in a two-group model.
 
-LS&C discuss methods for identification and scaling of latent variables
-in SEMs. These methods are:
+The methods of identification and scaling discussed by LS&C are:
 
 - Reference Group Method - For each construct, the latent variance is
-  fixed to one and the latent mean is fixed to zero. With strong metric
-  invariance (invariance of loadings and intercepts), latent means and
-  variances are freely estimated in subsequent groups.
+  fixed to one and the latent mean is fixed to zero in the first group.
+  With strong metric invariance (invariance of loadings and intercepts),
+  latent means and variances are freely estimated in subsequent groups.
 - Marker Variable Method - For each construct, the loading of one
   indicator is fixed to one, and the intercept for the chosen indicator
   is fixed to zero. With strong metric invariance, these constraints
   apply in both groups.
-- Effects Coding method - For each construct, constrain loadings to add
+- Effects Coding Method - For each construct, constrain loadings to add
   to the number of indicators, and constrain indicator intercepts to add
   to zero. With strong metric invariance, these constraints apply in
   both groups.
 
-They present a two-group (7th grade and 8th grade), two-construct
+LS&C present a two-group (7th grade and 8th grade), two-construct
 (positive affect and negative affact) model. Each construct is assessed
 with three manifest indicators. The SEM diagram below shows the model as
-it might apply to the whole sample. This one-group model is presented to
-explain the symbols used in the paper, and to show how they apply in the
-model diagrams. First, POS and NEG are the constructs; and
-pos<sub>1</sub>, …, neg<sub>3</sub> are the manifest indicators. The
-solid lines represent the covariance structure, and the gray lines
-represent the mean structure (ie, the means and intercepts).
+it might apply to the whole sample (i.e., ignoring the groups). This
+one-group model is presented to explain the symbols used in the paper,
+and to show how they apply in the model diagrams. First, POS and NEG are
+the constructs; and pos<sub>1</sub>, …, neg<sub>3</sub> are the manifest
+indicators. The solid lines represent the covariance structure, and the
+gray lines represent the mean structure (ie, the means and intercepts).
 
 The symbols are:
 
@@ -53,7 +53,7 @@ The symbols are:
 
 #### Load relevant packages
 
-First, load the **lavaan** package.
+Load the **lavaan** package.
 
 ``` r
 library(lavaan)
@@ -80,7 +80,7 @@ cor7 <- c(
   -0.06112, -0.06105, -0.14060,  0.78501,  1.00000,
   -0.02222, -0.05180, -0.10250,  0.81616,  0.81076,  1.00000)
 
-means7 <- c(3.13552, 2.99061, 3.06945, 1.70069, 1.52705, 1.54483)
+mean7 <- c(3.13552, 2.99061, 3.06945, 1.70069, 1.52705, 1.54483)
 sd7 <- c(0.66770, 0.68506, 0.70672, 0.71418, 0.66320, 0.65276)
 n7 <- 380
 
@@ -93,7 +93,7 @@ cor8 <- c(
   -0.28875, -0.24951, -0.33769,  0.78418,  1.00000,
   -0.29342, -0.21022, -0.30553,  0.79952,  0.83156,  1.00000)
 
-means8 <- c(3.07338, 2.84716, 2.97882, 1.71700, 1.57955, 1.55001)
+mean8 <- c(3.07338, 2.84716, 2.97882, 1.71700, 1.57955, 1.55001)
 sd8 <- c(0.70299, 0.71780, 0.76208, 0.65011, 0.60168, 0.61420)
 n8 <- 379
 ```
@@ -102,23 +102,25 @@ Variable names are also contained in the LISREL script, but I shorten
 the names a little.
 
 ``` r
-names = c("Pos1", "Pos2", "Pos3", "Neg1", "Neg2", "Neg3")
+names = c("pos1", "pos2", "pos3", "neg1", "neg2", "neg3")
 ```
 
 Combine the (co)variances, means, and sample sizes into lists.
 
 ``` r
 cor <- list("Grade 7" = cor7, "Grade 8" = cor8)
-means <- list(means7, means8)
+sd <- list(sd7, sd8)
+mean <- list(mean7, mean8)
 n <- list(n7, n8)
 ```
 
 Use the `getCov()` function from the **lavaan** package to obtain the
-full variance/covariance matrix for each group (using the `lapply()`
-function to return the two (co)variance matrices in a list).
+full (co)variance matrix for each group (using the `Map()` function to
+apply the `getCov()` function to the lists, and to return the two
+(co)variance matrices in a list).
 
 ``` r
-cov <- lapply(cor, getCov, names = names)
+cov = Map(getCov, x = cor, sds = sd, names = list(names, names))
 ```
 
 <br />
@@ -133,15 +135,16 @@ There are two groups: Grade 7 and Grade 8. The corresponding loadings
 latent variances ($\upphi$<sub>7,11</sub> and $\upphi$<sub>7,22</sub>)
 and latent means ($\upkappa$) are constrained to 1 and 0 respectively in
 the first group only. The residual variances ($\uptheta$) are freely
-estimated in each group, and the latent covariance is freely estimated
-in each group.
+estimated in each group, and the latent covariances
+($\upphi$<sub>7,12</sub> and $\upphi$<sub>8,12</sub>) are freely
+estimated.
 
 <img src="images/Scaling1.svg" data-fig-align="left" />
 
 When constructing the model statment, there are some points to be
 considered.
 
-First, the constraints applying to latent means and variances apply in
+First, the constraints applied to latent means and variances apply in
 the first group only. In the model statement, pre-multiply the mean or
 the variance by a vector containing the constraints; like this:
 `c(1,NA)` - the `1` forces the parameter in the first group to be
@@ -160,7 +163,7 @@ models to follow.)
 
 Third, strong metric invariance places no constraints on indicator
 variances - they are freely estimated in each group. But again, there is
-not need to be concerned with or even to mention them when constructing
+no need to be concerned with or even to mention them when constructing
 the model statement - **lavaan** will add them automatically.
 
 Finally, **lavaan**’s default marker-variable method has to be
@@ -171,27 +174,27 @@ constructs by `NA`.
 m1 <- "
   # Measurement Model
   #   - Free the first loading so it can be estimated
-  Pos =~ NA*Pos1 + Pos2 + Pos3
-  Neg =~ NA*Neg1 + Neg2 + Neg3
+  POS =~ NA*pos1 + pos2 + pos3
+  NEG =~ NA*neg1 + neg2 + neg3npp
 
   # Latent variances and covariance
   #   - Constrain latent variances to 1 in first group
-  Pos ~~ c(1,NA)*Pos
-  Neg ~~ c(1,NA)*Neg
-  Pos ~~ Neg
+  POS ~~ c(1,NA)*POS
+  NEG ~~ c(1,NA)*NEG
+  POS ~~ NEG
 
   # Indicator intercepts 
-  Pos1 ~ 1
-  Pos2 ~ 1
-  Pos3 ~ 1
-  Neg1 ~ 1
-  Neg2 ~ 1
-  Neg3 ~ 1
+  pos1 ~ 1
+  pos2 ~ 1
+  pos3 ~ 1
+  neg1 ~ 1
+  neg2 ~ 1
+  neg3 ~ 1
 
   # Latent means
   #   - Constrain latent means to 0 in first group
-  Pos ~ c(0,NA)*1
-  Neg ~ c(0,NA)*1
+  POS ~ c(0,NA)*1
+  NEG ~ c(0,NA)*1
 "
 ```
 
@@ -204,11 +207,11 @@ To deal with strong metric invariance, set
 
 ``` r
 m1_fit <- sem(m1, sample.cov = cov, sample.nobs = n, 
-   sample.mean = means, group.equal = c("loadings", "intercepts"))
+   sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m1_fit, standardized = TRUE, fit.measures = TRUE)
 ```
 
-Compare the output with “Method 1” in Table 2 (pp. 64-75).
+Compare the output with “Method 1” in Table 2 (pp. 64-65).
 
 <br />
 
@@ -222,12 +225,12 @@ latent means are constrained to zero.
 ``` r
 m1_short <- "
   # Measurement Model
-  Pos =~ Pos1 + Pos2 + Pos3
-  Neg =~ Neg1 + Neg2 + Neg3
+  POS =~ pos1 + pos2 + pos3
+  NEG =~ neg1 + neg2 + neg3
 "
 
 m1_short_fit <- sem(m1_short, sample.cov = cov, sample.nobs = n, 
-   sample.mean = means, std.lv = TRUE, 
+   sample.mean = mean, std.lv = TRUE, 
    group.equal = c("loadings", "intercepts"))
 summary(m1_short_fit, standardized = TRUE, fit.measures = TRUE)
 ```
@@ -254,7 +257,7 @@ The model with the constraints is shown below.
 <img src="images/Scaling2.svg" data-fig-align="left" />
 
 Results for three versions of Method 2 are presented in Table 2 - in
-each case, constrains are applied to different indicator variables.
+each case, constraints are applied to different indicator variables.
 Here, only the third is considered - constraints apply to loadings and
 intercepts for the third indicator in the POS construct, and to the
 first indicator in the NEG construct.
@@ -278,30 +281,30 @@ indicator be `NA`.
 ``` r
 m2c <- "
   # Measurement Model
-  #   - Free the first loading in Pos so it can be estimated
-  #   - Constrain 3rd indicator in Pos to 1 in both groups
-  #   - Constrain 1st indicator in Neg to 1 in both groups
-  Pos =~ NA*Pos1 + Pos2 + c(1,1)*Pos3
-  Neg =~ c(1,1)*Neg1 + Neg2 + Neg3
+  #   - Free the first loading in POS so it can be estimated
+  #   - Constrain 3rd loading in POS to 1 in both groups
+  #   - Constrain 1st loading in NEG to 1 in both groups
+  POS =~ NA*pos1 + pos2 + c(1,1)*pos3
+  NEG =~ c(1,1)*neg1 + neg2 + neg3
 
   # Latent variances and covariance
-  Pos ~~ Pos
-  Neg ~~ Neg
-  Pos ~~ Neg
+  POS ~~ POS
+  NEG ~~ NEG
+  POS ~~ NEG
 
   # Indicator intercepts 
-  #   - Constrain 3rd residual variance in Pos to 0 in both groups
-  #   - Constrain 1st residual variance in Neg to 0 in both groups
-  Pos1 ~ 1
-  Pos2 ~ 1
-  Pos3 ~ c(0,0)*1
-  Neg1 ~ c(0,0)*1
-  Neg2 ~ 1
-  Neg3 ~ 1
+  #   - Constrain 3rd intercept in POS to 0 in both groups
+  #   - Constrain 1st intercept in NEG to 0 in both groups
+  pos1 ~ 1
+  pos2 ~ 1
+  pos3 ~ c(0,0)*1
+  neg1 ~ c(0,0)*1
+  neg2 ~ 1
+  neg3 ~ 1
 
   # Latent means 
-  Pos ~ 1
-  Neg ~ 1
+  POS ~ 1
+  NEG ~ 1
 "
 ```
 
@@ -314,14 +317,13 @@ the `sem()` function forces corresponding loadings and intercepts to be
 equal across the groups.
 
 ``` r
+## Compare with "Method 2c" in Table 2
 m2c_fit <- sem(m2c, sample.cov = cov, sample.nobs = n, 
-   sample.mean = means, group.equal = c("loadings", "intercepts"))
+   sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m2c_fit, standardized = TRUE, fit.measures = TRUE)
 ```
 
-Compare the output with “Method 2c” in Table 2 (pp. 64-75).
-
-<br />
+Compare the output with “Method 2c” in Table 2 (pp. 64-65). <br />
 
 #### lavaan default
 
@@ -335,12 +337,12 @@ means to zero (in the first group only). In the `summary()` function set
 ``` r
 m2c_default <- "
   # Measurement Model
-  Pos =~ Pos1 + Pos2 + Pos3
-  Neg =~ Neg1 + Neg2 + Neg3
+  POS =~ pos1 + pos2 + pos3
+  NEG =~ neg1 + neg2 + neg3
 "
 
 m2c_default_fit <- sem(m2c_default, sample.cov = cov, sample.nobs = n, 
-   sample.mean = means, group.equal = c("loadings", "intercepts"))
+   sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m2c_default_fit, remove.unused = FALSE, 
    standardized = TRUE, fit.measures = TRUE)
 ```
@@ -363,7 +365,7 @@ using the `==` operator - see the “Constraints” section in the model
 statement.
 
 Same points as before: **lavaan** will add indicator variances
-automatically; Constraints concerning strong metric invariance will be
+automatically; constraints concerning strong metric invariance will be
 attended to in the next step; and the default marker-variable method has
 to be explicitely disabled.
 
@@ -372,26 +374,26 @@ m3 <- "
   # Measurement Model
   #   - Free the first loading so it can be estimated
   #   - Label the loadings so they can be used in the constraints
-  Pos =~ NA*p1*Pos1 + p2*Pos2 + p3*Pos3
-  Neg =~ NA*n1*Neg1 + n2*Neg2 + n3*Neg3
+  POS =~ NA*p1*pos1 + p2*pos2 + p3*pos3
+  NEG =~ NA*n1*neg1 + n2*neg2 + n3*neg3
 
   # Latent variances and covariance
-  Pos ~~ Pos
-  Neg ~~ Neg
-  Pos ~~ Neg
+  POS ~~ POS
+  NEG ~~ NEG
+  POS ~~ NEG
 
   # Indicator intercepts
   #   - Label the intercepts so they can be used in the constraints
-  Pos1 ~ ip1*1
-  Pos2 ~ ip2*1
-  Pos3 ~ ip3*1
-  Neg1 ~ in1*1
-  Neg2 ~ in2*1
-  Neg3 ~ in3*1
+  pos1 ~ ip1*1
+  pos2 ~ ip2*1
+  pos3 ~ ip3*1
+  neg1 ~ in1*1
+  neg2 ~ in2*1
+  neg3 ~ in3*1
 
   # Latent means
-  Pos ~ 1
-  Neg ~ 1
+  POS ~ 1
+  NEG ~ 1
 
   # Constraints
   # For each construct: 
@@ -414,12 +416,13 @@ the `sem()` function forces corresponding loadings and intercepts to be
 equal across the groups.
 
 ``` r
+## Compare with "Method 3" in Table 2
 m3_fit <- sem(m3, sample.cov = cov, sample.nobs = n, 
-   sample.mean = means, group.equal = c("loadings", "intercepts"))
+   sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m3_fit, standardized = TRUE, fit.measures = TRUE)
 ```
 
-Compare the output with “Method 3” in Table 2 (pp. 64-75).
+Compare the output with “Method 3” in Table 2 (pp. 64-65).
 
 <br />
 
@@ -431,12 +434,12 @@ Compare the output with “Method 3” in Table 2 (pp. 64-75).
 ``` r
 m3_short <- "
   # Measurement Model
-  Pos =~ Pos1 + Pos2 + Pos3
-  Neg =~ Neg1 + Neg2 + Neg3
+  POS =~ pos1 + pos2 + pos3
+  NEG =~ neg1 + neg2 + neg3
 "
 
 m3_short_fit <- sem(m3_short, sample.cov = cov, sample.nobs = n, 
-   sample.mean = means, effect.coding = TRUE, 
+   sample.mean = mean, effect.coding = TRUE, 
    group.equal = c("loadings", "intercepts"))
 summary(m3_short_fit, standardized = TRUE, fit.measures = TRUE)
 ```
@@ -466,13 +469,16 @@ names(models) = c(
    "Method 3", "Method 3 Shortcut")
 
 # Select the fit measures
-measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea") 
+measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea", 
+   "rmsea.ci.lower", "rmsea.ci.upper") 
 
 # Get a table of fit measures  
 do.call(rbind, lapply(models, GetFit, measures))
 ```
 
 Compare the fit measures with those presented on page 66.
+
+<br />
 
 The R script with minimal commenting is available in
 [Little_Scaling.r](Little_Scaling.r).

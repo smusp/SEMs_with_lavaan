@@ -17,8 +17,8 @@ Guilford Press.
 
 <br />
 
-This example shows the OLS regression approach and the SEM approach to
-Part 4: One-way MANOVA. Results are reported in Table 21.5 (p. 399).
+This example shows the SEM approach to Part 4: One-way MANOVA. Results
+are reported in Table 21.5 (p. 399).
 
 The data file (`satisfactionII.csv`) is in the `data` folder.
 
@@ -28,8 +28,10 @@ The data file (`satisfactionII.csv`) is in the `data` folder.
 
 ``` r
 library(lavaan)
+library(here)             # Relative paths
 
-df <- read.csv("./data/satisfactionII.csv", header = TRUE)
+path = here::here("Green_2023", "data", "satisfactionII.csv")
+df <- read.csv(path, header = TRUE)
 head(df)
 ```
 
@@ -37,163 +39,12 @@ The variables used in this example are:
 
 - x - Coping Strategy (“a” - no strategy; “b” - discussion; “c” -
   exercise)
-- x1, x2, x3 - dummy coded variables (1, 0) for “Coping Strategy”
 - y1, y2, y3, y4 - multiple dependent variables (life-satisfaction
   scores)
 
 <br />
 
-### OLS regression using cell-means formulation
-
-#### The models
-
-Model statements for the “More Constrained” and “Less Contrained” models
-are shown below. The multiple dependent variables (y1, y2, y3, y4) are
-combined into one object Y. The “More Constrained” and “Less
-Constrained” statement are then similar to the statements for the
-one-way ANOVA. In the “More Constrained” model, the means are
-constrained to equality; in the “Less Constrained” model, the means are
-allowed to differ.
-
-``` r
-Y <- with(df, cbind(y1, y2, y3, y4))
-models <- list(
-   "More Constrained" = "Y ~ 1",
-   "Less Constrained" = "Y ~ -1 + x"
-)
-```
-
-<br />
-
-#### Fit the models and get the results
-
-Fit the models and get the means.
-
-``` r
-fit <- lapply(models, lm, data = df)
-
-lapply(fit, coef)
-```
-
-Compare with the means in Table 21.5. There could be another typo in
-Table 21.5: The mean for third variable in the third groups should be
-42.08 (instead of 33.68).
-
-Table 21.5 gives the error SSCP matrices for the two models. The SSCP
-matrix is used in the calculation of Wilks $\Lambda$, which in turn is
-used in the caculation of F (along with the appropriate degrees of
-freedom). All of this can be skipped using the `anova()` function
-(provided the default test statistic, Pillai’s trace, is changed to
-Wilks’ $\Lambda$).
-
-``` r
-anova(fit[[2]], fit[[1]], test = "Wilks")
-# or using Reduce
-Reduce(function(mc, lc) anova(lc, mc, test = "Wilks"), x = fit)
-```
-
-Compare with the F test in Table 21.5.
-
-For the sake of completeness, the quantities shown in Table 21.5 are
-easily calculated. To calculate error SSCP, get the matrix of residuals,
-then pre-multiply the matrix by its transpose. The formulas for Wilks’
-$\Lambda$ and $\mathsf{F}$ are given in Table 21.5. The formulas for the
-degrees of freedom are not given, but are easily located in standard
-texts. Degrees of freedom depend on:
-
-- $k$ - number of variables - 4
-- $m$ - number of groups - 3
-- $n$ - sample size - 200
-
-The formulas for numerator ($\mathrm{df_1}$) and denominator
-($\mathrm{df_2}$) degrees of freedom are:
-
-$$
-\begin{align} 
-\mathrm{df_1} &= k(m - 1) \\[.5em]
-\mathrm{df_2} &= a(b - c)
-\end{align}
-$$
-
-where:
-
-$$
-\begin{align}
-a &= n - m - \frac{k - m + 2}{2} \\[.5em]
-b &= \sqrt{\frac{k^2(m-1)^2 - 4}{k^2 + (m - 1)^2 - 5}}  \\[.5em]
-c &= \frac{k(m - 1) - 2}{2}
-\end{align}
-$$
-
-<br />
-
-``` r
-# Get error SSCP
-E <- fit |>
-   lapply(residuals) |>
-   lapply(function(x) t(x) %*% x)
-E
-
-# Get Wilks' lambda
-lambda <- Reduce(function(mc, lc) det(lc) / det(mc), x = E); lambda
-
-# Get df1, df2, F and p
-k <- 4
-m <- 3
-n <- 200
-
-# A function to do the calculations
-pF <- function(k, m, n) {
-   df1 = k*(m - 1)
-
-   a = n - m - (k - m + 2)/2
-   b = sqrt( (k^2 * (m - 1)^2 - 4) / (k^2 + (m - 1)^2 - 5))
-   c = (k * (m - 1) - 2) / 2
-
-   df2 = a * b - c
-
-   F = ((1 - sqrt(lambda))/df1) / (sqrt(lambda)/df2)
-   p = pf(F, df1, df2, lower.tail = FALSE)
-   tab = round(data.frame("lambda" = lambda, "F" = F, "df1" = df1, "df2" = df2, "p" = p), 3)
-   return(tab)
-}
-
-pF(k, m, n)
-```
-
-<br />
-
-### OLS Regression using dummy variables
-
-#### The models
-
-``` r
-Y <- with(df, cbind(y1, y2, y3, y4))
-models <- list(
-   "More Constrained" = "Y ~ -1 + I(x1 + x2 + x3)",
-   "Less Constrained" = "Y ~ -1 + x1 + x2 + x3"
-)
-```
-
-<br />
-
-#### Fit the model and get the results
-
-Fitting the models and getting the results proceeds as before.
-
-``` r
-fit <- lapply(models, lm, data = df)
-
-# Get the means
-lapply(fit, coef)
-
-# F test
-anova(fit[[2]], fit[[1]], test = "Wilks")
-```
-
-<br />
-
-### Structural Equation Modeling
+### Structural Equation Modeling using **lavaan**
 
 The SEM model for the one-way MANOVA is shown in Fig 21.2 (p. 400), and
 is reproduced below. The diagram shows the “Less Constrained” model. The
@@ -208,7 +59,7 @@ The model statements are shown below. The “More Constrained” model
 constrains the means to equality. The “Less Constrained” model allows
 the means to differ across the groups. In both cases the residual
 variances and covariances are constrained to equality. The variancs and
-covariances can be set up separately - see `vcov` below. Then, `vcoc` is
+covariances can be set up separately - see `vcov` below. Then, `vcov` is
 added back into each model. Saves a little typing.
 
 ``` r
@@ -254,6 +105,7 @@ models <- list(
 #### Fit the models and get the results
 
 ``` r
+# Fit the models 
 fit <- lapply(models, sem, data = df, group = "x")
 
 # Get model summaries
@@ -355,7 +207,7 @@ lapply(fit, summary)
 Reduce(anova, fit)
 ```
 
-Compare with the $\upchi$<sup>2</sup> test on p. 401.
+Compare with the $\upchi$<sup>2</sup> test on page 401.
 
 <br />
 

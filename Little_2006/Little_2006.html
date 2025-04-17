@@ -135,14 +135,14 @@ h1, h2, h3, h4 {
 </div>
 <p>Little, T., Slegers, D., &amp; Card, N. (2006). A non-arbitrary method of identifying and scaling latent variables in SEM and MACS models. <em>Structural Equation Modeling</em>, <em>13</em>(1), 59-72.</p>
 <p><br></p>
-<p>This example shows how to set constraints for different methods of identification and scaling in latent variable models. Though invariance is not a topic of discussion, the example shows how to set constraints for strong metric invariance. Also, the example shows how to use summary data in a two-group model.</p>
-<p>LS&amp;C discuss methods for identification and scaling of latent variables in SEMs. These methods are:</p>
+<p>This example shows how to set constraints for different methods of identification and scaling in latent variable models, and, though invariance is not a topic of discussion, the example shows how to set constraints for strong metric invariance in a two-group model. Also, the example shows how to use summary data (correlations, standard deviations, and means) in a two-group model.</p>
+<p>The methods of identification and scaling discussed by LS&amp;C are:</p>
 <ul>
-<li>Reference Group Method - For each construct, the latent variance is fixed to one and the latent mean is fixed to zero. With strong metric invariance (invariance of loadings and intercepts), latent means and variances are freely estimated in subsequent groups.</li>
+<li>Reference Group Method - For each construct, the latent variance is fixed to one and the latent mean is fixed to zero in the first group. With strong metric invariance (invariance of loadings and intercepts), latent means and variances are freely estimated in subsequent groups.</li>
 <li>Marker Variable Method - For each construct, the loading of one indicator is fixed to one, and the intercept for the chosen indicator is fixed to zero. With strong metric invariance, these constraints apply in both groups.</li>
-<li>Effects Coding method - For each construct, constrain loadings to add to the number of indicators, and constrain indicator intercepts to add to zero. With strong metric invariance, these constraints apply in both groups.</li>
+<li>Effects Coding Method - For each construct, constrain loadings to add to the number of indicators, and constrain indicator intercepts to add to zero. With strong metric invariance, these constraints apply in both groups.</li>
 </ul>
-<p>They present a two-group (7th grade and 8th grade), two-construct (positive affect and negative affact) model. Each construct is assessed with three manifest indicators. The SEM diagram below shows the model as it might apply to the whole sample. This one-group model is presented to explain the symbols used in the paper, and to show how they apply in the model diagrams. First, POS and NEG are the constructs; and pos<sub>1</sub>, …, neg<sub>3</sub> are the manifest indicators. The solid lines represent the covariance structure, and the gray lines represent the mean structure (ie, the means and intercepts).</p>
+<p>LS&amp;C present a two-group (7th grade and 8th grade), two-construct (positive affect and negative affact) model. Each construct is assessed with three manifest indicators. The SEM diagram below shows the model as it might apply to the whole sample (i.e., ignoring the groups). This one-group model is presented to explain the symbols used in the paper, and to show how they apply in the model diagrams. First, POS and NEG are the constructs; and pos<sub>1</sub>, …, neg<sub>3</sub> are the manifest indicators. The solid lines represent the covariance structure, and the gray lines represent the mean structure (ie, the means and intercepts).</p>
 <p>The symbols are:</p>
 <ul>
 <li><span class="math inline">\(\uplambda\)</span> - loadings</li>
@@ -159,7 +159,7 @@ h1, h2, h3, h4 {
 <p><br></p>
 <section id="load-relevant-packages" class="level4">
 <h4 class="anchored" data-anchor-id="load-relevant-packages">Load relevant packages</h4>
-<p>First, load the <strong>lavaan</strong> package.</p>
+<p>Load the <strong>lavaan</strong> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -178,7 +178,7 @@ h1, h2, h3, h4 {
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fl">0.06112</span>, <span class="sc">-</span><span class="fl">0.06105</span>, <span class="sc">-</span><span class="fl">0.14060</span>,  <span class="fl">0.78501</span>,  <span class="fl">1.00000</span>,</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fl">0.02222</span>, <span class="sc">-</span><span class="fl">0.05180</span>, <span class="sc">-</span><span class="fl">0.10250</span>,  <span class="fl">0.81616</span>,  <span class="fl">0.81076</span>,  <span class="fl">1.00000</span>)</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>means7 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.13552</span>, <span class="fl">2.99061</span>, <span class="fl">3.06945</span>, <span class="fl">1.70069</span>, <span class="fl">1.52705</span>, <span class="fl">1.54483</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>mean7 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.13552</span>, <span class="fl">2.99061</span>, <span class="fl">3.06945</span>, <span class="fl">1.70069</span>, <span class="fl">1.52705</span>, <span class="fl">1.54483</span>)</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>sd7 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.66770</span>, <span class="fl">0.68506</span>, <span class="fl">0.70672</span>, <span class="fl">0.71418</span>, <span class="fl">0.66320</span>, <span class="fl">0.65276</span>)</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>n7 <span class="ot">&lt;-</span> <span class="dv">380</span></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
@@ -191,23 +191,24 @@ h1, h2, h3, h4 {
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fl">0.28875</span>, <span class="sc">-</span><span class="fl">0.24951</span>, <span class="sc">-</span><span class="fl">0.33769</span>,  <span class="fl">0.78418</span>,  <span class="fl">1.00000</span>,</span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fl">0.29342</span>, <span class="sc">-</span><span class="fl">0.21022</span>, <span class="sc">-</span><span class="fl">0.30553</span>,  <span class="fl">0.79952</span>,  <span class="fl">0.83156</span>,  <span class="fl">1.00000</span>)</span>
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>means8 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.07338</span>, <span class="fl">2.84716</span>, <span class="fl">2.97882</span>, <span class="fl">1.71700</span>, <span class="fl">1.57955</span>, <span class="fl">1.55001</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>mean8 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.07338</span>, <span class="fl">2.84716</span>, <span class="fl">2.97882</span>, <span class="fl">1.71700</span>, <span class="fl">1.57955</span>, <span class="fl">1.55001</span>)</span>
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>sd8 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.70299</span>, <span class="fl">0.71780</span>, <span class="fl">0.76208</span>, <span class="fl">0.65011</span>, <span class="fl">0.60168</span>, <span class="fl">0.61420</span>)</span>
 <span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>n8 <span class="ot">&lt;-</span> <span class="dv">379</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Variable names are also contained in the LISREL script, but I shorten the names a little.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>names <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Pos1"</span>, <span class="st">"Pos2"</span>, <span class="st">"Pos3"</span>, <span class="st">"Neg1"</span>, <span class="st">"Neg2"</span>, <span class="st">"Neg3"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>names <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"pos1"</span>, <span class="st">"pos2"</span>, <span class="st">"pos3"</span>, <span class="st">"neg1"</span>, <span class="st">"neg2"</span>, <span class="st">"neg3"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Combine the (co)variances, means, and sample sizes into lists.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cor <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="st">"Grade 7"</span> <span class="ot">=</span> cor7, <span class="st">"Grade 8"</span> <span class="ot">=</span> cor8)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">list</span>(means7, means8)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">list</span>(n7, n8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sd <span class="ot">&lt;-</span> <span class="fu">list</span>(sd7, sd8)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>mean <span class="ot">&lt;-</span> <span class="fu">list</span>(mean7, mean8)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">list</span>(n7, n8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Use the <code>getCov()</code> function from the <strong>lavaan</strong> package to obtain the full variance/covariance matrix for each group (using the <code>lapply()</code> function to return the two (co)variance matrices in a list).</p>
+<p>Use the <code>getCov()</code> function from the <strong>lavaan</strong> package to obtain the full (co)variance matrix for each group (using the <code>Map()</code> function to apply the <code>getCov()</code> function to the lists, and to return the two (co)variance matrices in a list).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cov <span class="ot">&lt;-</span> <span class="fu">lapply</span>(cor, getCov, <span class="at">names =</span> names)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cov <span class="ot">=</span> <span class="fu">Map</span>(getCov, <span class="at">x =</span> cor, <span class="at">sds =</span> sd, <span class="at">names =</span> <span class="fu">list</span>(names, names))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 </section>
@@ -215,42 +216,42 @@ h1, h2, h3, h4 {
 <h3 class="anchored" data-anchor-id="reference-group-method">Reference-Group Method</h3>
 <section id="the-model" class="level4">
 <h4 class="anchored" data-anchor-id="the-model">The model</h4>
-<p>The model with the constraints is shown below. Some points to note. There are two groups: Grade 7 and Grade 8. The corresponding loadings (<span class="math inline">\(\uplambda\)</span>) and intercepts (<span class="math inline">\(\uptau\)</span>) are equal across the groups. The latent variances (<span class="math inline">\(\upphi\)</span><sub>7,11</sub> and <span class="math inline">\(\upphi\)</span><sub>7,22</sub>) and latent means (<span class="math inline">\(\upkappa\)</span>) are constrained to 1 and 0 respectively in the first group only. The residual variances (<span class="math inline">\(\uptheta\)</span>) are freely estimated in each group, and the latent covariance is freely estimated in each group.</p>
+<p>The model with the constraints is shown below. Some points to note. There are two groups: Grade 7 and Grade 8. The corresponding loadings (<span class="math inline">\(\uplambda\)</span>) and intercepts (<span class="math inline">\(\uptau\)</span>) are equal across the groups. The latent variances (<span class="math inline">\(\upphi\)</span><sub>7,11</sub> and <span class="math inline">\(\upphi\)</span><sub>7,22</sub>) and latent means (<span class="math inline">\(\upkappa\)</span>) are constrained to 1 and 0 respectively in the first group only. The residual variances (<span class="math inline">\(\uptheta\)</span>) are freely estimated in each group, and the latent covariances (<span class="math inline">\(\upphi\)</span><sub>7,12</sub> and <span class="math inline">\(\upphi\)</span><sub>8,12</sub>) are freely estimated.</p>
 <div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/Scaling1.svg" class="img-fluid quarto-figure quarto-figure-left figure-img"></p>
 </figure>
 </div>
 <p>When constructing the model statment, there are some points to be considered.</p>
-<p>First, the constraints applying to latent means and variances apply in the first group only. In the model statement, pre-multiply the mean or the variance by a vector containing the constraints; like this: <code>c(1,NA)</code> - the <code>1</code> forces the parameter in the first group to be constrained to 1; the <code>NA</code> forces the parameter in the second group to be estimated.</p>
+<p>First, the constraints applied to latent means and variances apply in the first group only. In the model statement, pre-multiply the mean or the variance by a vector containing the constraints; like this: <code>c(1,NA)</code> - the <code>1</code> forces the parameter in the first group to be constrained to 1; the <code>NA</code> forces the parameter in the second group to be estimated.</p>
 <p>Second, LS&amp;C state that the data display strong metric invariance (p.&nbsp;63); that is, the corresponding loadings and intercepts are equal across the groups. There is no need to be concerned with these constraints when constructing the model statement - they will be set up in the next step. (Strictly, the intercepts do not even need to be mentioned in the model statement - <strong>lavaan</strong> will add them automatically when <code>sample.means</code> are in the model. But they are left in the statement below because intercepts are implicated in constraints in models to follow.)</p>
-<p>Third, strong metric invariance places no constraints on indicator variances - they are freely estimated in each group. But again, there is not need to be concerned with or even to mention them when constructing the model statement - <strong>lavaan</strong> will add them automatically.</p>
+<p>Third, strong metric invariance places no constraints on indicator variances - they are freely estimated in each group. But again, there is no need to be concerned with or even to mention them when constructing the model statement - <strong>lavaan</strong> will add them automatically.</p>
 <p>Finally, <strong>lavaan</strong>’s default marker-variable method has to be explicitely disabled by pre-multiplying the first indicator for both constructs by <code>NA</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="st">"</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # Measurement Model</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Free the first loading so it can be estimated</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos =~ NA*Pos1 + Pos2 + Pos3</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg =~ NA*Neg1 + Neg2 + Neg3</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="st">  POS =~ NA*pos1 + pos2 + pos3</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">  NEG =~ NA*neg1 + neg2 + neg3npp</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="st">  # Latent variances and covariance</span></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Constrain latent variances to 1 in first group</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos ~~ c(1,NA)*Pos</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg ~~ c(1,NA)*Neg</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos ~~ Neg</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="st">  POS ~~ c(1,NA)*POS</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="st">  NEG ~~ c(1,NA)*NEG</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="st">  POS ~~ NEG</span></span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="st">  # Indicator intercepts </span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos1 ~ 1</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos2 ~ 1</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos3 ~ 1</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg1 ~ 1</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg2 ~ 1</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg3 ~ 1</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="st">  pos1 ~ 1</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="st">  pos2 ~ 1</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="st">  pos3 ~ 1</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="st">  neg1 ~ 1</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="st">  neg2 ~ 1</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="st">  neg3 ~ 1</span></span>
 <span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="st">  # Latent means</span></span>
 <span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Constrain latent means to 0 in first group</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos ~ c(0,NA)*1</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg ~ c(0,NA)*1</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="st">  POS ~ c(0,NA)*1</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="st">  NEG ~ c(0,NA)*1</span></span>
 <span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
@@ -260,10 +261,10 @@ h1, h2, h3, h4 {
 <p>To deal with strong metric invariance, set <code>group.equal = c("loadings", "intercepts")</code> in the <code>sem()</code> function.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>m1_fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(m1, <span class="at">sample.cov =</span> cov, <span class="at">sample.nobs =</span> n, </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">sample.mean =</span> means, <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">sample.mean =</span> mean, <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1_fit, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Compare the output with “Method 1” in Table 2 (pp.&nbsp;64-75).</p>
+<p>Compare the output with “Method 1” in Table 2 (pp.&nbsp;64-65).</p>
 <p><br></p>
 </section>
 <section id="a-shortcut" class="level4">
@@ -272,12 +273,12 @@ h1, h2, h3, h4 {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>m1_short <span class="ot">&lt;-</span> <span class="st">"</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # Measurement Model</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos =~ Pos1 + Pos2 + Pos3</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg =~ Neg1 + Neg2 + Neg3</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="st">  POS =~ pos1 + pos2 + pos3</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="st">  NEG =~ neg1 + neg2 + neg3</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>m1_short_fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(m1_short, <span class="at">sample.cov =</span> cov, <span class="at">sample.nobs =</span> n, </span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>   <span class="at">sample.mean =</span> means, <span class="at">std.lv =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>   <span class="at">sample.mean =</span> mean, <span class="at">std.lv =</span> <span class="cn">TRUE</span>, </span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>   <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))</span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1_short_fit, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -299,7 +300,7 @@ h1, h2, h3, h4 {
 <p><img src="images/Scaling2.svg" class="img-fluid quarto-figure quarto-figure-left figure-img"></p>
 </figure>
 </div>
-<p>Results for three versions of Method 2 are presented in Table 2 - in each case, constrains are applied to different indicator variables. Here, only the third is considered - constraints apply to loadings and intercepts for the third indicator in the POS construct, and to the first indicator in the NEG construct.</p>
+<p>Results for three versions of Method 2 are presented in Table 2 - in each case, constraints are applied to different indicator variables. Here, only the third is considered - constraints apply to loadings and intercepts for the third indicator in the POS construct, and to the first indicator in the NEG construct.</p>
 <p>Some points to be considered.</p>
 <p>First, with strong metric invariance in place, the constraints applying to intercepts and loadings apply in both groups. In the model statement, pre-multiply the loadings by <code>c(1,1)</code>, and the intercepts by <code>c(0,0)</code>.</p>
 <p>Second, again, the point concerning strong metric invariance - it will be set up in the next step.</p>
@@ -308,30 +309,30 @@ h1, h2, h3, h4 {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>m2c <span class="ot">&lt;-</span> <span class="st">"</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # Measurement Model</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Free the first loading in Pos so it can be estimated</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Constrain 3rd indicator in Pos to 1 in both groups</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Constrain 1st indicator in Neg to 1 in both groups</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos =~ NA*Pos1 + Pos2 + c(1,1)*Pos3</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg =~ c(1,1)*Neg1 + Neg2 + Neg3</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Free the first loading in POS so it can be estimated</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Constrain 3rd loading in POS to 1 in both groups</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Constrain 1st loading in NEG to 1 in both groups</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="st">  POS =~ NA*pos1 + pos2 + c(1,1)*pos3</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="st">  NEG =~ c(1,1)*neg1 + neg2 + neg3</span></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="st">  # Latent variances and covariance</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos ~~ Pos</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg ~~ Neg</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos ~~ Neg</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="st">  POS ~~ POS</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="st">  NEG ~~ NEG</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="st">  POS ~~ NEG</span></span>
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="st">  # Indicator intercepts </span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Constrain 3rd residual variance in Pos to 0 in both groups</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Constrain 1st residual variance in Neg to 0 in both groups</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos1 ~ 1</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos2 ~ 1</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos3 ~ c(0,0)*1</span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg1 ~ c(0,0)*1</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg2 ~ 1</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg3 ~ 1</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Constrain 3rd intercept in POS to 0 in both groups</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Constrain 1st intercept in NEG to 0 in both groups</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="st">  pos1 ~ 1</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="st">  pos2 ~ 1</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="st">  pos3 ~ c(0,0)*1</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="st">  neg1 ~ c(0,0)*1</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="st">  neg2 ~ 1</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="st">  neg3 ~ 1</span></span>
 <span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="st">  # Latent means </span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos ~ 1</span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg ~ 1</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="st">  POS ~ 1</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="st">  NEG ~ 1</span></span>
 <span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
@@ -340,12 +341,12 @@ h1, h2, h3, h4 {
 <h4 class="anchored" data-anchor-id="fit-the-model-and-get-the-results-1">Fit the model and get the results</h4>
 <p>As before, the <code>group.equal = c("loadings", "intercepts")</code> statement in the <code>sem()</code> function forces corresponding loadings and intercepts to be equal across the groups.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>m2c_fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(m2c, <span class="at">sample.cov =</span> cov, <span class="at">sample.nobs =</span> n, </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">sample.mean =</span> means, <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2c_fit, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Compare with "Method 2c" in Table 2</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>m2c_fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(m2c, <span class="at">sample.cov =</span> cov, <span class="at">sample.nobs =</span> n, </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">sample.mean =</span> mean, <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2c_fit, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Compare the output with “Method 2c” in Table 2 (pp.&nbsp;64-75).</p>
-<p><br></p>
+<p>Compare the output with “Method 2c” in Table 2 (pp.&nbsp;64-65). <br></p>
 </section>
 <section id="lavaan-default" class="level4">
 <h4 class="anchored" data-anchor-id="lavaan-default">lavaan default</h4>
@@ -353,12 +354,12 @@ h1, h2, h3, h4 {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>m2c_default <span class="ot">&lt;-</span> <span class="st">"</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # Measurement Model</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos =~ Pos1 + Pos2 + Pos3</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg =~ Neg1 + Neg2 + Neg3</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="st">  POS =~ pos1 + pos2 + pos3</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="st">  NEG =~ neg1 + neg2 + neg3</span></span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>m2c_default_fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(m2c_default, <span class="at">sample.cov =</span> cov, <span class="at">sample.nobs =</span> n, </span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>   <span class="at">sample.mean =</span> means, <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>   <span class="at">sample.mean =</span> mean, <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))</span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2c_default_fit, <span class="at">remove.unused =</span> <span class="cn">FALSE</span>, </span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>   <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -376,32 +377,32 @@ h1, h2, h3, h4 {
 </figure>
 </div>
 <p>In the model statement, the loadings and the intercepts are labelled (see the “Measurement Model” and the “Indicator intercepts” sections in the model statement) so that the labels can be used to impose the constraints. Constraints are imposed on the loadings and the intercepts using the <code>==</code> operator - see the “Constraints” section in the model statement.</p>
-<p>Same points as before: <strong>lavaan</strong> will add indicator variances automatically; Constraints concerning strong metric invariance will be attended to in the next step; and the default marker-variable method has to be explicitely disabled.</p>
+<p>Same points as before: <strong>lavaan</strong> will add indicator variances automatically; constraints concerning strong metric invariance will be attended to in the next step; and the default marker-variable method has to be explicitely disabled.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="st">"</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # Measurement Model</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Free the first loading so it can be estimated</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Label the loadings so they can be used in the constraints</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos =~ NA*p1*Pos1 + p2*Pos2 + p3*Pos3</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg =~ NA*n1*Neg1 + n2*Neg2 + n3*Neg3</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="st">  POS =~ NA*p1*pos1 + p2*pos2 + p3*pos3</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="st">  NEG =~ NA*n1*neg1 + n2*neg2 + n3*neg3</span></span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="st">  # Latent variances and covariance</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos ~~ Pos</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg ~~ Neg</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos ~~ Neg</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="st">  POS ~~ POS</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="st">  NEG ~~ NEG</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="st">  POS ~~ NEG</span></span>
 <span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="st">  # Indicator intercepts</span></span>
 <span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="st">  #   - Label the intercepts so they can be used in the constraints</span></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos1 ~ ip1*1</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos2 ~ ip2*1</span></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos3 ~ ip3*1</span></span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg1 ~ in1*1</span></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg2 ~ in2*1</span></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg3 ~ in3*1</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="st">  pos1 ~ ip1*1</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="st">  pos2 ~ ip2*1</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="st">  pos3 ~ ip3*1</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="st">  neg1 ~ in1*1</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="st">  neg2 ~ in2*1</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="st">  neg3 ~ in3*1</span></span>
 <span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="st">  # Latent means</span></span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos ~ 1</span></span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg ~ 1</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="st">  POS ~ 1</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="st">  NEG ~ 1</span></span>
 <span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="st">  # Constraints</span></span>
 <span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="st">  # For each construct: </span></span>
@@ -420,11 +421,12 @@ h1, h2, h3, h4 {
 <h4 class="anchored" data-anchor-id="fit-the-model-and-get-the-summary">Fit the model and get the summary</h4>
 <p>As before, the <code>group.equal = c("loadings", "intercepts")</code> statement in the <code>sem()</code> function forces corresponding loadings and intercepts to be equal across the groups.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>m3_fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(m3, <span class="at">sample.cov =</span> cov, <span class="at">sample.nobs =</span> n, </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">sample.mean =</span> means, <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3_fit, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Compare with "Method 3" in Table 2</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>m3_fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(m3, <span class="at">sample.cov =</span> cov, <span class="at">sample.nobs =</span> n, </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">sample.mean =</span> mean, <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3_fit, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Compare the output with “Method 3” in Table 2 (pp.&nbsp;64-75).</p>
+<p>Compare the output with “Method 3” in Table 2 (pp.&nbsp;64-65).</p>
 <p><br></p>
 </section>
 <section id="a-shortcut-1" class="level4">
@@ -433,12 +435,12 @@ h1, h2, h3, h4 {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>m3_short <span class="ot">&lt;-</span> <span class="st">"</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # Measurement Model</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="st">  Pos =~ Pos1 + Pos2 + Pos3</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="st">  Neg =~ Neg1 + Neg2 + Neg3</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="st">  POS =~ pos1 + pos2 + pos3</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="st">  NEG =~ neg1 + neg2 + neg3</span></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>m3_short_fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(m3_short, <span class="at">sample.cov =</span> cov, <span class="at">sample.nobs =</span> n, </span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>   <span class="at">sample.mean =</span> means, <span class="at">effect.coding =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>   <span class="at">sample.mean =</span> mean, <span class="at">effect.coding =</span> <span class="cn">TRUE</span>, </span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>   <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))</span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3_short_fit, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -465,12 +467,14 @@ h1, h2, h3, h4 {
 <span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>   <span class="st">"Method 3"</span>, <span class="st">"Method 3 Shortcut"</span>)</span>
 <span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Select the fit measures</span></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>measures <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"chisq"</span>, <span class="st">"df"</span>, <span class="st">"pvalue"</span>, <span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>) </span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Get a table of fit measures  </span></span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(models, GetFit, measures))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>measures <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"chisq"</span>, <span class="st">"df"</span>, <span class="st">"pvalue"</span>, <span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>, </span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>   <span class="st">"rmsea.ci.lower"</span>, <span class="st">"rmsea.ci.upper"</span>) </span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Get a table of fit measures  </span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(models, GetFit, measures))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Compare the fit measures with those presented on page 66.</p>
+<p><br></p>
 <p>The R script with minimal commenting is available in <a href="Little_Scaling.r">Little_Scaling.r</a>.</p>
 </section>
 

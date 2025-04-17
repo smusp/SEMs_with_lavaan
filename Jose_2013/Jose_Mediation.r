@@ -1,6 +1,7 @@
 
 
-## Jose, P. (2013). Doing Statistical Mediation and Moderation. 
+## Chapter 3 (Basic Mediation, pp. 43-92) in
+## Jose, P. (2013). Doing statistical mediation and moderation. 
 ## New York, NY: Guilford Press.
 
 
@@ -20,10 +21,10 @@ summary(dataset)
 
 ## The model from Figure 3.3
 model <- "
-  # indirect effect
+  # direct effect
   shs ~ cpr * ple
 
-  #  effects via the mediator
+  # effects via the mediator
   grat ~ a * ple
   shs ~  b * grat
 
@@ -37,7 +38,7 @@ model <- "
 
 ## Fit the model and get the summary
 fit <- sem(model, data = dataset)
-summary(fit, rsquare = TRUE, standardized = TRUE)
+summary(fit, rsquare = TRUE, standardized = TRUE)   # Check with Tables 3.2-3.5
 
 
 ## To get the intercepts

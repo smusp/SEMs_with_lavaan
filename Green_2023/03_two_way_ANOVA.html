@@ -138,29 +138,29 @@ h1, h2, h3, h4 {
   font-size: 95% !important;
 }
 </style>
-<p>Thompson, M., Lie, Y. &amp; Green, S. (2023). Flexible structural equation modeling approaches for analyzing means. In R. Hoyle (Ed.), <em>Handbook of structural equation modeling</em> (2nd ed., pp.&nbsp;385-408). New York, NY: Guilford Press. <br></p>
-<p>This example shows the OLS regression approach and the SEM approach to Part 3: Two-way ANOVA. Results are reported in Tables 21.3 and 21.4 (pp.&nbsp;395, 396).</p>
-<p>The data file (<code>satisfactionI.csv</code> in the <code>data</code> folder) needs manipulation before it can be used: the format needs to be changed from “long” to “wide”; dummy variables need to be set up for the groups, and the Gender X Coping Strategy interaction needs a grouping variable set up for the cell-means approach, and this grouping variable in turn need dummy variables (0, 1) for the dummy variable approach. These manipulations are completed in <code>ANOVA_data.r</code>.</p>
+<p>Thompson, M., Lie, Y. &amp; Green, S. (2023). Flexible structural equation modeling approaches for analyzing means. In R. Hoyle (Ed.), <em>Handbook of structural equation modeling</em> (2nd ed., pp.&nbsp;385-408). New York, NY: Guilford Press.</p>
+<p><br></p>
+<p>This example shows the SEM approach to Part 3: Two-way ANOVA. Results are reported in Tables 21.3 and 21.4 (pp.&nbsp;395, 396).</p>
+<p>The data file (<code>satisfactionI.csv</code> in the <code>data</code> folder) needs manipulation before it can be used: the format needs to be changed from “long” to “wide”; and the Gender X Coping Strategy interaction needs a grouping variable set up. These manipulations are completed in <code>ANOVA_data.r</code>.</p>
 <p><br></p>
 <section id="load-relevant-packages-and-get-the-data" class="level4">
 <h4 class="anchored" data-anchor-id="load-relevant-packages-and-get-the-data">Load relevant packages and get the data</h4>
 <p>Load the relevant packages, and run <code>ANOVA_data.r</code> to get the data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(restriktor)   <span class="co"># to restrict means</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)         <span class="co"># Relative paths</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DescTools)    <span class="co"># Cramer's V</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./data/ANOVA_data.r"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>path <span class="ot">=</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Green_2023"</span>, <span class="st">"data"</span>, <span class="st">"ANOVA_data.r"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(path)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The variables used in this example are:</p>
 <ul>
 <li>x - Coping Strategy (“a” - no strategy; “b” - discussion; “c” - exercise)</li>
 <li>g - Gender</li>
 <li>y - dependent variable (“after” self-satisfaction scores)</li>
-<li>x1, x2, x3 - dummy coded variables (1, 0) for “Coping Strategy”</li>
 <li>sg - Gender X Coping Strategy interaction</li>
-<li>af, bf, cf, … cm - dummy coding for interaction</li>
 </ul>
 <p><br></p>
 </section>
@@ -194,8 +194,8 @@ h1, h2, h3, h4 {
 <p>Table 21.3 (p.&nbsp;395) gives the cell means and frequecies, and the weighted and unweighted marginal means.</p>
 <p>Get the cell means and frequencies.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">tapply</span>(df<span class="sc">$</span>y, <span class="fu">list</span>(df<span class="sc">$</span>g, df<span class="sc">$</span>x), mean); means     <span class="co"># cell means</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>freq <span class="ot">&lt;-</span> <span class="fu">table</span>(df<span class="sc">$</span>g, df<span class="sc">$</span>x); freq                          <span class="co"># cell frequencies</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">tapply</span>(df<span class="sc">$</span>y, <span class="fu">list</span>(df<span class="sc">$</span>g, df<span class="sc">$</span>x), mean); means     <span class="co"># Cell means</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>freq <span class="ot">&lt;-</span> <span class="fu">table</span>(df<span class="sc">$</span>g, df<span class="sc">$</span>x); freq                          <span class="co"># Cell frequencies</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Get the unweighted and weighted marginal means.</p>
 <div class="cell">
@@ -209,191 +209,87 @@ h1, h2, h3, h4 {
 </div>
 <p><br></p>
 </section>
-<section id="ols-regression" class="level3">
-<h3 class="anchored" data-anchor-id="ols-regression">OLS regression</h3>
-<p>The <strong>restriktor</strong> package allows complex and multiple contraints to be imposed.</p>
-<p>The “Less Constrained” model allows the six means to differ. “More Constrained” models constrain the means in such a way that, when the fit of a “More Constrained” model is compared to the fit of the “Less Constrained” model, it is possible to test for the “Coping Strategy” main effect, or for the “Gender” main effect, or for the Gender X Coping Strategy interaction. These effects can be tested for unweighted means or for weighted means. The models can be set up using the cell-means formulation or using dummy variables. Table 21.4 (p.&nbsp;396) shows the results for the test of the “Coping Strategy” main effect for weighted means. In what follows I show the tests for both main effects and the interaction for weighted and unweighted means.</p>
-<p>The “Less Constrained” model is set up using the <code>lm()</code> function as usual. The “More Constrained” models are set up as constraints to be passed to the <code>iht()</code> function of the <strong>restriktor</strong> package. The <code>iht()</code> function takes as input the “Less Contrained” model and the constraints.</p>
-<p><br></p>
-<section id="cell-means-formulation---unweighted-means" class="level4">
-<h4 class="anchored" data-anchor-id="cell-means-formulation---unweighted-means">Cell-means formulation - unweighted means</h4>
-<p>The “Less Constrained” model</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>lc <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> sg, df)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>To test the Gender main effect (applied to unweighted means), the restriction constrains the mean for males to equal the mean for females. But there are three means for males and three means for females. Simply constrain the sum of the three means for males to equal the sum of the three means for females.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"(sgaf + sgbf + sgcf) == (sgam + sgbm + sgcm)"</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">iht</span>(lc, <span class="at">constraints =</span> constraints, <span class="at">type =</span> <span class="st">"A"</span>, <span class="at">test =</span> <span class="st">"F"</span>); test</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>df; test<span class="sc">$</span>df.residual</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Similarly, to test for the “Coping Strategy” main effect, restrict the mean for “a” strategy to equal the mean for “b” strategy to equal the mean for “c” strategy. That is, constrain the sum of the two “a” means to equal the sum of the two “b” means; and the sum of the two “b” means to equal the sum of the two “c” means.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"(sgaf + sgam) == (sgbf + sgbm)</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="st">                (sgbf + sgbm) == (sgcf + sgcm)"</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">iht</span>(lc, <span class="at">constraints =</span> constraints, <span class="at">type =</span> <span class="st">"A"</span>, <span class="at">test =</span> <span class="st">"F"</span>); test</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>df; test<span class="sc">$</span>df.residual</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><br></p>
-</section>
-<section id="cell-means-formulation---weighted-means" class="level4">
-<h4 class="anchored" data-anchor-id="cell-means-formulation---weighted-means">Cell-means formulation - weighted means</h4>
-<p>To test for the main effects applied to weighted means, the constraints are set the same way as before except this time the means are weighted in proportion to the cell frequencies.</p>
-<p>The Gender main effect applied to weighted means</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>freq                     <span class="co"># cell frequencies to construct constraints</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"(3/12*sgaf + 3/12*sgbf + 6/12*sgcf) == (6/12*sgam + 3/12*sgbm + 3/12*sgcm)"</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">iht</span>(lc, <span class="at">constraints =</span> constraints, <span class="at">type =</span> <span class="st">"A"</span>, <span class="at">test =</span> <span class="st">"F"</span>); test</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>df; test<span class="sc">$</span>df.residual</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The “Coping Strategy” main effect applied to weighted means. These results are reported in Table 21.4. Compare the estimates (“restricted” and “unrestricted”) and the F-test results in the output with the cell means and the F test in Table 21.4.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>freq                     <span class="co"># cell frequencies to construct constraints</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"(3/9*sgaf + 6/9*sgam) == (3/6*sgbf + 3/6*sgbm)</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="st">                (3/6*sgbf + 3/6*sgbm) == (6/9*sgcf + 3/9*sgcm)"</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">iht</span>(lc, <span class="at">constraints =</span> constraints, <span class="at">type =</span> <span class="st">"A"</span>, <span class="at">test =</span> <span class="st">"F"</span>); test</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>df; test<span class="sc">$</span>df.residual</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>To test for the Gender X Coping Strategy interaction, the “More Constrained” model needs the means to be constrained so that the difference between the mean for “female” and the mean for “male” remains constant across levels of “Coping Strategy”. That is:</p>
-<p>the difference between “female” mean and “male” mean for the “a” strategy equals the difference between “female” mean and “male” mean for the “b” strategy; and the difference between “female” mean and “male” mean for the “b” strategy equals the difference between “female” mean and “male” mean for the “c” strategy.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"(sgaf - sgam) == (sgbf - sgbm) </span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="st">                (sgbf - sgbm) == (sgcf - sgcm)"</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">iht</span>(lc, <span class="at">constraints =</span> constraints, <span class="at">type =</span> <span class="st">"A"</span>, <span class="at">test =</span> <span class="st">"F"</span>); test</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>df; test<span class="sc">$</span>df.residual</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><br></p>
-</section>
-<section id="dummy-variable-formulation" class="level4">
-<h4 class="anchored" data-anchor-id="dummy-variable-formulation">Dummy variable formulation</h4>
-<p>Formulation of the models in terms of dummy variables proceeds much the same as before except the formulation of the “Less Constrained” model and the constraints are in terms of the dummy variables.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Less constrained model</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>lc <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> af <span class="sc">+</span> bf <span class="sc">+</span> cf <span class="sc">+</span> am <span class="sc">+</span> bm <span class="sc">+</span> cm, df)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lc)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># More constrained models</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Gender main effect - unweighted means</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"(af + bf + cf) == (am + bm + cm)"</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">iht</span>(lc, <span class="at">constraints =</span> constraints, <span class="at">type =</span> <span class="st">"A"</span>, <span class="at">test =</span> <span class="st">"F"</span>); test</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>df; test<span class="sc">$</span>df.residual</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Coping Strategy main effect - unweighted means</span></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"(af + am) == (bf + bm)</span></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="st">                (bf + bm) == (cf + cm)"</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">iht</span>(lc, <span class="at">constraints =</span> constraints, <span class="at">type =</span> <span class="st">"A"</span>, <span class="at">test =</span> <span class="st">"F"</span>); test</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>df; test<span class="sc">$</span>df.residual</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Gender main effect - weighted means</span></span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>freq</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"(3/12*af + 3/12*bf + 6/12*cf) == (6/12*am + 3/12*bm + 3/12*cm)"</span></span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">iht</span>(lc, <span class="at">constraints =</span> constraints, <span class="at">type =</span> <span class="st">"A"</span>, <span class="at">test =</span> <span class="st">"F"</span>); test</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>df; test<span class="sc">$</span>df.residual</span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Coping Strategy main effect - weighted means</span></span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"(3/9*af + 6/9*am) == (3/6*bf + 3/6*bm)</span></span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="st">                (3/6*bf + 3/6*bm) == (6/9*cf + 3/9*cm)"</span></span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">iht</span>(lc, <span class="at">constraints =</span> constraints, <span class="at">type =</span> <span class="st">"A"</span>, <span class="at">test =</span> <span class="st">"F"</span>); test</span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>df; test<span class="sc">$</span>df.residual</span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Interaction: Gender X Coping Strategy</span></span>
-<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"(af - am) == (bf - bm) </span></span>
-<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="st">                (bf - bm) == (cf - cm)"</span></span>
-<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">iht</span>(lc, <span class="at">constraints =</span> constraints, <span class="at">type =</span> <span class="st">"A"</span>, <span class="at">test =</span> <span class="st">"F"</span>); test</span>
-<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>df; test<span class="sc">$</span>df.residual</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><br></p>
-</section>
-</section>
-<section id="structural-equation-modeling" class="level3">
-<h3 class="anchored" data-anchor-id="structural-equation-modeling">Structural Equation Modeling</h3>
-<p>The SEM model for two-way ANOVA is shown below. The diagram shows the “Less Constrained” model - the six means, represented by the label on the arrows connecting the “1” to the dependent variable, differ. To be consistent with the ANOVA assumptions of homogeneity of variances, the residual variances are constrained to be equal.</p>
+<section id="structural-equation-modeling-using-lavaan" class="level3">
+<h3 class="anchored" data-anchor-id="structural-equation-modeling-using-lavaan">Structural Equation Modeling using <strong>lavaan</strong></h3>
+<p>The SEM model for two-way ANOVA is shown below. The diagram shows the “Less Constrained” model - the six means, represented by the label on the arrows connecting the “1” to the dependent variable, differ. To be consistent with the ANOVA assumption of homogeneity of variances, the residual variances are constrained to be equal.</p>
 <div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/two_way_ANOVA.svg" class="img-fluid quarto-figure quarto-figure-left figure-img"></p>
 </figure>
 </div>
-<p>The model statements are shown below. The “Less Constrained” model allows the means (represented by the labels, am, af, …, cf) to differ across the groups. The constraints are the same as above for the cell-means approach. The constraints statements are added to the “Less Constrained” statement to give the “More Constrained” models. The “More Constrained” models are constrasted with the “Less Constrained” model to test for the main effects (weighted and unweighted) and the interaction. In each case the residual variances are constrained to equality.</p>
+<p>The model statements are shown below. The “Less Constrained” model allows the means (represented by the labels, am, af, …, cf) to differ across the groups. The constraints statements are added to the “Less Constrained” statement to give the “More Constrained” models. The “More Constrained” models are constrasted with the “Less Constrained” model to test for the Gender and Coping Strategy main effects (weighted and unweighted) and the Gender X Coping Strategy interaction. In each case the residual variances are constrained to equality.</p>
+<p>Constraint for the unweighted Gender main effect - Restrict the mean for males to equal the mean for females. But there are three means for females, one for each Coping Strategy group. Similarly, there are three means for males. Simply constrain the sum of the three means for males to equal the sum of the three means for females.</p>
+<p>Constraints for the unweighted Coping Strategy main effect - Restrict the mean for “a” strategy to equal the mean for “b” strategy to equal the mean for “c” strategy. That is, constrain the sum of the two “a” means to equal the sum of the two “b” means; and the sum of the two “b” means to equal the sum of the two “c” means.</p>
+<p>To test for the main effects applied to weighted means, the constraints are set the same way as before except the means are weighted in proportion to the cell frequencies.</p>
+<p>Constraints for the Gender X Coping Strategy interaction - The “More Constrained” model needs the means to be constrained so that the difference between the mean for “female” and the mean for “male” remains constant across levels of “Coping Strategy”. That is: the difference between “female” mean and “male” mean for the “a” strategy equals the difference between “female” mean and “male” mean for the “b” strategy; and the difference between “female” mean and “male” mean for the “b” strategy equals the difference between “female” mean and “male” mean for the “c” strategy.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df<span class="sc">$</span>sg)    <span class="co"># order in which groups appear in lavaan output</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Less Constrained model</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>lc <span class="ot">&lt;-</span> <span class="st">"y ~ c(am, af, bm, bf, cm, cf)*1       # Means</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="st">       y ~~ c(e, e, e, e, e, e)*y"</span>           <span class="co"># Variances</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>lc.fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(lc, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"sg"</span>)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lc.fit)</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Gender main effect - unweighted means</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"af + bf + cf == am + bm + cm"</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>gend_unw <span class="ot">&lt;-</span> <span class="fu">c</span>(lc, constraints)</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>gend_unw.fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(gend_unw, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"sg"</span>)</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gend_unw.fit)</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(gend_unw.fit, lc.fit)   <span class="co"># Compare the two models</span></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Coping Strategy main effect - unweighted means</span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"</span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="st">   af + am == bf + bm </span></span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="st">   af + am == cf + cm"</span></span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>strat_unw <span class="ot">&lt;-</span> <span class="fu">c</span>(lc, constraints)</span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>strat_unw.fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(strat_unw, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"sg"</span>)</span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(strat_unw.fit)</span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(strat_unw.fit, lc.fit)   <span class="co"># Compare the two models</span></span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Gender main effect - weighted means</span></span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>freq</span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"(3*af + 3*bf + 6*cf)/12 == (6*am + 3*bm + 3*cm)/12"</span></span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>gend_w <span class="ot">=</span> <span class="fu">c</span>(lc, constraints)</span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>gend_w.fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(gend_w, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"sg"</span>)</span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gend_w.fit)</span>
-<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(gend_w.fit, lc.fit)   <span class="co"># Compare the two models</span></span>
-<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Coping Strategy main effect - weighted means</span></span>
-<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare with SEM section in Table 21.4</span></span>
-<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>freq</span>
-<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"</span></span>
-<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a><span class="st">   (3*af + 6*am)/9 == (3*bf + 3*bm)/6 </span></span>
-<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a><span class="st">   (3*bf + 3*bm)/6 == (6*cf + 3*cm)/9"</span></span>
-<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>strat_w <span class="ot">&lt;-</span> <span class="fu">c</span>(lc, constraints)</span>
-<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>strat_w.fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(strat_w, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"sg"</span>)</span>
-<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(strat_w.fit)</span>
-<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(strat_w.fit, lc.fit)   <span class="co"># Compare the two models</span></span>
-<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Gender X Coping Strategy interaction</span></span>
-<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"</span></span>
-<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a><span class="st">   (af - am) == (bf - bm) </span></span>
-<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a><span class="st">   (bf - bm) == (cf - cm)"</span></span>
-<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a>inter <span class="ot">&lt;-</span> <span class="fu">c</span>(lc, constraints)</span>
-<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a>inter.fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(inter, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"sg"</span>)</span>
-<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(inter.fit)</span>
-<span id="cb14-66"><a href="#cb14-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-67"><a href="#cb14-67" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(inter.fit, lc.fit) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df<span class="sc">$</span>sg)    <span class="co"># Order in which groups appear in lavaan output</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Less Constrained model</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>lc <span class="ot">&lt;-</span> <span class="st">"y ~ c(am, af, bm, bf, cm, cf)*1       # Means</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="st">       y ~~ c(e, e, e, e, e, e)*y            # Variances"</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>lc.fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(lc, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"sg"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lc.fit)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Gender main effect - unweighted means</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"af + bf + cf == am + bm + cm"</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>gend_unw <span class="ot">&lt;-</span> <span class="fu">c</span>(lc, constraints)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>gend_unw.fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(gend_unw, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"sg"</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gend_unw.fit)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(gend_unw.fit, lc.fit)   <span class="co"># Compare the two models</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Coping Strategy main effect - unweighted means</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="st">   af + am == bf + bm </span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="st">   af + am == cf + cm"</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>strat_unw <span class="ot">&lt;-</span> <span class="fu">c</span>(lc, constraints)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>strat_unw.fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(strat_unw, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"sg"</span>)</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(strat_unw.fit)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(strat_unw.fit, lc.fit)   <span class="co"># Compare the two models</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Gender main effect - weighted means</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>freq                     <span class="co"># To assist with constructing constraints </span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"(3*af + 3*bf + 6*cf)/12 == (6*am + 3*bm + 3*cm)/12"</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>gend_w <span class="ot">=</span> <span class="fu">c</span>(lc, constraints)</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>gend_w.fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(gend_w, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"sg"</span>)</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gend_w.fit)</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(gend_w.fit, lc.fit)   <span class="co"># Compare the two models</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Coping Strategy main effect - weighted means</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare with SEM section in Table 21.4</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>freq</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="st">   (3*af + 6*am)/9 == (3*bf + 3*bm)/6 </span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="st">   (3*bf + 3*bm)/6 == (6*cf + 3*cm)/9"</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>strat_w <span class="ot">&lt;-</span> <span class="fu">c</span>(lc, constraints)</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>strat_w.fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(strat_w, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"sg"</span>)</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(strat_w.fit)</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(strat_w.fit, lc.fit)   <span class="co"># Compare the two models</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Gender X Coping Strategy interaction</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>constraints <span class="ot">&lt;-</span> <span class="st">"</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="st">   (af - am) == (bf - bm) </span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a><span class="st">   (bf - bm) == (cf - cm)"</span></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>inter <span class="ot">&lt;-</span> <span class="fu">c</span>(lc, constraints)</span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a>inter.fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(inter, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"sg"</span>)</span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(inter.fit)</span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(inter.fit, lc.fit)     <span class="co"># Compare the two models</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 <p>The R script with minimal commenting is available in <a href="03_two_way_ANOVA.r">03_two_way_ANOVA.r</a>.</p>

@@ -7,84 +7,12 @@
 
 ## Load package
 library(lavaan)
+library(here)             # Relative paths
 
 ## Get the data
-df <- read.csv("./data/satisfactionII.csv", header = TRUE)
+path = here::here("Green_2023", "data", "satisfactionII.csv")
+df <- read.csv(path, header = TRUE)
 head(df)
-
-
-## One-way MANOVA: OLS regression
-# Cell means formulation
-Y <- with(df, cbind(y1, y2, y3, y4))
-models <- list(
-   "More Constrained" = "Y ~ 1",
-   "Less Constrained" = "Y ~ -1 + x"
-)
-
-
-## Fit the models
-fit <- lapply(models, lm, data = df)
-
-## Get the means
-lapply(fit, coef)
-
-
-## F test
-anova(fit[[2]], fit[[1]], test = "Wilks")
-# or using Reduce
-Reduce(function(mc, lc) anova(lc, mc, test = "Wilks"), x = fit)
-
-
-## SSCP, lambda, F and df by hand
-# Get error SSCP
-E <- fit |>
-   lapply(residuals) |>
-   lapply(function(x) t(x) %*% x)
-E
-
-# Get Wilks' lambda
-lambda <- Reduce(function(mc, lc) det(lc) / det(mc), x = E); lambda
-
-# Get df1, df2, F and p
-k <- 4
-m <- 3
-n <- 200
-
-# A function to do the calculations
-pF <- function(k, m, n) {
-   df1 = k*(m - 1)
-
-   a = n - m - (k - m + 2)/2
-   b = sqrt( (k^2 * (m - 1)^2 - 4) / (k^2 + (m - 1)^2 - 5))
-   c = (k * (m - 1) - 2) / 2
-
-   df2 = a * b - c
-
-   F = ((1 - sqrt(lambda))/df1) / (sqrt(lambda)/df2)
-   p = pf(F, df1, df2, lower.tail = FALSE)
-   tab = round(data.frame("lambda" = lambda, "F" = F, "df1" = df1, "df2" = df2, "p" = p), 3)
-   return(tab)
-}
-
-pF(k, m, n)
-
-
-## One-way MANOVA - OLS regression
-#  Using dummy variables
-Y <- with(df, cbind(y1, y2, y3, y4))
-models <- list(
-   "More Constrained" = "Y ~ -1 + I(x1 + x2 + x3)",
-   "Less Constrained" = "Y ~ -1 + x1 + x2 + x3"
-)
-
-
-fit <- lapply(models, lm, data = df)
-
-# Get the means
-lapply(fit, coef)
-
-# F test
-anova(fit[[2]], fit[[1]], test = "Wilks")
 
 
 ## One-way MANOVA - SEM
@@ -125,6 +53,7 @@ models <- list(
 )
 
 
+## Check means and chi square test in Table 21.5
 # Fit the models 
 fit <- lapply(models, sem, data = df, group = "x")
 
@@ -150,7 +79,7 @@ for (i in names(models)) {
 means
 
 
-## Get the error SSCP matrices
+## Get the error SSCP matrices by hand
 # Note: In the list of estimates, variances and covariances are in element "theta"
    E = estimates |>
    lapply("[[", "a") |>           # Extract estimates for group "a"
@@ -160,7 +89,8 @@ means
 E
 
 
-## Relax homogeneity of variances and covariances assumption. 
+## Relax homogeneity of variances and covariances assumption
+## Check chi square on page 401
 # Model statements
 
 # Variances and covariances (for both models)

@@ -5,8 +5,8 @@
 \begin{tikzpicture}
 
 %% The manifest variables
-\node [manifest] (Anx) {Anxiety};
-\node [manifest, align = center] (SE) [right = 5cm of Anx] {Self\\Efficacy};
+\node [manifest, align = center] (Anx) {Self\\Efficacy};
+\node [manifest] (SE) [right = 5cm of Anx] {Anxiety};
 \node [manifest] (Att) [above = 4.33cm of $(Anx.north) !0.5! (SE.north)$] {Attitude};
 
 %% The regressions

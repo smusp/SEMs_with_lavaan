@@ -7,109 +7,24 @@
 
 ## Load packages
 library(lavaan)
-library(restriktor)   # to restrict means
+library(here)         # Relative paths
 
 ## Get the data
-source("./data/ANOVA_data.r")
+path = here::here("Green_2023", "data", "ANOVA_data.r")
+source(path)
 head(df)
 
 
-### One-way ANOVA: OLS regression
-## Cell means formulation
-models <- list(
-   "More Constrained" = "y ~ 1",
-   "Less Constrained" = "y ~ -1 + x"
-)
-
-
-## Fit the models
-fit <- lapply(models, lm, data = df)
-
-## Get summaries
-lapply(fit, summary)
-
-
-## Pooled error variances
-aovTable <- lapply(fit, anova); aovTable
-ErrorVar <- aovTable |> 
-   lapply("[", c("Df", "Sum Sq", "Mean Sq")) |>      # extract df, SS, and MS
-   lapply(function(x) x[dim(x)[1], ])                # extract the last row in each data frame
-ErrorVar
-
-
-## F test to compare fit for LC and MC model
-Reduce(anova, fit)
-
-
-## R square
-Rsquare <- ErrorVar |>
-   lapply("[[", "Sum Sq") |>                        # Extract SSE
-   Reduce(function(mc, lc)  (mc - lc) / mc, x = _)  # Substitute into Eq 21.4
-Rsquare
-
-
-### One-way ANOVA - OLS regression
-##  Using dummy variables
-models <- list(
-   "More Constrained" = "y ~ -1 + I(x1 + x2 + x3)",
-   "Less Constrained" = "y ~ -1 + x1 + x2 + x3"
-)
-
-
-## Fit the models and get the results
-fit <- lapply(models, lm, df)               # Run the models
-lapply(fit, summary)                        # Get the summaries - note the means
-aovTable <- lapply(fit, anova); aovTable    # anova tables - Note: SS and MS for Residuals
-
-ErrorVar <- aovTable |> 
-   lapply("[", c("Df", "Sum Sq", "Mean Sq")) |>  # extract df, SS, and MS
-   lapply(function(x) x[dim(x)[1], ])            # extract the last row in each data frame
-ErrorVar                                         # Mean Sq is pooled error variance
-
-Reduce(anova, fit)                    # F test to compare the two fits
-
-Rsquare <- ErrorVar |>
-   lapply("[[", "Sum Sq") |>                         # Extract SSE
-   Reduce(function(mc, lc)  (mc - lc) / mc, x = _)   # Substitute into Eq 21.4
-Rsquare
-
-
-### One-way ANOVA - OLS regression
-## Use the restriktor package - cell means
-lc <- lm(y ~ -1 + x, df)   # Less Constrained model
-summary(lc)
-
-constraints <- "xa == xb
-                xb == xc"  # constrain the means to equality
-               
-# Compare the fit for the two models           
-test <- iht(lc, constraints = constraints, type = "A", test = "F"); test
-
-test$df; test$df.residual
-
-
-## Use the restriktor package - dummy variables
-lc <- lm(y ~ -1 + x1 + x2 + x3, df)  # Less Constrained model
-summary(lc)
-
-constraints <- "x1 == x2
-                x2 == x3"  # constrain the means to equality
-                
-# Compare the fit for the two models                 
-test <- iht(lc, constraints = constraints, type = "A", test = "F"); test
-
-test$df; test$df.residual
-
-
 ### One-way ANOVA - SEM
+## Check results with "SEM" section of Table 21.1
 models <- list(
-"More Constrained" = 
-  "y ~ c(a, a, a)*1        # Means
-   y ~~ c(e, e, e)*y",     # Variances
+  "More Constrained" = 
+    "y ~ c(a, a, a)*1      # Means
+     y ~~ c(e, e, e)*y     # Variances",
 
-"Less Constrained" = 
-  "y ~ c(a1, a2, a3)*1
-   y ~~ c(e, e, e)*y"
+  "Less Constrained" = 
+    "y ~ c(a1, a2, a3)*1
+     y ~~ c(e, e, e)*y"
 )
 
 
@@ -124,6 +39,7 @@ lapply(fit, summary)
 estimates <- lapply(fit, lavInspect, "est"); estimates    # Means are in element "nu"
 
 ## Extract the means
+## Check with means in Table 21.1
 means <- list()
 for (i in names(models)) 
    means[[i]] <- estimates[[i]] |>
@@ -133,6 +49,7 @@ means
 
 
 ## Extract error variances from estimates - Variances are in element "theta"
+## Check with pooled error variances in Table 21.1
 ErrorVar <- estimates |>
    lapply("[[", "a") |>           # Extract estimates for group "a"
    lapply("[[", "theta")          # Extract "theta" element
@@ -140,10 +57,12 @@ ErrorVar
 
 
 ## Contrast model fits
+## Check with chi sq statistic and p value in Table 21.1
 Reduce(anova, fit)
 
 
-## Model fit - Chi squares
+## Fit for each model - Chi squares
+## Check with values on page 390
 ## First, a function to extract chi squares
 GetFit <- function(fit) {
    tab = fitMeasures(fit, c("chisq", "df", "pvalue"))
@@ -154,6 +73,7 @@ lapply(fit, GetFit)
 
 
 ## R square
+## Check with Equation 21.4
 Rsquare <- ErrorVar |>
    Reduce(function(mc, lc) (mc - lc)/mc, x = _)  # Substitute into Eq 21.4  
 c(Rsquare)
@@ -161,13 +81,13 @@ c(Rsquare)
 
 ## Relax homogeneity of variances assumption
 models <- list(
-"More Constrained" = 
-  "y ~ c(a, a, a)*1            # Means
-   y ~~ c(e1, e2, e3)*y",      # Variances
+  "More Constrained" = 
+    "y ~ c(a, a, a)*1          # Means
+     y ~~ c(e1, e2, e3)*y      # Variances",
 
-"Less Constrained" = 
-  "y ~ c(a1, a2, a3)*1
-   y ~~ c(e1, e2, e3)*y"
+  "Less Constrained" = 
+    "y ~ c(a1, a2, a3)*1
+     y ~~ c(e1, e2, e3)*y"
 )
 
 

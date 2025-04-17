@@ -133,7 +133,7 @@ h1, h2, h3, h4 {
 }
 </style>
 </div>
-<p>Jose, P. (2013). <em>Doing Statistical Mediation and Moderation</em>. New York, NY: Guilford Press.</p>
+<p>Jose, P. (2013). <em>Doing statistical mediation and moderation</em>. New York, NY: Guilford Press.</p>
 <p><br></p>
 <p>This example shows how to obtain a basic three-variable mediation analysis using <strong>lavaan</strong> and how to obtain indirect and total effects. In Chapter 3 (Basic Mediation, pp.&nbsp;43-92), Jose describes a basic mediation model involving three variables: Positive Life Events; Happiness; and Gratitude. Positive Life Events has a direct effect on Happiness, but also Positive Life Events has an indirect effect on Happiness via Gratitude.</p>
 <p><br></p>
@@ -176,10 +176,10 @@ h1, h2, h3, h4 {
 <p>In <strong>lavaan</strong>, mediation effects can be estimated using the <code>:=</code> operator. In the diagram, the effects are labelled a, b, and c<span class="math inline">\('\)</span>; in the model statement, they are labelled a, b, and cpr. The labels can then be used to obtain the indirect and total effects.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">"</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # indirect effect</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # direct effect</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="st">  shs ~ cpr * ple</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="st">  #  effects via the mediator</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="st">  # effects via the mediator</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="st">  grat ~ a * ple</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="st">  shs ~  b * grat</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
@@ -197,20 +197,21 @@ h1, h2, h3, h4 {
 <p>I’ve requested unstandardised and standardised effects, and R<sup>2</sup> values. For the standardised effects, see the “std.all” column in the output.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> dataset)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">rsquare =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">rsquare =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>)   <span class="co"># Check with Tables 3.2-3.5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Jose conducts mediation analysis using regressions. The results are presented in a series of tables: 3.2 to 3.5 (pp.&nbsp;49-52). The unstandardised and standardised coefficients in the tables agree with the <strong>lavaan</strong> output.</p>
-<p>The regression summary table show the constants (that is, the intercepts). If intercepts are required, include <code>meanstructure = TRUE</code> in the <code>sem()</code> function.</p>
+<p>Jose conducts mediation analysis using regressions. The results are presented in Tables 3.2 to 3.5 (pp.&nbsp;49-52). The unstandardised and standardised coefficients in the tables agree with the <strong>lavaan</strong> output.</p>
+<p>The regression summary tables show the constants (that is, the intercepts). If intercepts are required, include <code>meanstructure = TRUE</code> in the <code>sem()</code> function.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit_intercepts <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> dataset, <span class="at">meanstructure =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_intercepts, <span class="at">rsquare =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Jose shows how to calculate and test the statistical significance of Sobel’s z-value (that is, testing the significance of the indirect effect) on pages 53 and 54. Do not rely on that test, similarly do not rely of the t-test for the indirect effect given in the <strong>lavaan</strong> output. It is better to calculate confidence intervals, although the symmetric confidence intervals presented in Table 3.7 (p.&nbsp;55) are no better than the test for Sobel’s z-value. The asymmetric CIs presented in Table 3.8 (p.&nbsp;56) are possibly better. In <strong>lavaan</strong>, bootstrap CIs can be calculated.</p>
+<p>On pages 53 and 54, Jose shows how to calculate and test the statistical significance of Sobel’s z-value (that is, testing the significance of the indirect effect). Do not rely on that test. Also, do not rely of the t-test for the indirect effect given in the <strong>lavaan</strong> output. It is better to calculate confidence intervals, although the symmetric confidence interval presented in Table 3.7 (p.&nbsp;55) is no better than the test for Sobel’s z-value. The asymmetric CI presented in Table 3.8 (p.&nbsp;56) is possibly better. In <strong>lavaan</strong>, bootstrap CIs can be calculated.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit_boot <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> dataset, <span class="at">se =</span> <span class="st">"bootstrap"</span>, <span class="at">bootstrap =</span> <span class="dv">2000</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_boot, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">ci =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">parameterEstimates</span>(fit_boot, <span class="at">boot.ci.type =</span> <span class="st">"perc"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p><br></p>
 <p>The R script with minimal commenting is available in <a href="Jose_Mediation.r">Jose_Mediation.r</a>.</p>
 </section>
 

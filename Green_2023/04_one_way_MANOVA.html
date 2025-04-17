@@ -144,225 +144,111 @@ h1, h2, h3, h4 {
 </style>
 <p>Thompson, M., Lie, Y. &amp; Green, S. (2023). Flexible structural equation modeling approaches for analyzing means. In R. Hoyle (Ed.), <em>Handbook of structural equation modeling</em> (2nd ed., pp.&nbsp;385-408). New York, NY: Guilford Press.</p>
 <p><br></p>
-<p>This example shows the OLS regression approach and the SEM approach to Part 4: One-way MANOVA. Results are reported in Table 21.5 (p.&nbsp;399).</p>
+<p>This example shows the SEM approach to Part 4: One-way MANOVA. Results are reported in Table 21.5 (p.&nbsp;399).</p>
 <p>The data file (<code>satisfactionII.csv</code>) is in the <code>data</code> folder.</p>
 <p><br></p>
 <section id="load-package-and-get-the-data" class="level4">
 <h4 class="anchored" data-anchor-id="load-package-and-get-the-data">Load package and get the data</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/satisfactionII.csv"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)             <span class="co"># Relative paths</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>path <span class="ot">=</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Green_2023"</span>, <span class="st">"data"</span>, <span class="st">"satisfactionII.csv"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(path, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The variables used in this example are:</p>
 <ul>
 <li>x - Coping Strategy (“a” - no strategy; “b” - discussion; “c” - exercise)</li>
-<li>x1, x2, x3 - dummy coded variables (1, 0) for “Coping Strategy”</li>
 <li>y1, y2, y3, y4 - multiple dependent variables (life-satisfaction scores)</li>
 </ul>
 <p><br></p>
 </section>
-<section id="ols-regression-using-cell-means-formulation" class="level3">
-<h3 class="anchored" data-anchor-id="ols-regression-using-cell-means-formulation">OLS regression using cell-means formulation</h3>
-<section id="the-models" class="level4">
-<h4 class="anchored" data-anchor-id="the-models">The models</h4>
-<p>Model statements for the “More Constrained” and “Less Contrained” models are shown below. The multiple dependent variables (y1, y2, y3, y4) are combined into one object Y. The “More Constrained” and “Less Constrained” statement are then similar to the statements for the one-way ANOVA. In the “More Constrained” model, the means are constrained to equality; in the “Less Constrained” model, the means are allowed to differ.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">with</span>(df, <span class="fu">cbind</span>(y1, y2, y3, y4))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>   <span class="st">"More Constrained"</span> <span class="ot">=</span> <span class="st">"Y ~ 1"</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>   <span class="st">"Less Constrained"</span> <span class="ot">=</span> <span class="st">"Y ~ -1 + x"</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><br></p>
-</section>
-<section id="fit-the-models-and-get-the-results" class="level4">
-<h4 class="anchored" data-anchor-id="fit-the-models-and-get-the-results">Fit the models and get the results</h4>
-<p>Fit the models and get the means.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, lm, <span class="at">data =</span> df)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, coef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Compare with the means in Table 21.5. There could be another typo in Table 21.5: The mean for third variable in the third groups should be 42.08 (instead of 33.68).</p>
-<p>Table 21.5 gives the error SSCP matrices for the two models. The SSCP matrix is used in the calculation of Wilks <span class="math inline">\(\Lambda\)</span>, which in turn is used in the caculation of F (along with the appropriate degrees of freedom). All of this can be skipped using the <code>anova()</code> function (provided the default test statistic, Pillai’s trace, is changed to Wilks’ <span class="math inline">\(\Lambda\)</span>).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit[[<span class="dv">2</span>]], fit[[<span class="dv">1</span>]], <span class="at">test =</span> <span class="st">"Wilks"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># or using Reduce</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(<span class="cf">function</span>(mc, lc) <span class="fu">anova</span>(lc, mc, <span class="at">test =</span> <span class="st">"Wilks"</span>), <span class="at">x =</span> fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Compare with the F test in Table 21.5.</p>
-<p>For the sake of completeness, the quantities shown in Table 21.5 are easily calculated. To calculate error SSCP, get the matrix of residuals, then pre-multiply the matrix by its transpose. The formulas for Wilks’ <span class="math inline">\(\Lambda\)</span> and <span class="math inline">\(\mathsf{F}\)</span> are given in Table 21.5. The formulas for the degrees of freedom are not given, but are easily located in standard texts. Degrees of freedom depend on:</p>
-<ul>
-<li><span class="math inline">\(k\)</span> - number of variables - 4</li>
-<li><span class="math inline">\(m\)</span> - number of groups - 3</li>
-<li><span class="math inline">\(n\)</span> - sample size - 200</li>
-</ul>
-<p>The formulas for numerator (<span class="math inline">\(\mathrm{df_1}\)</span>) and denominator (<span class="math inline">\(\mathrm{df_2}\)</span>) degrees of freedom are:</p>
-<p><span class="math display">\[
-\begin{align}
-\mathrm{df_1} &amp;= k(m - 1) \\[.5em]
-\mathrm{df_2} &amp;= a(b - c)
-\end{align}
-\]</span></p>
-<p>where:</p>
-<p><span class="math display">\[
-\begin{align}
-a &amp;= n - m - \frac{k - m + 2}{2} \\[.5em]
-b &amp;= \sqrt{\frac{k^2(m-1)^2 - 4}{k^2 + (m - 1)^2 - 5}}  \\[.5em]
-c &amp;= \frac{k(m - 1) - 2}{2}
-\end{align}
-\]</span></p>
-<p><br></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get error SSCP</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>E <span class="ot">&lt;-</span> fit <span class="sc">|&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(residuals) <span class="sc">|&gt;</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="cf">function</span>(x) <span class="fu">t</span>(x) <span class="sc">%*%</span> x)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>E</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Get Wilks' lambda</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="cf">function</span>(mc, lc) <span class="fu">det</span>(lc) <span class="sc">/</span> <span class="fu">det</span>(mc), <span class="at">x =</span> E); lambda</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Get df1, df2, F and p</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="dv">3</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># A function to do the calculations</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>pF <span class="ot">&lt;-</span> <span class="cf">function</span>(k, m, n) {</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>   df1 <span class="ot">=</span> k<span class="sc">*</span>(m <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>   a <span class="ot">=</span> n <span class="sc">-</span> m <span class="sc">-</span> (k <span class="sc">-</span> m <span class="sc">+</span> <span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>   b <span class="ot">=</span> <span class="fu">sqrt</span>( (k<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> (m <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">4</span>) <span class="sc">/</span> (k<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (m <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">5</span>))</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>   c <span class="ot">=</span> (k <span class="sc">*</span> (m <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">/</span> <span class="dv">2</span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>   df2 <span class="ot">=</span> a <span class="sc">*</span> b <span class="sc">-</span> c</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>   F <span class="ot">=</span> ((<span class="dv">1</span> <span class="sc">-</span> <span class="fu">sqrt</span>(lambda))<span class="sc">/</span>df1) <span class="sc">/</span> (<span class="fu">sqrt</span>(lambda)<span class="sc">/</span>df2)</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>   p <span class="ot">=</span> <span class="fu">pf</span>(F, df1, df2, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>   tab <span class="ot">=</span> <span class="fu">round</span>(<span class="fu">data.frame</span>(<span class="st">"lambda"</span> <span class="ot">=</span> lambda, <span class="st">"F"</span> <span class="ot">=</span> F, <span class="st">"df1"</span> <span class="ot">=</span> df1, <span class="st">"df2"</span> <span class="ot">=</span> df2, <span class="st">"p"</span> <span class="ot">=</span> p), <span class="dv">3</span>)</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>   <span class="fu">return</span>(tab)</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="fu">pF</span>(k, m, n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><br></p>
-</section>
-</section>
-<section id="ols-regression-using-dummy-variables" class="level3">
-<h3 class="anchored" data-anchor-id="ols-regression-using-dummy-variables">OLS Regression using dummy variables</h3>
-<section id="the-models-1" class="level4">
-<h4 class="anchored" data-anchor-id="the-models-1">The models</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">with</span>(df, <span class="fu">cbind</span>(y1, y2, y3, y4))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>   <span class="st">"More Constrained"</span> <span class="ot">=</span> <span class="st">"Y ~ -1 + I(x1 + x2 + x3)"</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>   <span class="st">"Less Constrained"</span> <span class="ot">=</span> <span class="st">"Y ~ -1 + x1 + x2 + x3"</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><br></p>
-</section>
-<section id="fit-the-model-and-get-the-results" class="level4">
-<h4 class="anchored" data-anchor-id="fit-the-model-and-get-the-results">Fit the model and get the results</h4>
-<p>Fitting the models and getting the results proceeds as before.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, lm, <span class="at">data =</span> df)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the means</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, coef)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># F test</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit[[<span class="dv">2</span>]], fit[[<span class="dv">1</span>]], <span class="at">test =</span> <span class="st">"Wilks"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><br></p>
-</section>
-</section>
-<section id="structural-equation-modeling" class="level3">
-<h3 class="anchored" data-anchor-id="structural-equation-modeling">Structural Equation Modeling</h3>
+<section id="structural-equation-modeling-using-lavaan" class="level3">
+<h3 class="anchored" data-anchor-id="structural-equation-modeling-using-lavaan">Structural Equation Modeling using <strong>lavaan</strong></h3>
 <p>The SEM model for the one-way MANOVA is shown in Fig 21.2 (p.&nbsp;400), and is reproduced below. The diagram shows the “Less Constrained” model. The means are represented by the labels on the arrows connecting the “1” to the dependent variables. The means for each variable are allowed to differ across the groups. The residual variances and covariances are constrained to equality.</p>
 <div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/one_way_MANOVA.svg" class="img-fluid quarto-figure quarto-figure-left figure-img"></p>
 </figure>
 </div>
-<p>The model statements are shown below. The “More Constrained” model constrains the means to equality. The “Less Constrained” model allows the means to differ across the groups. In both cases the residual variances and covariances are constrained to equality. The variancs and covariances can be set up separately - see <code>vcov</code> below. Then, <code>vcoc</code> is added back into each model. Saves a little typing.</p>
+<p>The model statements are shown below. The “More Constrained” model constrains the means to equality. The “Less Constrained” model allows the means to differ across the groups. In both cases the residual variances and covariances are constrained to equality. The variancs and covariances can be set up separately - see <code>vcov</code> below. Then, <code>vcov</code> is added back into each model. Saves a little typing.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model statements</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Variances and covariances (for both models)</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>vcov <span class="ot">=</span> </span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>   <span class="st">"y1 ~~ c(e1, e1, e1)*y1</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~~ c(e2, e2, e2)*y2</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="st">    y3 ~~ c(e3, e3, e3)*y3</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="st">    y4 ~~ c(e4, e4, e4)*y4</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="st">    y1 ~~ c(e12, e12, e12)*y2</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="st">    y1 ~~ c(e13, e13, e13)*y3</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="st">    y1 ~~ c(e14, e14, e14)*y4</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~~ c(e23, e23, e23)*y3</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~~ c(e24, e24, e24)*y4</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="st">    y3 ~~ c(e34, e34, e34)*y4"</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="st">"More Constrained"</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Means</span></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>   <span class="st">"y1 ~ c(a1, a1, a1)*1</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~ c(a2, a2, a2)*1</span></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="st">    y3 ~ c(a3, a3, a3)*1</span></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="st">    y4 ~ c(a4, a4, a4)*1"</span>,</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    vcov),</span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="st">"Less Constrained"</span> <span class="ot">=</span>  <span class="fu">c</span>(</span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Means</span></span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>   <span class="st">"y1 ~ c(a1, b1, c1)*1</span></span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~ c(a2, b2, c2)*1</span></span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="st">    y3 ~ c(a3, b3, c3)*1</span></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="st">    y4 ~ c(a4, b4, c4)*1"</span>,</span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    vcov)</span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model statements</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Variances and covariances (for both models)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>vcov <span class="ot">=</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>   <span class="st">"y1 ~~ c(e1, e1, e1)*y1</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~~ c(e2, e2, e2)*y2</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">    y3 ~~ c(e3, e3, e3)*y3</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="st">    y4 ~~ c(e4, e4, e4)*y4</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="st">    y1 ~~ c(e12, e12, e12)*y2</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="st">    y1 ~~ c(e13, e13, e13)*y3</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="st">    y1 ~~ c(e14, e14, e14)*y4</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~~ c(e23, e23, e23)*y3</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~~ c(e24, e24, e24)*y4</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="st">    y3 ~~ c(e34, e34, e34)*y4"</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="st">"More Constrained"</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Means</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>   <span class="st">"y1 ~ c(a1, a1, a1)*1</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~ c(a2, a2, a2)*1</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="st">    y3 ~ c(a3, a3, a3)*1</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="st">    y4 ~ c(a4, a4, a4)*1"</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    vcov),</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="st">"Less Constrained"</span> <span class="ot">=</span>  <span class="fu">c</span>(</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Means</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>   <span class="st">"y1 ~ c(a1, b1, c1)*1</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~ c(a2, b2, c2)*1</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="st">    y3 ~ c(a3, b3, c3)*1</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="st">    y4 ~ c(a4, b4, c4)*1"</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    vcov)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
-<section id="fit-the-models-and-get-the-results-1" class="level4">
-<h4 class="anchored" data-anchor-id="fit-the-models-and-get-the-results-1">Fit the models and get the results</h4>
+<section id="fit-the-models-and-get-the-results" class="level4">
+<h4 class="anchored" data-anchor-id="fit-the-models-and-get-the-results">Fit the models and get the results</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, sem, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"x"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get model summaries</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)        <span class="co"># Means are "Intercepts"</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Contrast model fits</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the models </span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, sem, <span class="at">data =</span> df, <span class="at">group =</span> <span class="st">"x"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Get model summaries</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)        <span class="co"># Means are "Intercepts"</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Contrast model fits</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The “SEM” section of Table 21.5 shows the <span class="math inline">\(\upchi\)</span><sup>2</sup> test.</p>
 <p>Scroll through the summaries to find the “Intercepts”, or extract the means from the list of estimates of model parameter.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(estimates <span class="ot">&lt;-</span> <span class="fu">lapply</span>(fit, lavInspect, <span class="st">"est"</span>))    <span class="co"># Note: means are in element "nu"</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">names</span>(models)) { </span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>   means[[i]] <span class="ot">=</span> estimates[[i]] <span class="sc">|&gt;</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"nu"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">do.call</span>(cbind, <span class="at">args =</span> _) <span class="sc">|&gt;</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">t</span>() <span class="sc">|&gt;</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">round</span>(<span class="dv">2</span>)</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>   <span class="fu">row.names</span>(means[[i]]) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>)</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>means</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(estimates <span class="ot">&lt;-</span> <span class="fu">lapply</span>(fit, lavInspect, <span class="st">"est"</span>))    <span class="co"># Note: means are in element "nu"</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">names</span>(models)) { </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>   means[[i]] <span class="ot">=</span> estimates[[i]] <span class="sc">|&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"nu"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">do.call</span>(cbind, <span class="at">args =</span> _) <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">t</span>() <span class="sc">|&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>   <span class="fu">row.names</span>(means[[i]]) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>means</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Campare with the means in Table 21.5.</p>
 <p>By way of completeness, get the error SSCP matrices. (TLG state that, “the error SSCP matrices were perfectly reproduced by multiplying the variances and covariances in the SEM output by the total sample size” p.&nbsp;398).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: In the list of estimates, variances and covariances are in element "theta"</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>   E <span class="ot">=</span> estimates <span class="sc">|&gt;</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"a"</span>) <span class="sc">|&gt;</span>           <span class="co"># Extract estimates for group "a"</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"theta"</span>) <span class="sc">|&gt;</span>       <span class="co"># Extract "theta" element</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(matrix, <span class="at">nrow =</span> <span class="dv">4</span>) <span class="sc">|&gt;</span>    <span class="co"># Get the full matrix</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"*"</span>, <span class="dv">200</span>)               <span class="co"># Multiply by sample size</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>E</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: In the list of estimates, variances and covariances are in element "theta"</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>   E <span class="ot">=</span> estimates <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"a"</span>) <span class="sc">|&gt;</span>           <span class="co"># Extract estimates for group "a"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"[["</span>, <span class="st">"theta"</span>) <span class="sc">|&gt;</span>       <span class="co"># Extract "theta" element</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(matrix, <span class="at">nrow =</span> <span class="dv">4</span>) <span class="sc">|&gt;</span>    <span class="co"># Get the full matrix</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>   <span class="fu">lapply</span>(<span class="st">"*"</span>, <span class="dv">200</span>)               <span class="co"># Multiply by sample size</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>E</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 </section>
@@ -371,46 +257,46 @@ c &amp;= \frac{k(m - 1) - 2}{2}
 <h3 class="anchored" data-anchor-id="relax-homogeneity-of-variances-and-covariances-assumption">Relax homogeneity of variances and covariances assumption</h3>
 <p>Towards the end of the section headed “Avoiding OLS assumptions for ANOVA/MANOVA designs using SEM” (pp.&nbsp;398-401), TGL present the results for models in which the assumptions of homogeneity and normality are relaxed. That is, variances and covariances are not constrained to equality, and a robust ML method of estimation (MLM) is employed. Again, the variances and covariances are set up separately, then added back into each model. This time, there are no labels for the variances and covariances, meaning that <strong>lavaan</strong> will estimate each variance and covariance for each group.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model statements</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Variances and covariances (for both models)</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>vcov <span class="ot">=</span> <span class="st">"</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="st">   y1 ~~ y1 + y2 + y3 + y4</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="st">   y2 ~~ y2 + y3 + y4</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="st">   y3 ~~ y3 + y4</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="st">   y4 ~~ y4"</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="st">"Less Constrained"</span> <span class="ot">=</span>  <span class="fu">c</span>(</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Means</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>   <span class="st">"y1 ~ c(a1, b1, c1)*1</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~ c(a2, b2, c2)*1</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="st">    y3 ~ c(a3, b3, c3)*1</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="st">    y4 ~ c(a4, b4, c4)*1"</span>,</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    vcov),</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="st">"More Constrained"</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Means</span></span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>   <span class="st">"y1 ~ c(a1, a1, a1)*1</span></span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~ c(a2, a2, a2)*1</span></span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="st">    y3 ~ c(a3, a3, a3)*1</span></span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="st">    y4 ~ c(a4, a4, a4)*1"</span>,</span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    vcov)</span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the models </span></span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, sem, <span class="at">data =</span> df, <span class="at">estimator =</span> <span class="st">"mlm"</span>, <span class="at">group =</span> <span class="st">"x"</span>)</span>
-<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Get model summaries</span></span>
-<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)</span>
-<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Contrast model fits</span></span>
-<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model statements</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Variances and covariances (for both models)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>vcov <span class="ot">=</span> <span class="st">"</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">   y1 ~~ y1 + y2 + y3 + y4</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="st">   y2 ~~ y2 + y3 + y4</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="st">   y3 ~~ y3 + y4</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="st">   y4 ~~ y4"</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="st">"Less Constrained"</span> <span class="ot">=</span>  <span class="fu">c</span>(</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Means</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>   <span class="st">"y1 ~ c(a1, b1, c1)*1</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~ c(a2, b2, c2)*1</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="st">    y3 ~ c(a3, b3, c3)*1</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="st">    y4 ~ c(a4, b4, c4)*1"</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    vcov),</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="st">"More Constrained"</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Means</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>   <span class="st">"y1 ~ c(a1, a1, a1)*1</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="st">    y2 ~ c(a2, a2, a2)*1</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="st">    y3 ~ c(a3, a3, a3)*1</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="st">    y4 ~ c(a4, a4, a4)*1"</span>,</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    vcov)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the models </span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, sem, <span class="at">data =</span> df, <span class="at">estimator =</span> <span class="st">"mlm"</span>, <span class="at">group =</span> <span class="st">"x"</span>)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Get model summaries</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fit, summary)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Contrast model fits</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(anova, fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Compare with the <span class="math inline">\(\upchi\)</span><sup>2</sup> test on p.&nbsp;401.</p>
+<p>Compare with the <span class="math inline">\(\upchi\)</span><sup>2</sup> test on page 401.</p>
 <p><br></p>
 <p>The R script with minimal commenting is available in <a href="04_one_way_MANOVA.r">04_one_way_MANOVA.r</a>.</p>
 </section>

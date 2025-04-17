@@ -7,9 +7,11 @@
 
 ## Load package
 library(lavaan)
+library(here)             # Relative paths
 
 ## Get the data
-df <- read.csv("./data/satisfactionII.csv", header = TRUE)
+path = here::here("Green_2023", "data", "satisfactionII.csv")
+df <- read.csv(path, header = TRUE)
 head(df)
 
 
@@ -55,7 +57,8 @@ models <- list(
 )
 
 
-## Fit the models 
+## Check results in "All measures" row in Table 21.6
+# Fit the models 
 fit <- lapply(models, sem, data = df, group = "x")
 
 # Get model summaries
@@ -66,11 +69,13 @@ Reduce(anova, fit)
 
 
 ## Cut-and-paste means and variances to get effect sizes
+## Compare with values given on page 405
 d1 <- (0.664 - 0) / sqrt(8.135); d1    # "no strategy" vs "discussion"
 d2 <- (1.945 - 0) / sqrt(8.135); d2    # "no strategy" vs "exercise"
 
 
 ## Extract latent means and error variances from "Less Constrained" model
+## Check with "All measures" row in TAble 21.6
 estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
    # Note: latent means are in element "alpha"
    #       latent error variances are in element "psi"
@@ -78,6 +83,8 @@ estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
 LatentMeans <- do.call(rbind, lapply(estimates, "[[", "alpha")); LatentMeans
 LatentVar <- do.call(rbind, lapply(estimates, '[[', 'psi')); LatentVar
 
+## Effect sizes
+## Compare with values given on page 405
 d1 <- (LatentMeans[2] - LatentMeans[1]) / sqrt(LatentVar[1]); d1   # "no strategy" vs "discussion"
 d2 <- (LatentMeans[3] - LatentMeans[1]) / sqrt(LatentVar[1]); d2   # "no strategy" vs "exercise"
 
@@ -124,7 +131,8 @@ models <- list(
 )
 
 
-## Fit the models 
+## Check with means, error variance, and chi square in 2nd row in Table 21.6
+# Fit the models 
 fit <- lapply(models, sem, data = df, group = "x")
 
 # Model summaries
@@ -139,22 +147,24 @@ LatentVar <- do.call(rbind, lapply(estimates, '[[', 'psi')); LatentVar
 Reduce(anova, fit)
 
 
-# Sample statistics
+## Columns of Table 21.6 dealing with means, variances and residual variances of "y1"
+## Need sample statistics and model estimates
+# Get sample statistics
 sampstat <- lavInspect(fit[["Less Constrained"]], "sampstat"); sampstat
    # Means are in element "mean"
    # Variances are the diagonal elements in element "cov"
 
-# Estimated model parameters
+# Get estimated model parameters
 estimates
    # Residual variances for the measures are the diagonal elements in element "theta"
    # Intercepts for the measures are in element "nu"
 
 
-# Extract y1 Means from sampstats
+# Extract y1 means from sampstats
 MeansY1 <- do.call(cbind, lapply(sampstat, "[[", "mean"))
 MeansY1 <- MeansY1[1,]; MeansY1   # Compare with 2nd row in Table 21.6
 
-# Differences between y1 means
+# Differences between y1 means are differencs between latent means
 MeansY1[2] - MeansY1[1]
 MeansY1[3] - MeansY1[1]
 
@@ -162,7 +172,7 @@ MeansY1[3] - MeansY1[1]
 LatentMeans
 
 # Alternatively, the y1 intercepts (which are constrained to equality)
-# added to the latent means give the y1 Means
+# added to the latent means give the y1 means
 intercepts <- do.call(cbind, lapply(estimates, "[[", "nu"))[1,1]; intercepts
 intercepts + LatentMeans; MeansY1
 
@@ -175,7 +185,7 @@ VarY1 <- VarY1[1,]; VarY1  # Compare with 2nd row in Table 21.6
 ResidVarY1 <- lapply(lapply(estimates, '[[', 'theta'), diag)
 ResidVarY1 <- do.call(rbind, lapply(ResidVarY1, '[', 1)); ResidVarY1 # Compare with 2nd row in Table 21.6
 
-# Differences between y1 variances and y1 residual variances
+# Differences between y1 variances and y1 residual variances are latent error variances
 VarY1 - ResidVarY1
 
 # Compare with the latent error variances
@@ -224,7 +234,8 @@ models <- list(
 )
 
 
-## Fit the models 
+## Check with means, error variance, and chi square in 3rd row in Table 21.6
+# Fit the models 
 fit <- lapply(models, sem, data = df, group = "x")
 
 # Model summaries
@@ -239,12 +250,14 @@ LatentVar <- do.call(rbind, lapply(estimates, '[[', 'psi')); LatentVar
 Reduce(anova, fit)
 
 
-# Sample statistics
+## Columns of Table 21.6 dealing with means, variances and residual variances of "y2"
+## Need sample statistics and model estimates
+# Get sample statistics
 sampstat <- lavInspect(fit[["Less Constrained"]], "sampstat"); sampstat
    # Means are in element "mean"
    # Variances are the diagonal elements in element "cov"
 
-# Estimated model parameters
+# Get estimated model parameters
 estimates
    # Residual variances for the measures are the diagonal elements in element "theta"
    # Intercepts for the measures are in element "nu"
@@ -254,7 +267,7 @@ estimates
 MeansY2 <- do.call(cbind, lapply(sampstat, "[[", "mean"))
 MeansY2 <- MeansY2[2,]; MeansY2   # Compare with 3rd row in Table 21.6
 
-# Differences between y2 means
+# Differences between y2 means are differencs between latent means
 MeansY2[2] - MeansY2[1]
 MeansY2[3] - MeansY2[1]
 
@@ -262,7 +275,7 @@ MeansY2[3] - MeansY2[1]
 LatentMeans
 
 # Alternatively, the y2 intercepts (which are constrained to equality)
-# added to the latent means give the Y2 Means
+# added to the latent means give the Y2 means
 intercepts <- do.call(cbind, lapply(estimates, "[[", "nu"))[2,1]; intercepts
 intercepts + LatentMeans; MeansY2
 
@@ -275,7 +288,7 @@ VarY2 <- VarY2[2,]; VarY2  # Compare with 3rd row in Table 21.6
 ResidVarY2 <- lapply(lapply(estimates, '[[', 'theta'), diag)
 ResidVarY2 <- do.call(rbind, lapply(ResidVarY2, '[', 2)); ResidVarY2 # Compare with 3rd row in Table 21.6
 
-# Differences between y2 variances and y2 residual variances
+# Differences between y2 variances and y2 residual variances are latent error variances
 VarY2 - ResidVarY2
 
 # Compare with the latent error variances

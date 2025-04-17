@@ -17,11 +17,12 @@ h1, h2, h3, h4 {
 ```{r echo = FALSE, eval = FALSE}
 
 
-## Jose, P. (2013). Doing Statistical Mediation and Moderation. 
+## Chapter 3 (Basic Mediation, pp. 43-92) in
+## Jose, P. (2013). Doing statistical mediation and moderation. 
 ## New York, NY: Guilford Press.
 ```
 
-Jose, P. (2013). *Doing Statistical Mediation and Moderation*. New York, NY: Guilford Press.
+Jose, P. (2013). *Doing statistical mediation and moderation*. New York, NY: Guilford Press.
 
 <br /> 
 
@@ -71,16 +72,16 @@ The model is given in Figure 3.3 (p. 46), reproduced below.
 
 ![](images/Mediation.svg){fig-align="left"}
 
-In **lavaan**, mediation effects can be estimated using the `:=` operator. In the diagram, the effects are labelled a, b, and c$'$; in the model statement, they are labelled a, b, and cpr. The labels can then be  used to obtain the indirect and total effects.
+In **lavaan**, mediation effects can be estimated using the `:=` operator. In the diagram, the effects are labelled a, b, and c$'$; in the model statement, they are labelled a, b, and cpr. The labels can then be used to obtain the indirect and total effects.
 
 ```{r echo = -2:-1, eval = FALSE}
 
 ## The model from Figure 3.3
 model <- "
-  # indirect effect
+  # direct effect
   shs ~ cpr * ple
 
-  #  effects via the mediator
+  # effects via the mediator
   grat ~ a * ple
   shs ~  b * grat
 
@@ -102,12 +103,12 @@ I've requested unstandardised and standardised effects, and R^2^ values. For the
 
 ## Fit the model and get the summary
 fit <- sem(model, data = dataset)
-summary(fit, rsquare = TRUE, standardized = TRUE)
+summary(fit, rsquare = TRUE, standardized = TRUE)   # Check with Tables 3.2-3.5
 ```
 
-Jose conducts mediation analysis using regressions. The results are presented in a series of tables: 3.2 to 3.5 (pp. 49-52). The unstandardised and standardised coefficients in the tables agree with the **lavaan** output. 
+Jose conducts mediation analysis using regressions. The results are presented in Tables 3.2 to 3.5 (pp. 49-52). The unstandardised and standardised coefficients in the tables agree with the **lavaan** output. 
 
-The regression summary table show the constants (that is, the intercepts). If intercepts are required, include `meanstructure = TRUE` in the `sem()` function.
+The regression summary tables show the constants (that is, the intercepts). If intercepts are required, include `meanstructure = TRUE` in the `sem()` function.
 
 ```{r echo = -2:-1, eval = FALSE}
 
@@ -116,7 +117,7 @@ fit_intercepts <- sem(model, data = dataset, meanstructure = TRUE)
 summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
 ```
 
-Jose shows how to calculate and test the statistical significance of Sobel's z-value (that is, testing the significance of the indirect effect) on pages 53 and 54. Do not rely on that test, similarly do not rely of the t-test for the indirect effect given in the **lavaan** output. It is better to calculate confidence intervals, although the symmetric confidence intervals presented in Table 3.7 (p. 55) are no better than the test for Sobel's z-value. The asymmetric CIs presented in Table 3.8 (p. 56) are possibly better. In **lavaan**, bootstrap CIs can be calculated.
+On pages 53 and 54, Jose shows how to calculate and test the statistical significance of Sobel's z-value (that is, testing the significance of the indirect effect). Do not rely on that test. Also, do not rely of the t-test for the indirect effect given in the **lavaan** output. It is better to calculate confidence intervals, although the symmetric confidence interval presented in Table 3.7 (p. 55) is no better than the test for Sobel's z-value. The asymmetric CI presented in Table 3.8 (p. 56) is possibly better. In **lavaan**, bootstrap CIs can be calculated.
 
 ```{r echo = -2:-1, eval = FALSE}
 
@@ -126,6 +127,7 @@ summary(fit_boot, standardized = TRUE, ci = TRUE)
 parameterEstimates(fit_boot, boot.ci.type = "perc")
 ```
 
+<br />
 
 ```{r, echo = FALSE, include = FALSE, eval = TRUE, purl = FALSE}
 input <- knitr::current_input()
