@@ -43,7 +43,7 @@ library(lavaan)
 library(here)             # Relative paths
 
 ## Get the data
-path = here::here("Green_2023", "data", "satisfactionII.csv")
+path <- here::here("Green_2023", "data", "satisfactionII.csv")
 df <- read.csv(path, header = TRUE)
 head(df)
 ```

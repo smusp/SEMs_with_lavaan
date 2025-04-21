@@ -30,7 +30,7 @@ The data file (`satisfactionII.csv`) is in the `data` folder.
 library(lavaan)
 library(here)             # Relative paths
 
-path = here::here("Green_2023", "data", "satisfactionII.csv")
+path <- here::here("Green_2023", "data", "satisfactionII.csv")
 df <- read.csv(path, header = TRUE)
 head(df)
 ```

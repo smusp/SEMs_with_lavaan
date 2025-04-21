@@ -26,7 +26,7 @@ Load the relevant packages, and run `ANOVA_data.r` to get the data.
 library(lavaan)
 library(here)         # Relative paths
 
-path = here::here("Green_2023", "data", "ANOVA_data.r")
+path <- here::here("Green_2023", "data", "ANOVA_data.r")
 source(path)
 head(df)
 ```

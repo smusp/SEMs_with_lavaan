@@ -34,7 +34,7 @@ library(lavaan)
 library(here)         # Relative paths
 library(DescTools)    # Cramer's V
 
-path = here::here("Green_2023", "data", "ANOVA_data.r")
+path <- here::here("Green_2023", "data", "ANOVA_data.r")
 source(path)
 head(df)
 ```

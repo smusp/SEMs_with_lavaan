@@ -38,7 +38,7 @@ Load the **lavaan** package (and the **here** package), and run
 library(lavaan)
 library(here)         # Relative paths
 
-path = here::here("Green_2023", "data", "ANOVA_data.r")
+path <- here::here("Green_2023", "data", "ANOVA_data.r")
 source(path)
 head(df)
 ```

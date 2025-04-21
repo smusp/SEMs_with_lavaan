@@ -11,7 +11,7 @@ library(here)         # Relative paths
 library(DescTools)    # Cramer's V
 
 ## Get the data
-path = here::here("Green_2023", "data", "ANOVA_data.r")
+path <- here::here("Green_2023", "data", "ANOVA_data.r")
 source(path)
 head(df)
 
