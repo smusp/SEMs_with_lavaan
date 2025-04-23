@@ -1,7 +1,7 @@
 aux/
+*.html
 *.pdf
 *.aux
 *.log
-.gitignore
 *.knit.md
 *.gz
