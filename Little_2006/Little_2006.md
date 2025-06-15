@@ -183,7 +183,7 @@ m1 <- "
   NEG ~~ c(1,NA)*NEG
   POS ~~ NEG
 
-  # Indicator intercepts 
+  # Indicator intercepts
   pos1 ~ 1
   pos2 ~ 1
   pos3 ~ 1
@@ -206,7 +206,7 @@ To deal with strong metric invariance, set
 `group.equal = c("loadings", "intercepts")` in the `sem()` function.
 
 ``` r
-m1_fit <- sem(m1, sample.cov = cov, sample.nobs = n, 
+m1_fit <- sem(m1, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m1_fit, standardized = TRUE, fit.measures = TRUE)
 ```
@@ -230,7 +230,7 @@ m1_short <- "
 "
 
 m1_short_fit <- sem(m1_short, sample.cov = cov, sample.nobs = n, 
-   sample.mean = mean, std.lv = TRUE, 
+   sample.mean = mean, std.lv = TRUE,
    group.equal = c("loadings", "intercepts"))
 summary(m1_short_fit, standardized = TRUE, fit.measures = TRUE)
 ```
@@ -242,7 +242,7 @@ are not reported. Maybe it’s not important because they are zero
 `remove.unused = FALSE` in the `summary()` function.
 
 ``` r
-summary(m1_short_fit, remove.unused = FALSE, standardized = TRUE, 
+summary(m1_short_fit, remove.unused = FALSE, standardized = TRUE,
    fit.measures = TRUE)
 ```
 
@@ -292,7 +292,7 @@ m2c <- "
   NEG ~~ NEG
   POS ~~ NEG
 
-  # Indicator intercepts 
+  # Indicator intercepts
   #   - Constrain 3rd intercept in POS to 0 in both groups
   #   - Constrain 1st intercept in NEG to 0 in both groups
   pos1 ~ 1
@@ -318,14 +318,14 @@ equal across the groups.
 
 ``` r
 ## Compare with "Method 2c" in Table 2
-m2c_fit <- sem(m2c, sample.cov = cov, sample.nobs = n, 
+m2c_fit <- sem(m2c, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m2c_fit, standardized = TRUE, fit.measures = TRUE)
 ```
 
 Compare the output with “Method 2c” in Table 2 (pp. 64-65). <br />
 
-#### lavaan default
+#### **lavaan** default
 
 This is not **lavaan**’s default method of scaling. The default method
 constrains the loadings for the first indicator to one for both
@@ -341,9 +341,9 @@ m2c_default <- "
   NEG =~ neg1 + neg2 + neg3
 "
 
-m2c_default_fit <- sem(m2c_default, sample.cov = cov, sample.nobs = n, 
+m2c_default_fit <- sem(m2c_default, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
-summary(m2c_default_fit, remove.unused = FALSE, 
+summary(m2c_default_fit, remove.unused = FALSE,
    standardized = TRUE, fit.measures = TRUE)
 ```
 
@@ -396,7 +396,7 @@ m3 <- "
   NEG ~ 1
 
   # Constraints
-  # For each construct: 
+  # For each construct:
   #   The sum of the loadings equals the number of indicators
   #   The sum of the intercepts equals zero
   p1 + p2 + p3 == 3
@@ -417,7 +417,7 @@ equal across the groups.
 
 ``` r
 ## Compare with "Method 3" in Table 2
-m3_fit <- sem(m3, sample.cov = cov, sample.nobs = n, 
+m3_fit <- sem(m3, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m3_fit, standardized = TRUE, fit.measures = TRUE)
 ```
@@ -438,8 +438,8 @@ m3_short <- "
   NEG =~ neg1 + neg2 + neg3
 "
 
-m3_short_fit <- sem(m3_short, sample.cov = cov, sample.nobs = n, 
-   sample.mean = mean, effect.coding = TRUE, 
+m3_short_fit <- sem(m3_short, sample.cov = cov, sample.nobs = n,
+   sample.mean = mean, effect.coding = TRUE,
    group.equal = c("loadings", "intercepts"))
 summary(m3_short_fit, standardized = TRUE, fit.measures = TRUE)
 ```
@@ -460,20 +460,20 @@ GetFit <- function(fit, ...) {
 
 # Add the fitted lavaan objects to a list
 models <- list(
-   m1_fit, m1_short_fit, 
-   m2c_fit, m2c_default_fit, 
-   m3_fit, m3_short_fit)
-names(models) = c(
-   "Method 1", "Method 1 Shortcut", 
-   "Method 2c", "lavaan Default",
-   "Method 3", "Method 3 Shortcut")
+   "Method 1"          = m1_fit,
+   "Method 1 Shortcut" = m1_short_fit,
+   "Method 2c"         = m2c_fit,
+   "lavaan Default"    = m2c_default_fit,
+   "Method 3"          = m3_fit,
+   "Method 3 Shortcut" = m3_short_fit)
 
 # Select the fit measures
-measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea", 
-   "rmsea.ci.lower", "rmsea.ci.upper") 
+measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea",
+   "rmsea.ci.lower", "rmsea.ci.upper")
 
-# Get a table of fit measures  
-do.call(rbind, lapply(models, GetFit, measures))
+# Get fit measures 
+tab = sapply(models, GetFit, measures)
+tab = t(round(tab, 4)); tab
 ```
 
 Compare the fit measures with those presented on page 66.
