@@ -110,26 +110,29 @@ estimates <- lapply(fit, lavInspect, "est"); estimates
 
 # Extract means - in element "alpha"
 means <- list()
-for (i in names(models))
+for (i in names(models)){
    means[[i]] <- estimates[[i]] |>
       lapply("[[", "alpha") |>       # Means for Y and preC
       sapply("[[", 1)                # Means for Y
+}
 means <- do.call(cbind, means); means
 
 # Extract error variances -  in element "psi"
 ErrorVar <- list()
-for (i in names(models))
+for (i in names(models)){
    ErrorVar[[i]] <- estimates[[i]] |>
       lapply("[[", "psi")  |>        # Extract "psi" element
       sapply("[[", 1, 1)             # 1st row, 1st column of "psi"
+}
 ErrorVar <- do.call(cbind, ErrorVar); ErrorVar
 
 # Extract regression coefficients -  in element "beta"
 RegCoef <- list()
-for (i in names(models))
+for (i in names(models)){
    RegCoef[[i]] <- estimates[[i]] |>
       lapply("[[", "beta")  |>       # Extract "beta" element
       sapply("[[", 1, 2)             # 1st row, 2nd column of "beta"
+}
 RegCoef <- do.call(cbind, RegCoef); RegCoef
 ```
 
