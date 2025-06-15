@@ -19,8 +19,8 @@ to:
 5.  One-way ANOVA of a latent variable
 
 This example shows the SEM approach to Part 1: One-way ANOVA. Results
-are reported in Table 21.1 (p. 389). For the regression approach, see
-the `Regressions` folder.
+are reported in Table 21.1 (p. 389). For a regression approach, see the
+`Regressions` folder.
 
 The data (`satisfactionI.csv` in the `data` folder) are described at the
 top of page 388. The data file needs manipulation before it can be used:
@@ -73,19 +73,20 @@ models the residual variances (each with the same label “e”) are
 constrained to equality.
 
 In what follows, I use lists. The model statements are placed into a
-list, then I use the `lapply()` function to perform operations on each
-element in the list (such as `sem()` to run the analyses, or `summary()`
-to return summaries of the analyses, or `[[` to extract elements); and I
-use the `Reduce()` function when I need to perform operations across the
-two models (such as `anova()` to constrast the fit of the two models).
+list, then I use the `lapply()` or `sapply()` function to perform
+operations on each element in the list (such as `sem()` to run the
+analyses, or `summary()` to return summaries of the analyses, or `[[` to
+extract elements); and I use the `Reduce()` function when I need to
+perform operations across the two models (such as `anova()` to constrast
+the fit of the two models).
 
 ``` r
 models <- list(
-  "More Constrained" = 
+  "More Constrained" =
     "y ~ c(a, a, a)*1      # Means
      y ~~ c(e, e, e)*y     # Variances",
 
-  "Less Constrained" = 
+  "Less Constrained" =
     "y ~ c(a1, a2, a3)*1
      y ~~ c(e, e, e)*y"
 )
@@ -108,38 +109,35 @@ lapply(fit, summary)
 The “SEM” sections of Table 21.1 show the means, pooled error variances,
 and the $\upchi$<sup>2</sup> test.
 
-The summaries show the “Intercepts” (that is, the estimated means) for
-each “Coping Strategy” group for both models. Compare with the means in
+The summaries show “Intercepts” (that is, the estimated means) and
+“Variances” (that is, the error variances) for each “Coping Strategy”
+group for both models. Compare with means and pooled error variances in
 the SEM section in Table 21.1.
 
 Rather than, or perhaps, as well as, searching through the model
-summaries for the means, the means can be extracted from a list of
-estimates of model parameters.
+summaries for the means and variances, they can be extracted from a list
+of estimates of model parameters.
 
 ``` r
-estimates <- lapply(fit, lavInspect, "est"); estimates    # Means are in element "nu"
+# Get list of estimates
+estimates <- lapply(fit, lavInspect, "est"); estimates
 
+# Extract means - in element "nu"
 means <- list()
-for (i in names(models)) 
+for (i in names(models)) {
    means[[i]] <- estimates[[i]] |>
-      lapply("[[", "nu")  |>       # Extract the means
-      unlist()
-means
+      sapply("[[", "nu")
+}
+means <- do.call(cbind, means); means
+
+# Extract error variances - in element "theta"
+ErrorVar <- list()
+for (i in names(models)) {
+   ErrorVar[[i]] <- estimates[[i]] |>
+      sapply("[[", "theta")
+}
+ErrorVar <- do.call(cbind, ErrorVar); ErrorVar
 ```
-
-The pooled error variances can also be extracted from the list of
-estimates. Recall that error variances are constrained to equality, and
-therefore, the estimates for one group only (here, group “a”) are
-extracted.
-
-``` r
-ErrorVar <- estimates |>
-   lapply("[[", "a") |>           # Extract estimates for group "a"
-   lapply("[[", "theta")          # Extract "theta" element
-ErrorVar
-```
-
-Compare with pooled error variances in Table 21.1.
 
 To perform the $\upchi$<sup>2</sup> test (to compare the fit of the two
 models), apply the `anova()` function to the two models.
@@ -159,11 +157,12 @@ then that function is applied to both models.
 
 ``` r
 GetFit <- function(fit) {
-   tab = fitMeasures(fit, c("chisq", "df", "pvalue"))
-   tab = round(data.frame(tab), 3) 
+   tab <- fitMeasures(fit, c("chisq", "df", "pvalue"))
+   tab <- round(tab, 3) 
+   return(tab)
 }
 
-lapply(fit, GetFit)
+sapply(fit, GetFit)
 ```
 
 Note: Neither model fits well.
@@ -175,9 +174,9 @@ multiplication is not needed because sample size will cancel out; that
 is, substitute the error variances into Equation 21.4.
 
 ``` r
-Rsquare <- ErrorVar |>
+Rsquare <- ErrorVar["a", ] |>
    Reduce(function(mc, lc) (mc - lc)/mc, x = _)  # Substitute into Eq 21.4  
-c(Rsquare)
+Rsquare
 ```
 
 <br />

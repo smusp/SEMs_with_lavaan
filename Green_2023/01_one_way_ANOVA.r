@@ -1,6 +1,6 @@
 
 
-## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling 
+## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 
@@ -18,11 +18,11 @@ head(df)
 ### One-way ANOVA - SEM
 ## Check results with "SEM" section of Table 21.1
 models <- list(
-  "More Constrained" = 
+  "More Constrained" =
     "y ~ c(a, a, a)*1      # Means
      y ~~ c(e, e, e)*y     # Variances",
 
-  "Less Constrained" = 
+  "Less Constrained" =
     "y ~ c(a1, a2, a3)*1
      y ~~ c(e, e, e)*y"
 )
@@ -35,25 +35,25 @@ fit <- lapply(models, sem, data = df, group = "x")
 lapply(fit, summary)
 
 
-## Get the list of estimates
-estimates <- lapply(fit, lavInspect, "est"); estimates    # Means are in element "nu"
+## Extract means and variances from list of estimates
+# Get list of estimates
+estimates <- lapply(fit, lavInspect, "est"); estimates
 
-## Extract the means
-## Check with means in Table 21.1
+# Extract means - in element "nu"
 means <- list()
-for (i in names(models)) 
+for (i in names(models)) {
    means[[i]] <- estimates[[i]] |>
-      lapply("[[", "nu")  |>       # Extract the means
-      unlist()
-means
+      sapply("[[", "nu")
+}
+means <- do.call(cbind, means); means
 
-
-## Extract error variances from estimates - Variances are in element "theta"
-## Check with pooled error variances in Table 21.1
-ErrorVar <- estimates |>
-   lapply("[[", "a") |>           # Extract estimates for group "a"
-   lapply("[[", "theta")          # Extract "theta" element
-ErrorVar
+# Extract error variances - in element "theta"
+ErrorVar <- list()
+for (i in names(models)) {
+   ErrorVar[[i]] <- estimates[[i]] |>
+      sapply("[[", "theta")
+}
+ErrorVar <- do.call(cbind, ErrorVar); ErrorVar
 
 
 ## Contrast model fits
@@ -65,18 +65,19 @@ Reduce(anova, fit)
 ## Check with values on page 390
 ## First, a function to extract chi squares
 GetFit <- function(fit) {
-   tab = fitMeasures(fit, c("chisq", "df", "pvalue"))
-   tab = round(data.frame(tab), 3) 
+   tab <- fitMeasures(fit, c("chisq", "df", "pvalue"))
+   tab <- round(tab, 3) 
+   return(tab)
 }
 
-lapply(fit, GetFit)
+sapply(fit, GetFit)
 
 
 ## R square
 ## Check with Equation 21.4
-Rsquare <- ErrorVar |>
+Rsquare <- ErrorVar["a", ] |>
    Reduce(function(mc, lc) (mc - lc)/mc, x = _)  # Substitute into Eq 21.4  
-c(Rsquare)
+Rsquare
 
 
 ## Relax homogeneity of variances assumption

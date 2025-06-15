@@ -1,6 +1,6 @@
 
 
-## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling 
+## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 
@@ -31,7 +31,7 @@ CV <- sqrt((chisq/n)/min(r-1, c-1)); CV
 
 
 ## Direction of the relationship
-chisq.test(df$g, df$x)$stdres 
+chisq.test(df$g, df$x)$stdres
 
 
 ## Cell means and cell frequencies
@@ -47,12 +47,10 @@ apply(means, 2, mean)      # Coping Strategy
  
 # Weighted marginal means
 tapply(df$y, df$g, mean)     # Gender
-tapply(df$y, df$x, mean)     # Coping Strategy   
+tapply(df$y, df$x, mean)     # Coping Strategy
 
 
 ### Two-way ANOVA - SEM
-unique(df$sg)    # Order in which groups appear in lavaan output
-
 # Less Constrained model
 lc <- "y ~ c(am, af, bm, bf, cm, cf)*1       # Means
        y ~~ c(e, e, e, e, e, e)*y            # Variances"
@@ -84,7 +82,7 @@ anova(strat_unw.fit, lc.fit)   # Compare the two models
 
 
 # Gender main effect - weighted means
-freq                     # To assist with constructing constraints 
+freq                     # To assist with constructing constraints
 constraints <- "(3*af + 3*bf + 6*cf)/12 == (6*am + 3*bm + 3*cm)/12"
 gend_w = c(lc, constraints)
 

@@ -50,7 +50,7 @@ The SEM model for one-way ANCOVA is shown below. The diagram shows the
 the arrows connecting the “1” to the dependent variable, differ. To be
 consistent with the ANCOVA assumptions of homogeneity of variances and
 homogeneity of regression slopes, the residual variances and the
-coefficients for the covariate (preC) are constrained to be equal.
+coefficients for the covariate (preC) are each constrained to equality.
 
 <img src="images/one_way_ANCOVA.svg" data-fig-align="left" />
 
@@ -62,12 +62,12 @@ equality.
 
 ``` r
 models <- list(
-"More Constrained" = 
+"More Constrained" =
   "y ~ c(a, a, a)*1         # Means
-   y ~ c(b, b, b)*preC      # Covariate
+   y ~ c(b, b, b)*preC      # Regression slopes
    y ~~ c(e, e, e)*y        # Variances",
 
-"Less Constrained" = 
+"Less Constrained" =
   "y ~ c(a1, a2, a3)*1
    y ~ c(b, b, b)*preC
    y ~~ c(e, e, e)*y"
@@ -89,40 +89,41 @@ lapply(fit, summary)
 ```
 
 The “SEM” sections of Table 21.2 show the means, pooled error variances,
-and the $\upchi$<sup>2</sup> test.
+and the $\upchi$<sup>2</sup> test; the footnote to Table 21.2 gives the
+regression coefficients.
 
-Scroll through the summaries to find the “Intercepts”, or extract the
-means from the list of estimates of model parameters.
+Scroll through the summaries to find the “Intercepts”, “Variances”, and
+“Regressions”; or extract them from the list of estimates of model
+parameters.
 
 ``` r
-estimates <- lapply(fit, lavInspect, "est"); estimates    # Means are in element "alpha"
+# Get list of estimates
+estimates <- lapply(fit, lavInspect, "est"); estimates    
 
+# Extract means - in element "alpha"
 means <- list()
-for (i in names(models)) {
+for (i in names(models))
    means[[i]] <- estimates[[i]] |>
-      lapply("[[", "alpha") |>        # Means for Y and preC
-      lapply("[[", 1) |>              # Means for Y
-      unlist()
-   }   
-means
+      lapply("[[", "alpha") |>       # Means for Y and preC
+      sapply("[[", 1)                # Means for Y
+means <- do.call(cbind, means); means
+
+# Extract error variances -  in element "psi"
+ErrorVar <- list()
+for (i in names(models))
+   ErrorVar[[i]] <- estimates[[i]] |>
+      lapply("[[", "psi")  |>        # Extract "psi" element
+      sapply("[[", 1, 1)             # 1st row, 1st column of "psi"
+ErrorVar <- do.call(cbind, ErrorVar); ErrorVar
+
+# Extract regression coefficients -  in element "beta"
+RegCoef <- list()
+for (i in names(models))
+   RegCoef[[i]] <- estimates[[i]] |>
+      lapply("[[", "beta")  |>       # Extract "beta" element
+      sapply("[[", 1, 2)             # 1st row, 2nd column of "beta"
+RegCoef <- do.call(cbind, RegCoef); RegCoef
 ```
-
-Compare with the means in the “SEM” section of Table 21.2.
-
-The pooled error variances are also extracted from the list of
-estimates. Recall that error variances are constrained to equality, and
-therefore, the estimates for one group only (here, group “a”) are
-extracted.
-
-``` r
-ErrorVar <- estimates |>
-   lapply("[[", "a") |>          # Extract group "a" estimates
-   lapply("[[", "psi")  |>       # Extract "psi" element
-   lapply("[[", 1, 1)            # 1st column, 1st row of "psi"
-ErrorVar
-```
-
-Compare with pooled error variances in Table 21.2.
 
 To perform the $\upchi$<sup>2</sup> test (to compare the fit of the two
 models), apply the `anova()` function to the two models.
@@ -142,9 +143,9 @@ sample size will cancel out; that is, substitute the error variances
 into Equation 21.9.
 
 ``` r
-Rsquare <- ErrorVar |>
-   Reduce(function(mc, lc) (mc - lc)/mc, x = _)  # Substitute into Eq 21.9  
-c(Rsquare)
+Rsquare <- ErrorVar["a", ] |>
+   Reduce(function(mc, lc) (mc - lc)/mc, x = _)  # Substitute into Eq 21.9
+Rsquare
 ```
 
 <br />

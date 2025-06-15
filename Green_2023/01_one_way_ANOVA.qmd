@@ -3,7 +3,7 @@ title: "One-Way ANOVA"
 highlight-style: solarized
 code-block-border-left: "#FCC251"
 
-format: 
+format:
   html: default
   gfm: default
 ---
@@ -17,28 +17,28 @@ h1, h2, h3, h4 {
 ```{r echo = FALSE, eval = FALSE}
 
 
-## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling 
+## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 ```
 
 Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling approaches for analyzing means. In R. Hoyle (Ed.), *Handbook of structural equation modeling* (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 
-<br /> 
+<br />
 
 Thompson, Liu & Green (TLG) show an ordinary least squares (OLS) regression approach and a structural equation modeling (SEM) approach to:
 
- 1. One-way ANOVA 
- 2. One-way ANCOVA 
- 3. Two-way ANOVA 
- 4. One-way MANOVA 
- 5. One-way ANOVA of a latent variable 
+ 1. One-way ANOVA
+ 2. One-way ANCOVA
+ 3. Two-way ANOVA
+ 4. One-way MANOVA
+ 5. One-way ANOVA of a latent variable
 
-This example shows the SEM approach to Part 1: One-way ANOVA. Results are reported in Table 21.1 (p. 389). For the regression approach, see the `Regressions` folder.
+This example shows the SEM approach to Part 1: One-way ANOVA. Results are reported in Table 21.1 (p. 389). For a regression approach, see the `Regressions` folder.
 
 The data (`satisfactionI.csv` in the `data` folder) are described at the top of page 388. The data file needs manipulation before it can be used: the format needs to be changed from "long" to "wide". These manipulations are completed in `ANOVA_data.r`.
 
-<br /> 
+<br />
 
 #### Load relevant packages and get the data
 
@@ -59,9 +59,9 @@ head(df)
 The variables used in this example are:
 
  - x - Coping Strategy ("a" - no strategy; "b" - discussion; "c" - exercise) 
- - y - dependent variable ("after" self-satisfaction scores) 
+ - y - dependent variable ("after" self-satisfaction scores)
 
-<br /> 
+<br />
 
 ### Structural Equation Modeling using **lavaan**
 
@@ -71,24 +71,24 @@ The SEM model for one-way ANOVA is shown in Fig 21.1 (p. 391), and is reproduced
 
 Two models are fitted. The model statements are shown below. The "More Constrained" model constrains the means (each with the same label "a") to equality. The "Less Constrained" model allows the means (represented by the labels "a1", "a2", and "a3") to differ across the groups. (Alternatively, this line could have been writted as `y ~ 1`; that is, with no label, the means are freely estimated in each group. I leave the labels in to be consistent with the diagram of the model.) In both models the residual variances (each with the same label "e") are constrained to equality.
 
-In what follows, I use lists. The model statements are placed into a list, then I use the `lapply()` function to perform operations on each element in the list (such as `sem()` to run the analyses, or `summary()` to return summaries of the analyses, or `[[` to extract elements); and I use the `Reduce()` function when I need to perform operations across the two models (such as `anova()` to constrast the fit of the two models). 
+In what follows, I use lists. The model statements are placed into a list, then I use the `lapply()` or `sapply()` function to perform operations on each element in the list (such as `sem()` to run the analyses, or `summary()` to return summaries of the analyses, or `[[` to extract elements); and I use the `Reduce()` function when I need to perform operations across the two models (such as `anova()` to constrast the fit of the two models). 
 
 ```{r echo = c(-3:-1), eval = FALSE}
 
 ### One-way ANOVA - SEM
 ## Check results with "SEM" section of Table 21.1
 models <- list(
-  "More Constrained" = 
+  "More Constrained" =
     "y ~ c(a, a, a)*1      # Means
      y ~~ c(e, e, e)*y     # Variances",
 
-  "Less Constrained" = 
+  "Less Constrained" =
     "y ~ c(a1, a2, a3)*1
      y ~~ c(e, e, e)*y"
 )
 ```
 
-<br /> 
+<br />
 
 #### Fit the models and get the results
 
@@ -105,38 +105,33 @@ lapply(fit, summary)
 
 The "SEM" sections of Table 21.1 show the means, pooled error variances, and the $\upchi$^2^ test.
 
-The summaries show the "Intercepts" (that is, the estimated means) for each "Coping Strategy" group for both models. Compare with the means in the SEM section in Table 21.1.
+The summaries show "Intercepts" (that is, the estimated means) and "Variances" (that is, the error variances) for each "Coping Strategy" group for both models. Compare with means and pooled error variances in the SEM section in Table 21.1.
 
-Rather than, or perhaps, as well as, searching through the model summaries for the means, the means can be extracted from a list of estimates of model parameters.
+Rather than, or perhaps, as well as, searching through the model summaries for the means and variances, they can be extracted from a list of estimates of model parameters.
 
-```{r echo = c(-6:-5, -2:-1), eval = FALSE}
+```{r echo = c(-2:-1), eval = FALSE}
 
-## Get the list of estimates
-estimates <- lapply(fit, lavInspect, "est"); estimates    # Means are in element "nu"
+## Extract means and variances from list of estimates
+# Get list of estimates
+estimates <- lapply(fit, lavInspect, "est"); estimates
 
-## Extract the means
-## Check with means in Table 21.1
+# Extract means - in element "nu"
 means <- list()
-for (i in names(models)) 
+for (i in names(models)) {
    means[[i]] <- estimates[[i]] |>
-      lapply("[[", "nu")  |>       # Extract the means
-      unlist()
-means
+      sapply("[[", "nu")
+}
+means <- do.call(cbind, means); means
+
+# Extract error variances - in element "theta"
+ErrorVar <- list()
+for (i in names(models)) {
+   ErrorVar[[i]] <- estimates[[i]] |>
+      sapply("[[", "theta")
+}
+ErrorVar <- do.call(cbind, ErrorVar); ErrorVar
 ```
 
-The pooled error variances can also be extracted from the list of estimates. Recall that error variances are constrained to equality, and therefore, the estimates for one group only (here, group "a") are extracted.
-
-```{r echo = -3:-1, eval = FALSE}
-
-## Extract error variances from estimates - Variances are in element "theta"
-## Check with pooled error variances in Table 21.1
-ErrorVar <- estimates |>
-   lapply("[[", "a") |>           # Extract estimates for group "a"
-   lapply("[[", "theta")          # Extract "theta" element
-ErrorVar
-```
-
-Compare with pooled error variances in Table 21.1.
 
 To perform the $\upchi$^2^ test (to compare the fit of the two models), apply the `anova()` function to the two models. 
 
@@ -157,14 +152,15 @@ On page 390, TLG give model fit statistics for both models. These are available 
 ## Check with values on page 390
 ## First, a function to extract chi squares
 GetFit <- function(fit) {
-   tab = fitMeasures(fit, c("chisq", "df", "pvalue"))
-   tab = round(data.frame(tab), 3) 
+   tab <- fitMeasures(fit, c("chisq", "df", "pvalue"))
+   tab <- round(tab, 3) 
+   return(tab)
 }
 
-lapply(fit, GetFit)
+sapply(fit, GetFit)
 ```
 
-Note: Neither model fits well. 
+Note: Neither model fits well.
 
 TLG mention the calculation for R^2^ (p. 390). The relevant SSEs can be obtained from the error variances (see `ErrorVar`) by multiplying error variance by sample size. However, note that multiplication is not needed because sample size will cancel out; that is, substitute the error variances into Equation 21.4.
 
@@ -172,12 +168,12 @@ TLG mention the calculation for R^2^ (p. 390). The relevant SSEs can be obtained
 
 ## R square
 ## Check with Equation 21.4
-Rsquare <- ErrorVar |>
+Rsquare <- ErrorVar["a", ] |>
    Reduce(function(mc, lc) (mc - lc)/mc, x = _)  # Substitute into Eq 21.4  
-c(Rsquare)
+Rsquare
 ```
 
-<br /> 
+<br />
 
 #### Relaxing assumption of homogeneity of variances
 
@@ -206,9 +202,9 @@ fit <- lapply(models, sem, data = df, group = "x", estimator = "mlm")
 lapply(fit, summary)
 ```
 
-This time, the "Less Constrained" model is just identified - a perfect fit. 
+This time, the "Less Constrained" model is just identified - a perfect fit.
 
-<br /> 
+<br />
 
 ```{r, echo = FALSE, include = FALSE, eval = TRUE, purl = FALSE}
 input <- knitr::current_input()
@@ -216,4 +212,4 @@ output <- "01_one_way_ANOVA.r"
 knitr::purl(input, output, documentation = 0, quiet = TRUE)
 ```
 
-The R script with minimal commenting is available in [`{r} noquote(output)`](`{r} noquote(output)`). 
+The R script with minimal commenting is available in [`{r} noquote(output)`](`{r} noquote(output)`).

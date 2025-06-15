@@ -3,7 +3,7 @@ title: "One-Way MANOVA"
 highlight-style: solarized
 code-block-border-left: "#FCC251"
 
-format: 
+format:
   html: default
   gfm: default
 ---
@@ -15,7 +15,7 @@ h1, h2, h3, h4 {
 ```
 
 ```{=html}
-<style> 
+<style>
 .math.inline .MathJax {
   font-size: 98% !important;
 }
@@ -29,21 +29,21 @@ h1, h2, h3, h4 {
 ```{r echo = FALSE, eval = FALSE}
 
 
-## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling 
+## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 ```
 
 Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling approaches for analyzing means. In R. Hoyle (Ed.), *Handbook of structural equation modeling* (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 
-<br /> 
+<br />
 
 This example shows the SEM approach to Part 4: One-way MANOVA. Results are reported in Table 21.5 (p. 399).
 
 The data file (`satisfactionII.csv`) is in the `data` folder.
 
 
-<br /> 
+<br />
 
 #### Load package and get the data
 
@@ -61,14 +61,14 @@ head(df)
 
 The variables used in this example are:
 
- - x - Coping Strategy ("a" - no strategy; "b" - discussion; "c" - exercise) 
+ - x - Coping Strategy ("a" - no strategy; "b" - discussion; "c" - exercise)
  - y1, y2, y3, y4 - multiple dependent variables (life-satisfaction scores)
 
-<br /> 
+<br />
 
 ### Structural Equation Modeling using **lavaan**
 
-The SEM model for the one-way MANOVA is shown in Fig 21.2 (p. 400), and is reproduced below. The diagram shows the "Less Constrained" model. The means are represented by the labels on the arrows connecting the "1" to the dependent variables. The means for each variable are allowed to differ across the groups. The residual variances and covariances are constrained to equality. 
+The SEM model for the one-way MANOVA is shown in Fig 21.2 (p. 400), and is reproduced below. The diagram shows the "Less Constrained" model. The means are represented by the labels on the arrows connecting the "1" to the dependent variables. The means for each variable are allowed to differ across the groups. The residual variances and covariances are constrained to equality.
 
 ![](images/one_way_MANOVA.svg){fig-align="left"}
 
@@ -80,7 +80,7 @@ The model statements are shown below. The "More Constrained" model constrains th
 # Model statements
 
 # Variances and covariances (for both models)
-vcov = 
+vcov <-
    "y1 ~~ c(e1, e1, e1)*y1
     y2 ~~ c(e2, e2, e2)*y2
     y3 ~~ c(e3, e3, e3)*y3
@@ -100,21 +100,21 @@ models <- list(
     y2 ~ c(a2, a2, a2)*1
     y3 ~ c(a3, a3, a3)*1
     y4 ~ c(a4, a4, a4)*1",
-	
+
 	vcov),
-	
+
 "Less Constrained" =  c(
 # Means
    "y1 ~ c(a1, b1, c1)*1
     y2 ~ c(a2, b2, c2)*1
     y3 ~ c(a3, b3, c3)*1
     y4 ~ c(a4, b4, c4)*1",
-	
+
 	vcov)
 )
 ```
 
-<br /> 
+<br />
 
 #### Fit the models and get the results
 
@@ -125,7 +125,7 @@ models <- list(
 fit <- lapply(models, sem, data = df, group = "x")
 
 # Get model summaries
-lapply(fit, summary)        # Means are "Intercepts"
+lapply(fit, summary)
 
 # Contrast model fits
 Reduce(anova, fit)
@@ -133,21 +133,21 @@ Reduce(anova, fit)
 
 The "SEM" section of Table 21.5 shows the $\upchi$^2^ test.
 
-Scroll through the summaries to find the "Intercepts", or extract the means from the list of estimates of model parameter.
+Scroll through the summaries to find the "Intercepts", or extract them from the list of estimates of model parameter.
 
 ```{r echo = c(-2:-1), eval = FALSE}
 
-## To extrat the means
-(estimates <- lapply(fit, lavInspect, "est"))    # Note: means are in element "nu"
+## Extract means from list of estimates
+# Get list of estimates
+estimates <- lapply(fit, lavInspect, "est"); estimates
 
+# Extract means - in element "nu"
 means <- list()
-for (i in names(models)) { 
+for (i in names(models)) {
    means[[i]] = estimates[[i]] |>
-      lapply("[[", "nu") |>
-      do.call(cbind, args = _) |>
-      t() |>
+      sapply("[[", "nu") |>
       round(2)
-   row.names(means[[i]]) = c("a", "b", "c")
+   row.names(means[[i]]) = c("Y1", "Y2", "Y3", "Y4")
       }
 means
 ```
@@ -159,7 +159,7 @@ By way of completeness, get the error SSCP matrices. (TLG state that, "the error
 ```{r echo = c(-2:-1), eval = FALSE}
 
 ## Get the error SSCP matrices by hand
-# Note: In the list of estimates, variances and covariances are in element "theta"
+# Note: In the list of estimates, (co)variances are in element "theta"
    E = estimates |>
    lapply("[[", "a") |>           # Extract estimates for group "a"
    lapply("[[", "theta") |>       # Extract "theta" element
@@ -168,11 +168,11 @@ By way of completeness, get the error SSCP matrices. (TLG state that, "the error
 E
 ```
 
-<br /> 
+<br />
 
 ### Relax homogeneity of variances and covariances assumption
 
-Towards the end of the section headed "Avoiding OLS assumptions for ANOVA/MANOVA designs using SEM" (pp. 398-401), TGL present the results for models in which the assumptions of homogeneity and normality are relaxed. That is, variances and covariances are not constrained to equality, and a robust ML method of estimation (MLM) is employed. Again, the variances and covariances are set up separately, then added back into each model. This time, there are no labels for the variances and covariances, meaning that **lavaan** will estimate each variance and covariance for each group.  
+Towards the end of the section headed "Avoiding OLS assumptions for ANOVA/MANOVA designs using SEM" (pp. 398-401), TGL present the results for models in which the assumptions of homogeneity and normality are relaxed. That is, variances and covariances are not constrained to equality, and a robust ML method of estimation (MLM) is employed. Again, the variances and covariances are set up separately, then added back into each model. This time, there are no labels for the variances and covariances, meaning that **lavaan** will estimate each variance and covariance for each group.
 
 ```{r echo = c(-3:-1), eval = FALSE}
 
@@ -181,7 +181,7 @@ Towards the end of the section headed "Avoiding OLS assumptions for ANOVA/MANOVA
 # Model statements
 
 # Variances and covariances (for both models)
-vcov = "
+vcov <- "
    y1 ~~ y1 + y2 + y3 + y4
    y2 ~~ y2 + y3 + y4
    y3 ~~ y3 + y4
@@ -195,7 +195,7 @@ models <- list(
     y2 ~ c(a2, b2, c2)*1
     y3 ~ c(a3, b3, c3)*1
     y4 ~ c(a4, b4, c4)*1",
-	
+
     vcov),
 
 "More Constrained" = c(
@@ -204,11 +204,11 @@ models <- list(
     y2 ~ c(a2, a2, a2)*1
     y3 ~ c(a3, a3, a3)*1
     y4 ~ c(a4, a4, a4)*1",
-	
+
 	vcov)
 )
 
-# Fit the models 
+# Fit the models
 fit <- lapply(models, sem, data = df, estimator = "mlm", group = "x")
 
 # Get model summaries
@@ -218,9 +218,9 @@ lapply(fit, summary)
 Reduce(anova, fit)
 ```
 
-Compare with the $\upchi$^2^ test on page 401. 
+Compare with the $\upchi$^2^ test on page 401.
 
-<br /> 
+<br />
 
 ```{r, echo = FALSE, include = FALSE, eval = TRUE, purl = FALSE}
 input <- knitr::current_input()
@@ -228,4 +228,4 @@ output <- "04_one_way_MANOVA.r"
 knitr::purl(input, output, documentation = 0, quiet = TRUE)
 ```
 
-The R script with minimal commenting is available in [`{r} noquote(output)`](`{r} noquote(output)`). 
+The R script with minimal commenting is available in [`{r} noquote(output)`](`{r} noquote(output)`).

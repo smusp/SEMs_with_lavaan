@@ -83,7 +83,7 @@ Standardised residuals will give the direction of the relationship
 (p. 394).
 
 ``` r
-chisq.test(df$g, df$x)$stdres 
+chisq.test(df$g, df$x)$stdres
 ```
 
 <br />
@@ -109,7 +109,7 @@ apply(means, 2, mean)      # Coping Strategy
  
 # Weighted marginal means
 tapply(df$y, df$g, mean)     # Gender
-tapply(df$y, df$x, mean)     # Coping Strategy   
+tapply(df$y, df$x, mean)     # Coping Strategy
 ```
 
 <br />
@@ -128,7 +128,7 @@ The model statements are shown below. The “Less Constrained” model
 allows the means (represented by the labels, am, af, …, cf) to differ
 across the groups. The constraints statements are added to the “Less
 Constrained” statement to give the “More Constrained” models. The “More
-Constrained” models are constrasted with the “Less Constrained” model to
+Constrained” models are contrasted with the “Less Constrained” model to
 test for the Gender and Coping Strategy main effects (weighted and
 unweighted) and the Gender X Coping Strategy interaction. In each case
 the residual variances are constrained to equality.
@@ -160,8 +160,6 @@ strategy equals the difference between “female” mean and “male” mean for
 the “c” strategy.
 
 ``` r
-unique(df$sg)    # Order in which groups appear in lavaan output
-
 # Less Constrained model
 lc <- "y ~ c(am, af, bm, bf, cm, cf)*1       # Means
        y ~~ c(e, e, e, e, e, e)*y            # Variances"
@@ -193,7 +191,7 @@ anova(strat_unw.fit, lc.fit)   # Compare the two models
 
 
 # Gender main effect - weighted means
-freq                     # To assist with constructing constraints 
+freq                     # To assist with constructing constraints
 constraints <- "(3*af + 3*bf + 6*cf)/12 == (6*am + 3*bm + 3*cm)/12"
 gend_w = c(lc, constraints)
 

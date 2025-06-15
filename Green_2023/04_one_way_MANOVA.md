@@ -1,7 +1,7 @@
 # One-Way MANOVA
 
 
-<style> 
+<style>
 .math.inline .MathJax {
   font-size: 98% !important;
 }
@@ -66,7 +66,7 @@ added back into each model. Saves a little typing.
 # Model statements
 
 # Variances and covariances (for both models)
-vcov = 
+vcov <-
    "y1 ~~ c(e1, e1, e1)*y1
     y2 ~~ c(e2, e2, e2)*y2
     y3 ~~ c(e3, e3, e3)*y3
@@ -86,16 +86,16 @@ models <- list(
     y2 ~ c(a2, a2, a2)*1
     y3 ~ c(a3, a3, a3)*1
     y4 ~ c(a4, a4, a4)*1",
-    
+
     vcov),
-    
+
 "Less Constrained" =  c(
 # Means
    "y1 ~ c(a1, b1, c1)*1
     y2 ~ c(a2, b2, c2)*1
     y3 ~ c(a3, b3, c3)*1
     y4 ~ c(a4, b4, c4)*1",
-    
+
     vcov)
 )
 ```
@@ -109,7 +109,7 @@ models <- list(
 fit <- lapply(models, sem, data = df, group = "x")
 
 # Get model summaries
-lapply(fit, summary)        # Means are "Intercepts"
+lapply(fit, summary)
 
 # Contrast model fits
 Reduce(anova, fit)
@@ -117,20 +117,20 @@ Reduce(anova, fit)
 
 The “SEM” section of Table 21.5 shows the $\upchi$<sup>2</sup> test.
 
-Scroll through the summaries to find the “Intercepts”, or extract the
-means from the list of estimates of model parameter.
+Scroll through the summaries to find the “Intercepts”, or extract them
+from the list of estimates of model parameter.
 
 ``` r
-(estimates <- lapply(fit, lavInspect, "est"))    # Note: means are in element "nu"
+# Get list of estimates
+estimates <- lapply(fit, lavInspect, "est"); estimates
 
+# Extract means - in element "nu"
 means <- list()
-for (i in names(models)) { 
+for (i in names(models)) {
    means[[i]] = estimates[[i]] |>
-      lapply("[[", "nu") |>
-      do.call(cbind, args = _) |>
-      t() |>
+      sapply("[[", "nu") |>
       round(2)
-   row.names(means[[i]]) = c("a", "b", "c")
+   row.names(means[[i]]) = c("Y1", "Y2", "Y3", "Y4")
       }
 means
 ```
@@ -143,7 +143,7 @@ variances and covariances in the SEM output by the total sample size”
 p. 398).
 
 ``` r
-# Note: In the list of estimates, variances and covariances are in element "theta"
+# Note: In the list of estimates, (co)variances are in element "theta"
    E = estimates |>
    lapply("[[", "a") |>           # Extract estimates for group "a"
    lapply("[[", "theta") |>       # Extract "theta" element
@@ -170,7 +170,7 @@ covariance for each group.
 # Model statements
 
 # Variances and covariances (for both models)
-vcov = "
+vcov <- "
    y1 ~~ y1 + y2 + y3 + y4
    y2 ~~ y2 + y3 + y4
    y3 ~~ y3 + y4
@@ -184,7 +184,7 @@ models <- list(
     y2 ~ c(a2, b2, c2)*1
     y3 ~ c(a3, b3, c3)*1
     y4 ~ c(a4, b4, c4)*1",
-    
+
     vcov),
 
 "More Constrained" = c(
@@ -193,11 +193,11 @@ models <- list(
     y2 ~ c(a2, a2, a2)*1
     y3 ~ c(a3, a3, a3)*1
     y4 ~ c(a4, a4, a4)*1",
-    
+
     vcov)
 )
 
-# Fit the models 
+# Fit the models
 fit <- lapply(models, sem, data = df, estimator = "mlm", group = "x")
 
 # Get model summaries
