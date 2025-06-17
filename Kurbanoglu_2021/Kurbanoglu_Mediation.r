@@ -1,6 +1,6 @@
 
 
-## Kurbanoglu, N. & Takunyaci, M. (2021). A structural equation modeling 
+## Kurbanoglu, N. & Takunyaci, M. (2021). A structural equation modeling
 ## on relationship between self-efficacy, physics laboratory anxiety
 ## and attitudes. Journal of Family, Counseling and Education, 6(1), 47-56.
 
@@ -15,9 +15,9 @@ cor <- c(
    1,
    0.30,  1,
   -0.42, -0.32,  1)
-sds <- c(8.81, 7.95, 18.30)
+sds   <- c(8.81, 7.95, 18.30)
 means <- c(56.57, 40.39, 68.22)
-n <- 513
+n     <- 513
 
 
 ## Get the variable names
@@ -52,7 +52,7 @@ summary(fit, rsquare = TRUE, standardized = TRUE, fit.measures = TRUE)
 
 
 ## To get the intercepts
-fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n, 
+fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n,
    sample.mean = means)
 summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
 

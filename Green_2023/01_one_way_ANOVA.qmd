@@ -58,20 +58,20 @@ head(df)
 
 The variables used in this example are:
 
- - x - Coping Strategy ("a" - no strategy; "b" - discussion; "c" - exercise) 
+ - x - Coping Strategy ("a" - no strategy; "b" - discussion; "c" - exercise)
  - y - dependent variable ("after" self-satisfaction scores)
 
 <br />
 
 ### Structural Equation Modeling using **lavaan**
 
-The SEM model for one-way ANOVA is shown in Fig 21.1 (p. 391), and is reproduced below. The diagram shows the "Less Constrained" model - the three means, represented by the label on the arrows connecting the "1" to the dependent variable, differ. To be consistent with the ANOVA assumption of homogeneity of variances, the residual variances are constrained to be equal. 
+The SEM model for one-way ANOVA is shown in Fig 21.1 (p. 391), and is reproduced below. The diagram shows the "Less Constrained" model - the three means, represented by the label on the arrows connecting the "1" to the dependent variable, differ. To be consistent with the ANOVA assumption of homogeneity of variances, the residual variances are constrained to be equal.
 
 ![](images/one_way_ANOVA.svg){fig-align="left"}
 
 Two models are fitted. The model statements are shown below. The "More Constrained" model constrains the means (each with the same label "a") to equality. The "Less Constrained" model allows the means (represented by the labels "a1", "a2", and "a3") to differ across the groups. (Alternatively, this line could have been writted as `y ~ 1`; that is, with no label, the means are freely estimated in each group. I leave the labels in to be consistent with the diagram of the model.) In both models the residual variances (each with the same label "e") are constrained to equality.
 
-In what follows, I use lists. The model statements are placed into a list, then I use the `lapply()` or `sapply()` function to perform operations on each element in the list (such as `sem()` to run the analyses, or `summary()` to return summaries of the analyses, or `[[` to extract elements); and I use the `Reduce()` function when I need to perform operations across the two models (such as `anova()` to constrast the fit of the two models). 
+In what follows, I use lists. The model statements are placed into a list, then I use the `lapply()` or `sapply()` function to perform operations on each element in the list (such as `sem()` to run the analyses, or `summary()` to return summaries of the analyses, or `[[` to extract elements); and I use the `Reduce()` function when I need to perform operations across the two models (such as `anova()` to constrast the fit of the two models).
 
 ```{r echo = c(-3:-1), eval = FALSE}
 
@@ -79,11 +79,11 @@ In what follows, I use lists. The model statements are placed into a list, then 
 ## Check results with "SEM" section of Table 21.1
 models <- list(
   "More Constrained" =
-    "y ~ c(a, a, a)*1      # Means
+    "y ~  c(a, a, a)*1     # Means
      y ~~ c(e, e, e)*y     # Variances",
 
   "Less Constrained" =
-    "y ~ c(a1, a2, a3)*1
+    "y ~  c(a1, a2, a3)*1
      y ~~ c(e, e, e)*y"
 )
 ```
@@ -92,11 +92,11 @@ models <- list(
 
 #### Fit the models and get the results
 
-The `lapply()` function applies the `sem()` function to the two elements of the `models` list (with `data` set to `df`, and `group` set to the `"x"` variable). 
+The `lapply()` function applies the `sem()` function to the two elements of the `models` list (with `data` set to `df`, and `group` set to the `"x"` variable).
 
 ```{r echo = c(-5, -2:-1), eval = FALSE}
 
-## Fit the models 
+## Fit the models
 fit <- lapply(models, sem, data = df, group = "x")
 
 ## Get model summaries
@@ -133,7 +133,7 @@ ErrorVar <- do.call(cbind, ErrorVar); ErrorVar
 ```
 
 
-To perform the $\upchi$^2^ test (to compare the fit of the two models), apply the `anova()` function to the two models. 
+To perform the $\upchi$^2^ test (to compare the fit of the two models), apply the `anova()` function to the two models.
 
 ```{r echo = -3:-1, eval = FALSE}
 
@@ -153,7 +153,7 @@ On page 390, TLG give model fit statistics for both models. These are available 
 ## First, a function to extract chi squares
 GetFit <- function(fit) {
    tab <- fitMeasures(fit, c("chisq", "df", "pvalue"))
-   tab <- round(tab, 3) 
+   tab <- round(tab, 3)
    return(tab)
 }
 
@@ -169,7 +169,7 @@ TLG mention the calculation for R^2^ (p. 390). The relevant SSEs can be obtained
 ## R square
 ## Check with Equation 21.4
 Rsquare <- ErrorVar["a", ] |>
-   Reduce(function(mc, lc) (mc - lc)/mc, x = _)  # Substitute into Eq 21.4  
+   Reduce(function(mc, lc) (mc - lc)/mc, x = _)  # Substitute into Eq 21.4
 Rsquare
 ```
 
@@ -183,17 +183,17 @@ TLG do not run these models though they make reference to them. The model statem
 
 ## Relax homogeneity of variances assumption
 models <- list(
-  "More Constrained" = 
-    "y ~ c(a, a, a)*1          # Means
+  "More Constrained" =
+    "y ~  c(a, a, a)*1         # Means
      y ~~ c(e1, e2, e3)*y      # Variances",
 
-  "Less Constrained" = 
-    "y ~ c(a1, a2, a3)*1
+  "Less Constrained" =
+    "y ~  c(a1, a2, a3)*1
      y ~~ c(e1, e2, e3)*y"
 )
 ```
 
-Run the models and get the summaries. In this analysis I use the "mlm" estimator, a robust ML estimator; that is, the normality assumption is relaxed also.  
+Run the models and get the summaries. In this analysis I use the "mlm" estimator, a robust ML estimator; that is, the normality assumption is relaxed also.
 
 ```{r echo = -2:-1, eval = FALSE}
 

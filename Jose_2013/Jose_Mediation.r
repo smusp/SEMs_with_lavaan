@@ -1,7 +1,7 @@
 
 
 ## Chapter 3 (Basic Mediation, pp. 43-92) in
-## Jose, P. (2013). Doing statistical mediation and moderation. 
+## Jose, P. (2013). Doing statistical mediation and moderation.
 ## New York, NY: Guilford Press.
 
 
@@ -26,7 +26,7 @@ model <- "
 
   # effects via the mediator
   grat ~ a * ple
-  shs ~  b * grat
+  shs  ~  b * grat
 
   # indirect effect (a*b)
   indirect := a * b

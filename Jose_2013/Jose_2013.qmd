@@ -3,7 +3,7 @@ title: "Three-variable mediation with cross-sectional data"
 highlight-style: solarized
 code-block-border-left: "#FCC251"
 
-format: 
+format:
   html: default
   gfm: default
 ---
@@ -18,13 +18,13 @@ h1, h2, h3, h4 {
 
 
 ## Chapter 3 (Basic Mediation, pp. 43-92) in
-## Jose, P. (2013). Doing statistical mediation and moderation. 
+## Jose, P. (2013). Doing statistical mediation and moderation.
 ## New York, NY: Guilford Press.
 ```
 
 Jose, P. (2013). *Doing statistical mediation and moderation*. New York, NY: Guilford Press.
 
-<br /> 
+<br />
 
 This example shows how to obtain a basic three-variable mediation analysis using **lavaan** and how to obtain indirect and total effects. In Chapter 3 (Basic Mediation, pp. 43-92), Jose describes a basic mediation model involving three variables: Positive Life Events; Happiness; and Gratitude. Positive Life Events has a direct effect on Happiness, but also Positive Life Events has an indirect effect on Happiness via Gratitude.
 
@@ -58,11 +58,11 @@ head(dataset)
 summary(dataset)
 ```
 
-The names for the three variables are:  
+The names for the three variables are:
 
-* ple - Positive Life Events 
+* ple  - Positive Life Events
 * grat - Gratitude
-* shs - Happiness 
+* shs  - Happiness
 
 <br />
 
@@ -83,7 +83,7 @@ model <- "
 
   # effects via the mediator
   grat ~ a * ple
-  shs ~  b * grat
+  shs  ~  b * grat
 
   # indirect effect (a*b)
   indirect := a * b
@@ -106,7 +106,7 @@ fit <- sem(model, data = dataset)
 summary(fit, rsquare = TRUE, standardized = TRUE)   # Check with Tables 3.2-3.5
 ```
 
-Jose conducts mediation analysis using regressions. The results are presented in Tables 3.2 to 3.5 (pp. 49-52). The unstandardised and standardised coefficients in the tables agree with the **lavaan** output. 
+Jose conducts mediation analysis using regressions. The results are presented in Tables 3.2 to 3.5 (pp. 49-52). The unstandardised and standardised coefficients in the tables agree with the **lavaan** output.
 
 The regression summary tables show the constants (that is, the intercepts). If intercepts are required, include `meanstructure = TRUE` in the `sem()` function.
 
@@ -135,4 +135,4 @@ output <- "Jose_Mediation.r"
 knitr::purl(input, output, documentation = 0, quiet = TRUE)
 ```
 
-The R script with minimal commenting is available in [`{r} noquote(output)`](`{r} noquote(output)`). 
+The R script with minimal commenting is available in [`{r} noquote(output)`](`{r} noquote(output)`).

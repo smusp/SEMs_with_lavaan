@@ -65,10 +65,10 @@ library(lavaan)
 
 LISREL script in Appendix A (pp. 71-72) gives correlations, standard
 deviations, means, and sample sizes for each group. From these, the
-variance-covariance matrices for each group can be obtained. The means,
-standard deviations, and correlations are entered as vectors. In
-Appendix A, only the lower triangle of correlations is presented with
-ones along the diagonal; and that is all that is needed here.
+co/variance matrices for each group can be obtained. The means, standard
+deviations, and correlations are entered as vectors. In Appendix A, only
+the lower triangle of correlations is presented with ones along the
+diagonal; and that is all that is needed here.
 
 ``` r
 # 7th grade
@@ -81,8 +81,8 @@ cor7 <- c(
   -0.02222, -0.05180, -0.10250,  0.81616,  0.81076,  1.00000)
 
 mean7 <- c(3.13552, 2.99061, 3.06945, 1.70069, 1.52705, 1.54483)
-sd7 <- c(0.66770, 0.68506, 0.70672, 0.71418, 0.66320, 0.65276)
-n7 <- 380
+sd7   <- c(0.66770, 0.68506, 0.70672, 0.71418, 0.66320, 0.65276)
+n7    <- 380
 
 # 8th grade
 cor8 <- c(
@@ -94,8 +94,8 @@ cor8 <- c(
   -0.29342, -0.21022, -0.30553,  0.79952,  0.83156,  1.00000)
 
 mean8 <- c(3.07338, 2.84716, 2.97882, 1.71700, 1.57955, 1.55001)
-sd8 <- c(0.70299, 0.71780, 0.76208, 0.65011, 0.60168, 0.61420)
-n8 <- 379
+sd8   <- c(0.70299, 0.71780, 0.76208, 0.65011, 0.60168, 0.61420)
+n8    <- 379
 ```
 
 Variable names are also contained in the LISREL script, but I shorten
@@ -105,22 +105,22 @@ the names a little.
 names = c("pos1", "pos2", "pos3", "neg1", "neg2", "neg3")
 ```
 
-Combine the (co)variances, means, and sample sizes into lists.
+Combine the correlations, means, and sample sizes into lists.
 
 ``` r
-cor <- list("Grade 7" = cor7, "Grade 8" = cor8)
-sd <- list(sd7, sd8)
+cor  <- list("Grade 7" = cor7, "Grade 8" = cor8)
+sd   <- list(sd7, sd8)
 mean <- list(mean7, mean8)
-n <- list(n7, n8)
+n    <- list(n7, n8)
 ```
 
 Use the `getCov()` function from the **lavaan** package to obtain the
-full (co)variance matrix for each group (using the `Map()` function to
+full co/variance matrix for each group (using the `Map()` function to
 apply the `getCov()` function to the lists, and to return the two
-(co)variance matrices in a list).
+co/variance matrices in a list).
 
 ``` r
-cov = Map(getCov, x = cor, sds = sd, names = list(names, names))
+cov <- Map(getCov, x = cor, sds = sd, names = list(names, names))
 ```
 
 <br />
@@ -173,9 +173,9 @@ constructs by `NA`.
 ``` r
 m1 <- "
   # Measurement Model
-  #   - Free the first loading so it can be estimated
+  #   - Free the 1st loading so it can be estimated
   POS =~ NA*pos1 + pos2 + pos3
-  NEG =~ NA*neg1 + neg2 + neg3npp
+  NEG =~ NA*neg1 + neg2 + neg3
 
   # Latent variances and covariance
   #   - Constrain latent variances to 1 in first group
@@ -281,7 +281,7 @@ indicator be `NA`.
 ``` r
 m2c <- "
   # Measurement Model
-  #   - Free the first loading in POS so it can be estimated
+  #   - Free the 1st loading in POS so it can be estimated
   #   - Constrain 3rd loading in POS to 1 in both groups
   #   - Constrain 1st loading in NEG to 1 in both groups
   POS =~ NA*pos1 + pos2 + c(1,1)*pos3
@@ -302,7 +302,7 @@ m2c <- "
   neg2 ~ 1
   neg3 ~ 1
 
-  # Latent means 
+  # Latent means
   POS ~ 1
   NEG ~ 1
 "
@@ -325,7 +325,7 @@ summary(m2c_fit, standardized = TRUE, fit.measures = TRUE)
 
 Compare the output with “Method 2c” in Table 2 (pp. 64-65). <br />
 
-#### **lavaan** default
+#### **Lavaan** default
 
 This is not **lavaan**’s default method of scaling. The default method
 constrains the loadings for the first indicator to one for both
@@ -372,7 +372,7 @@ to be explicitely disabled.
 ``` r
 m3 <- "
   # Measurement Model
-  #   - Free the first loading so it can be estimated
+  #   - Free the 1st loading so it can be estimated
   #   - Label the loadings so they can be used in the constraints
   POS =~ NA*p1*pos1 + p2*pos2 + p3*pos3
   NEG =~ NA*n1*neg1 + n2*neg2 + n3*neg3
@@ -471,7 +471,7 @@ models <- list(
 measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea",
    "rmsea.ci.lower", "rmsea.ci.upper")
 
-# Get fit measures 
+# Get fit measures in a table
 tab = sapply(models, GetFit, measures)
 tab = t(round(tab, 4)); tab
 ```

@@ -3,7 +3,7 @@ title: "Three-variable mediation with summary data"
 highlight-style: solarized
 code-block-border-left: "#FCC251"
 
-format: 
+format:
   html: default
   gfm: default
 ---
@@ -17,16 +17,16 @@ h1, h2, h3, h4 {
 ```{r echo = FALSE, eval = FALSE}
 
 
-## Kurbanoglu, N. & Takunyaci, M. (2021). A structural equation modeling 
+## Kurbanoglu, N. & Takunyaci, M. (2021). A structural equation modeling
 ## on relationship between self-efficacy, physics laboratory anxiety
 ## and attitudes. Journal of Family, Counseling and Education, 6(1), 47-56.
 ```
 
 Kurbanoglu, N. & Takunyaci, M. (2021). A structural equation modeling on relationship between self-efficacy, physics laboratory anxiety and attitudes. *Journal of Family, Counseling and Education*, *6*(1), 47-56.
 
-<br /> 
+<br />
 
-This example shows how to obtain a basic three-variable mediation analysis using **lavaan**, and how to obtain indirect and total effects. The three variables are: Self-Efficacy; Physics Laboratory Attitudes; and Physics Laboratory Anxiety. Self-Efficacy has a direct effect on Anxiety, but also Self-Efficacy has an indirect effect on Anxiety via Attitudes. This example also shows how to use summary data when the raw sample data are not available; in particular, how to obtain a matrix of variances and covariances from the summary data (correlations and standard deviations), and then how to use the co/variance matrix to replicate the analysis. 
+This example shows how to obtain a basic three-variable mediation analysis using **lavaan**, and how to obtain indirect and total effects. The three variables are: Self-Efficacy; Physics Laboratory Attitudes; and Physics Laboratory Anxiety. Self-Efficacy has a direct effect on Anxiety, but also Self-Efficacy has an indirect effect on Anxiety via Attitudes. This example also shows how to use summary data when the raw sample data are not available; in particular, how to obtain a matrix of variances and covariances from the summary data (correlations and standard deviations), and then how to use the co/variance matrix to replicate the analysis.
 
 Except in this case, the results cannot be replicated (see below). There are problems with the paper. Rather than being an examplar, this example is included to show how to run SEM using summary data in order to check published results.
 
@@ -47,7 +47,7 @@ library(semmcci)  # For Monte Carlo CIs
 
 #### Get the data
 
-Sample data are not available, but Table 1 (p. 50) gives correlations, means, and standard deviations, and the sample size is given on page 49. From these, the co/variance matrix can be obtained. The correlations do not need to be in the form of a matrix. All that is required is a vector of the lower triangle of correlations with ones along the diagonal. 
+Sample data are not available, but Table 1 (p. 50) gives correlations, means, and standard deviations, and the sample size is given on page 49. From these, the co/variance matrix can be obtained. The correlations do not need to be in the form of a matrix. All that is required is a vector of the lower triangle of correlations with ones along the diagonal.
 
 ```{r echo = -2:-1, eval = FALSE}
 
@@ -56,16 +56,16 @@ cor <- c(
    1,
    0.30,  1,
   -0.42, -0.32,  1)
-sds <- c(8.81, 7.95, 18.30)
+sds   <- c(8.81, 7.95, 18.30)
 means <- c(56.57, 40.39, 68.22)
-n <- 513
+n     <- 513
 ```
 
 The three variables need names, making sure the order is the same as in Table 1. The names used here are:
 
-* SE - Self-Efficacy  
-* Att - Physics Laboratory Attitudes  
-* Anx - Physics Laboratory Anxiety  
+* SE - Self-Efficacy
+* Att - Physics Laboratory Attitudes
+* Anx - Physics Laboratory Anxiety
 
 ```{r echo = -2:-1, eval = FALSE}
 
@@ -124,14 +124,14 @@ summary(fit, rsquare = TRUE, standardized = TRUE, fit.measures = TRUE)
     ## Check with Figure 1
 ```
 
-I've requested a selection of fit measures. Why fit measures? Afterall, the model is saturated, and all fit measures should indicate a perfect fit. Something has gone awry for K&T. At the bottom of page 50, they state that the model is saturated. As a consequence, $\upchi$^2^ and RMSEA should be zero, and GFI, AGF, CFI, NFI, RFI, and IFI should all be one; yet values are given (p. 50) to indicate a less than perfect fit. I'm not sure how this could have come about, or why the error was not picked up during review. 
+I've requested a selection of fit measures. Why fit measures? Afterall, the model is saturated, and all fit measures should indicate a perfect fit. Something has gone awry for K&T. At the bottom of page 50, they state that the model is saturated. As a consequence, $\upchi$^2^ and RMSEA should be zero, and GFI, AGF, CFI, NFI, RFI, and IFI should all be one; yet values are given (p. 50) to indicate a less than perfect fit. I'm not sure how this could have come about, or why the error was not picked up during review.
 
 If the intercepts are required, include `sample.mean = means` in the `sem()` function.
 
 ```{r echo = -2:-1, eval = FALSE}
 
 ## To get the intercepts
-fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n, 
+fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n,
    sample.mean = means)
 summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
 ```
@@ -152,5 +152,4 @@ output <- "Kurbanoglu_Mediation.r"
 knitr::purl(input, output, documentation = 0, quiet = TRUE)
 ```
 
-The R script with minimal commenting is available in [`{r} noquote(output)`](`{r} noquote(output)`). 
-
+The R script with minimal commenting is available in [`{r} noquote(output)`](`{r} noquote(output)`).

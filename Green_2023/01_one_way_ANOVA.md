@@ -83,11 +83,11 @@ the fit of the two models).
 ``` r
 models <- list(
   "More Constrained" =
-    "y ~ c(a, a, a)*1      # Means
+    "y ~  c(a, a, a)*1     # Means
      y ~~ c(e, e, e)*y     # Variances",
 
   "Less Constrained" =
-    "y ~ c(a1, a2, a3)*1
+    "y ~  c(a1, a2, a3)*1
      y ~~ c(e, e, e)*y"
 )
 ```
@@ -158,7 +158,7 @@ then that function is applied to both models.
 ``` r
 GetFit <- function(fit) {
    tab <- fitMeasures(fit, c("chisq", "df", "pvalue"))
-   tab <- round(tab, 3) 
+   tab <- round(tab, 3)
    return(tab)
 }
 
@@ -175,7 +175,7 @@ is, substitute the error variances into Equation 21.4.
 
 ``` r
 Rsquare <- ErrorVar["a", ] |>
-   Reduce(function(mc, lc) (mc - lc)/mc, x = _)  # Substitute into Eq 21.4  
+   Reduce(function(mc, lc) (mc - lc)/mc, x = _)  # Substitute into Eq 21.4
 Rsquare
 ```
 
@@ -189,12 +189,12 @@ are shown below.
 
 ``` r
 models <- list(
-  "More Constrained" = 
-    "y ~ c(a, a, a)*1          # Means
+  "More Constrained" =
+    "y ~  c(a, a, a)*1         # Means
      y ~~ c(e1, e2, e3)*y      # Variances",
 
-  "Less Constrained" = 
-    "y ~ c(a1, a2, a3)*1
+  "Less Constrained" =
+    "y ~  c(a1, a2, a3)*1
      y ~~ c(e1, e2, e3)*y"
 )
 ```

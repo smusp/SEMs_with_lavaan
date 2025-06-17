@@ -1,7 +1,7 @@
 # Two-Way ANOVA
 
 
-<style> 
+<style>
 .math.display .MathJax {
   font-size: 95% !important;
 }
@@ -97,7 +97,7 @@ Get the cell means and frequencies.
 
 ``` r
 means <- tapply(df$y, list(df$g, df$x), mean); means     # Cell means
-freq <- table(df$g, df$x); freq                          # Cell frequencies
+freq  <- table(df$g, df$x); freq                         # Cell frequencies
 ```
 
 Get the unweighted and weighted marginal means.
@@ -161,7 +161,7 @@ the “c” strategy.
 
 ``` r
 # Less Constrained model
-lc <- "y ~ c(am, af, bm, bf, cm, cf)*1       # Means
+lc <- "y ~  c(am, af, bm, bf, cm, cf)*1      # Means
        y ~~ c(e, e, e, e, e, e)*y            # Variances"
 
 lc.fit <- sem(lc, data = df, group = "sg")
@@ -193,7 +193,7 @@ anova(strat_unw.fit, lc.fit)   # Compare the two models
 # Gender main effect - weighted means
 freq                     # To assist with constructing constraints
 constraints <- "(3*af + 3*bf + 6*cf)/12 == (6*am + 3*bm + 3*cm)/12"
-gend_w = c(lc, constraints)
+gend_w <- c(lc, constraints)
 
 gend_w.fit <- sem(gend_w, data = df, group = "sg")
 summary(gend_w.fit)
@@ -217,7 +217,7 @@ anova(strat_w.fit, lc.fit)   # Compare the two models
 
 # Gender X Coping Strategy interaction
 constraints <- "
-   (af - am) == (bf - bm) 
+   (af - am) == (bf - bm)
    (bf - bm) == (cf - cm)"
 inter <- c(lc, constraints)
 

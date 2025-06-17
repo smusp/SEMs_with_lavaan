@@ -49,16 +49,16 @@ cor <- c(
    1,
    0.30,  1,
   -0.42, -0.32,  1)
-sds <- c(8.81, 7.95, 18.30)
+sds   <- c(8.81, 7.95, 18.30)
 means <- c(56.57, 40.39, 68.22)
-n <- 513
+n     <- 513
 ```
 
 The three variables need names, making sure the order is the same as in
 Table 1. The names used here are:
 
-- SE - Self-Efficacy  
-- Att - Physics Laboratory Attitudes  
+- SE - Self-Efficacy
+- Att - Physics Laboratory Attitudes
 - Anx - Physics Laboratory Anxiety
 
 ``` r
@@ -129,7 +129,7 @@ If the intercepts are required, include `sample.mean = means` in the
 `sem()` function.
 
 ``` r
-fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n, 
+fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n,
    sample.mean = means)
 summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
 ```

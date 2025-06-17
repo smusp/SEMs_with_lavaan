@@ -63,13 +63,13 @@ equality.
 ``` r
 models <- list(
 "More Constrained" =
-  "y ~ c(a, a, a)*1         # Means
-   y ~ c(b, b, b)*preC      # Regression slopes
+  "y ~  c(a, a, a)*1        # Means
+   y ~  c(b, b, b)*preC     # Regression slopes
    y ~~ c(e, e, e)*y        # Variances",
 
 "Less Constrained" =
-  "y ~ c(a1, a2, a3)*1
-   y ~ c(b, b, b)*preC
+  "y ~  c(a1, a2, a3)*1
+   y ~  c(b, b, b)*preC
    y ~~ c(e, e, e)*y"
 )
 ```
@@ -98,7 +98,7 @@ parameters.
 
 ``` r
 # Get list of estimates
-estimates <- lapply(fit, lavInspect, "est"); estimates    
+estimates <- lapply(fit, lavInspect, "est"); estimates
 
 # Extract means - in element "alpha"
 means <- list()

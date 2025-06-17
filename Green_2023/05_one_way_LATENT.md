@@ -166,7 +166,7 @@ estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
    #       latent error variances are in element "psi"
 
 LatentMeans <- sapply(estimates, "[[", "alpha"); LatentMeans
-LatentVar <- sapply(estimates, "[[", "psi"); LatentVar
+LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
 
    # "no strategy" vs "discussion"
 d1 <- (LatentMeans[2] - LatentMeans[1]) / sqrt(LatentVar[1]); d1
@@ -271,7 +271,7 @@ lapply(fit, summary)
 # Get the latent means and latent error variances for "Less Constrained" model
 estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
 LatentMeans <- sapply(estimates, "[[", "alpha"); LatentMeans
-LatentVar <- sapply(estimates, "[[", "psi"); LatentVar
+LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
 
 # Contrast model fits
 Reduce(anova, fit)
@@ -420,7 +420,7 @@ lapply(fit, summary)
 # Get the latent means and latent error variances for "Less Constrained" model
 estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
 LatentMeans <- sapply(estimates, "[[", "alpha"); LatentMeans
-LatentVar <- sapply(estimates, "[[", "psi"); LatentVar
+LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
 
 # Contrast model fits
 Reduce(anova, fit)

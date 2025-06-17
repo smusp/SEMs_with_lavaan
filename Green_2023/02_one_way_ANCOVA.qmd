@@ -72,13 +72,13 @@ The model statements are shown below. The "More Constrained" model constrains th
 ## Check results with "SEM" section of Table 21.2
 models <- list(
 "More Constrained" =
-  "y ~ c(a, a, a)*1         # Means
-   y ~ c(b, b, b)*preC      # Regression slopes
+  "y ~  c(a, a, a)*1        # Means
+   y ~  c(b, b, b)*preC     # Regression slopes
    y ~~ c(e, e, e)*y        # Variances",
 
 "Less Constrained" =
-  "y ~ c(a1, a2, a3)*1
-   y ~ c(b, b, b)*preC
+  "y ~  c(a1, a2, a3)*1
+   y ~  c(b, b, b)*preC
    y ~~ c(e, e, e)*y"
 )
 ```
@@ -87,7 +87,7 @@ models <- list(
 
 #### Fit the models and get the results
 
-The `lapply()` function applies the `sem()` function to the two elements of the `models` list (with `data` set to `df`, and `group` set to the `"x"` variable). 
+The `lapply()` function applies the `sem()` function to the two elements of the `models` list (with `data` set to `df`, and `group` set to the `"x"` variable).
 
 ```{r echo = c(-5, -2:-1), eval = FALSE}
 
@@ -106,7 +106,7 @@ Scroll through the summaries to find the "Intercepts", "Variances", and "Regress
 
 ## Extract means, variances, and regression coefficients from list of estimates
 # Get list of estimates
-estimates <- lapply(fit, lavInspect, "est"); estimates    
+estimates <- lapply(fit, lavInspect, "est"); estimates
 
 # Extract means - in element "alpha"
 means <- list()
