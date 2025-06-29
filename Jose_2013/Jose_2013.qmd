@@ -4,7 +4,8 @@ highlight-style: solarized
 code-block-border-left: "#FCC251"
 
 format:
-  html: default
+  html:
+    embed-resources: true
   gfm: default
 ---
 
