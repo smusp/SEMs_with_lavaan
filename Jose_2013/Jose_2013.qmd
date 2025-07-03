@@ -7,15 +7,18 @@ format:
   html:
     embed-resources: true
   gfm: default
+  
+execute:
+  eval: false
 ---
 
-```{css, echo = FALSE, purl = FALSE}
+```{css, echo = FALSE, eval = TRUE, purl = FALSE}
 h1, h2, h3, h4 {
   color: #CB6015;
 }
 ```
 
-```{r echo = FALSE, eval = FALSE}
+```{r echo = FALSE}
 
 
 ## Chapter 3 (Basic Mediation, pp. 43-92) in
@@ -25,30 +28,27 @@ h1, h2, h3, h4 {
 
 Jose, P. (2013). *Doing statistical mediation and moderation*. New York, NY: Guilford Press.
 
-<br />
 
-This example shows how to obtain a basic three-variable mediation analysis using **lavaan** and how to obtain indirect and total effects. In Chapter 3 (Basic Mediation, pp. 43-92), Jose describes a basic mediation model involving three variables: Positive Life Events; Happiness; and Gratitude. Positive Life Events has a direct effect on Happiness, but also Positive Life Events has an indirect effect on Happiness via Gratitude.
+This example shows how to obtain a basic three-variable mediation analysis using **lavaan**, including how to obtain indirect and total effects. In Chapter 3 (Basic Mediation, pp. 43-92), Jose describes a basic mediation model involving three variables: Positive Life Events; Happiness; and Gratitude. Positive Life Events has a direct effect on Happiness, but also Positive Life Events has an indirect effect on Happiness via Gratitude.
 
-<br />
 
 #### Load relevant packages
 
 First, load the **lavaan** and **haven** packages.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## Load packages
 library(lavaan)
 library(haven)   # To read SPSS data files
 ```
 
-<br />
 
 #### Get the data
 
 The data are available at the Guilford Press site (note: the url on page 48 is no longer a valid link). The data are contained in an SPSS data file. I use the **haven** package to read SPSS data files. Examine the file structure, in particular, noting the variable names. These will be needed by **lavaan**.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## Get the data from Guilford Press web site
 url <- "http://www.guilford.com/add/jose/mediation_example.sav"
@@ -65,7 +65,6 @@ The names for the three variables are:
 * grat - Gratitude
 * shs  - Happiness
 
-<br />
 
 #### The model
 
@@ -75,7 +74,7 @@ The model is given in Figure 3.3 (p. 46), reproduced below.
 
 In **lavaan**, mediation effects can be estimated using the `:=` operator. In the diagram, the effects are labelled a, b, and c$'$; in the model statement, they are labelled a, b, and cpr. The labels can then be used to obtain the indirect and total effects.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## The model from Figure 3.3
 model <- "
@@ -94,13 +93,12 @@ model <- "
 "
 ```
 
-<br />
 
 #### Fit the model and get the results
 
 I've requested unstandardised and standardised effects, and R^2^ values. For the standardised effects, see the "std.all" column in the output.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## Fit the model and get the summary
 fit <- sem(model, data = dataset)
@@ -111,7 +109,7 @@ Jose conducts mediation analysis using regressions. The results are presented in
 
 The regression summary tables show the constants (that is, the intercepts). If intercepts are required, include `meanstructure = TRUE` in the `sem()` function.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## To get the intercepts
 fit_intercepts <- sem(model, data = dataset, meanstructure = TRUE)
@@ -120,7 +118,7 @@ summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
 
 On pages 53 and 54, Jose shows how to calculate and test the statistical significance of Sobel's z-value (that is, testing the significance of the indirect effect). Do not rely on that test. Also, do not rely of the t-test for the indirect effect given in the **lavaan** output. It is better to calculate confidence intervals, although the symmetric confidence interval presented in Table 3.7 (p. 55) is no better than the test for Sobel's z-value. The asymmetric CI presented in Table 3.8 (p. 56) is possibly better. In **lavaan**, bootstrap CIs can be calculated.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## To get bootstrap CIs
 fit_boot <- sem(model, data = dataset, se = "bootstrap", bootstrap = 2000)
@@ -130,10 +128,22 @@ parameterEstimates(fit_boot, boot.ci.type = "perc")
 
 <br />
 
-```{r, echo = FALSE, include = FALSE, eval = TRUE, purl = FALSE}
+```{r}
+#| echo: FALSE
+#| include: FALSE
+#| eval: TRUE
+#| purl: FALSE
 input <- knitr::current_input()
 output <- "Jose_Mediation.r"
 knitr::purl(input, output, documentation = 0, quiet = TRUE)
 ```
 
-The R script with minimal commenting is available in [`{r} noquote(output)`](`{r} noquote(output)`).
+The R script with minimal commenting is available below:
+
+
+```{r}
+#| echo: true
+#| eval: false 
+#| code-fold: true 
+#| file: !expr "noquote(output)"
+```

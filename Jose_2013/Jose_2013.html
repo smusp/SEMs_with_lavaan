@@ -3249,9 +3249,7 @@ color: #CB6015;
 </style>
 </div>
 <p>Jose, P. (2013). <em>Doing statistical mediation and moderation</em>. New York, NY: Guilford Press.</p>
-<p><br></p>
-<p>This example shows how to obtain a basic three-variable mediation analysis using <strong>lavaan</strong> and how to obtain indirect and total effects. In Chapter 3 (Basic Mediation, pp. 43-92), Jose describes a basic mediation model involving three variables: Positive Life Events; Happiness; and Gratitude. Positive Life Events has a direct effect on Happiness, but also Positive Life Events has an indirect effect on Happiness via Gratitude.</p>
-<p><br></p>
+<p>This example shows how to obtain a basic three-variable mediation analysis using <strong>lavaan</strong>, including how to obtain indirect and total effects. In Chapter 3 (Basic Mediation, pp. 43-92), Jose describes a basic mediation model involving three variables: Positive Life Events; Happiness; and Gratitude. Positive Life Events has a direct effect on Happiness, but also Positive Life Events has an indirect effect on Happiness via Gratitude.</p>
 <section id="load-relevant-packages" class="level4">
 <h4 class="anchored" data-anchor-id="load-relevant-packages">Load relevant packages</h4>
 <p>First, load the <strong>lavaan</strong> and <strong>haven</strong> packages.</p>
@@ -3259,7 +3257,6 @@ color: #CB6015;
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)   <span class="co"># To read SPSS data files</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><br></p>
 </section>
 <section id="get-the-data" class="level4">
 <h4 class="anchored" data-anchor-id="get-the-data">Get the data</h4>
@@ -3278,7 +3275,6 @@ color: #CB6015;
 <li>grat - Gratitude</li>
 <li>shs - Happiness</li>
 </ul>
-<p><br></p>
 </section>
 <section id="the-model" class="level4">
 <h4 class="anchored" data-anchor-id="the-model">The model</h4>
@@ -3413,7 +3409,6 @@ color: #CB6015;
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="st">  total := cpr + (a * b) </span></span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><br></p>
 </section>
 <section id="fit-the-model-and-get-the-results" class="level4">
 <h4 class="anchored" data-anchor-id="fit-the-model-and-get-the-results">Fit the model and get the results</h4>
@@ -3435,7 +3430,62 @@ color: #CB6015;
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">parameterEstimates</span>(fit_boot, <span class="at">boot.ci.type =</span> <span class="st">&quot;perc&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
-<p>The R script with minimal commenting is available in <a href="Jose_Mediation.r">Jose_Mediation.r</a>.</p>
+<p>The R script with minimal commenting is available below:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Chapter 3 (Basic Mediation, pp. 43-92) in</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Jose, P. (2013). Doing statistical mediation and moderation.</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="do">## New York, NY: Guilford Press.</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Load packages</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)   <span class="co"># To read SPSS data files</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="do">## Get the data from Guilford Press web site</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">&quot;http://www.guilford.com/add/jose/mediation_example.sav&quot;</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(haven<span class="sc">::</span><span class="fu">read_spss</span>(url))</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dataset)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dataset)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dataset)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="do">## The model from Figure 3.3</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">&quot;</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="st">  # direct effect</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="st">  shs ~ cpr * ple</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="st">  # effects via the mediator</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="st">  grat ~ a * ple</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="st">  shs  ~  b * grat</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="st">  # indirect effect (a*b)</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="st">  indirect := a * b</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="st">  # total effect</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="st">  total := cpr + (a * b) </span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="do">## Fit the model and get the summary</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> dataset)</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">rsquare =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>)   <span class="co"># Check with Tables 3.2-3.5</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="do">## To get the intercepts</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>fit_intercepts <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> dataset, <span class="at">meanstructure =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_intercepts, <span class="at">rsquare =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="do">## To get bootstrap CIs</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>fit_boot <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> dataset, <span class="at">se =</span> <span class="st">&quot;bootstrap&quot;</span>, <span class="at">bootstrap =</span> <span class="dv">2000</span>)</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_boot, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">ci =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="fu">parameterEstimates</span>(fit_boot, <span class="at">boot.ci.type =</span> <span class="st">&quot;perc&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 </section>
 
 </main>
