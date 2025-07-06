@@ -4,27 +4,23 @@ highlight-style: solarized
 code-block-border-left: "#FCC251"
 
 format:
-  html: default
+  html:
+    css: "../styles.css"
+    embed-resources: true
   gfm: default
+  
+execute:
+  eval: false
 ---
 
-```{css, echo = FALSE, purl = FALSE}
-h1, h2, h3, h4 {
-  color: #CB6015;
-}
-```
-
-```{r echo = FALSE, eval = FALSE}
-
-
-## Little, T., Slegers, D., & Card, N. (2006). A non-arbitrary method of
-## identifying and scaling latent variables in SEM and MACS models.
+```{r echo = FALSE}
+## Little, T., Slegers, D., & Card, N. (2006). A non-arbitrary method
+## of identifying and scaling latent variables in SEM and MACS models.
 ## Structural Equation Modeling, 13(1), 59-72.
 ```
 
 Little, T., Slegers, D., & Card, N. (2006). A non-arbitrary method of identifying and scaling latent variables in SEM and MACS models. *Structural Equation Modeling*, *13*(1), 59-72.
 
-<br />
 
 This example shows how to set constraints for different methods of identification and scaling in latent variable models, and, though invariance is not a topic of discussion, the example shows how to set constraints for strong metric invariance in a two-group model. Also, the example shows how to use summary data (correlations, standard deviations, and means) in a two-group model.
 
@@ -46,25 +42,23 @@ The symbols are:
 
 ![](images/Scaling.svg){fig-align="left"}
 
-<br />
 
 #### Load relevant packages
 
 Load the **lavaan** package.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## Load package
 library(lavaan)
 ```
 
-<br />
 
 #### Get the data
 
 LISREL script in Appendix A (pp. 71-72) gives correlations, standard deviations, means, and sample sizes for each group. From these, the co/variance matrices for each group can be obtained. The means, standard deviations, and correlations are entered as vectors. In Appendix A, only the lower triangle of correlations is presented with ones along the diagonal; and that is all that is needed here.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## Get the data from Appendix A
 # 7th grade
@@ -96,7 +90,7 @@ n8    <- 379
 
 Variable names are also contained in the LISREL script, but I shorten the names a little.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## Get the variable names from Appendix A
 names = c("pos1", "pos2", "pos3", "neg1", "neg2", "neg3")
@@ -104,7 +98,7 @@ names = c("pos1", "pos2", "pos3", "neg1", "neg2", "neg3")
 
 Combine the correlations, means, and sample sizes into lists.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## Combine into lists
 cor  <- list("Grade 7" = cor7, "Grade 8" = cor8)
@@ -115,19 +109,18 @@ n    <- list(n7, n8)
 
 Use the `getCov()` function from the **lavaan** package to obtain the full co/variance matrix for each group (using the `Map()` function to apply the `getCov()` function to the lists, and to return the two co/variance matrices in a list).
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## Get the co/variance matrices
 cov <- Map(getCov, x = cor, sds = sd, names = list(names, names))
 ```
 
-<br />
 
-### Reference-Group Method
+## Reference-Group Method
 
-#### The model
+<h4 style='margin-top: 10px;'> The model</h4>
 
-The model with the constraints is shown below. Some points to note. There are two groups: Grade 7 and Grade 8. The corresponding loadings ($\uplambda$) and intercepts ($\uptau$) are equal across the groups. The latent variances ($\upphi$~7,11~ and $\upphi$~7,22~) and latent means ($\upkappa$) are constrained to 1 and 0 respectively in the first group only. The residual variances ($\uptheta$) are freely estimated in each group, and the latent covariances ($\upphi$~7,12~ and $\upphi$~8,12~) are freely estimated.
+The model with the constraints is shown below. Some points to note. There are two groups: Grade 7 and Grade 8. The corresponding loadings ($\uplambda$) and intercepts ($\uptau$) are equal across the groups. The latent variances (<span style="white-space: nowrap">$\upphi$~7,11~</span> and <span style="white-space: nowrap">$\upphi$~7,22~)</span> and latent means ($\upkappa$) are constrained to 1 and 0 respectively in the first group only. The residual variances ($\uptheta$) are freely estimated in each group, and the latent covariances (<span style="white-space: nowrap">$\upphi$~7,12~</span> and <span style="white-space: nowrap">$\upphi$~8,12~)</span> are freely estimated. 
 
 ![](images/Scaling1.svg){fig-align="left"}
 
@@ -141,7 +134,7 @@ Third, strong metric invariance places no constraints on indicator variances - t
 
 Finally, **lavaan**'s default marker-variable method has to be explicitely disabled by pre-multiplying the first indicator for both constructs by `NA`.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## The model - Reference-Group Method
 m1 <- "
@@ -171,16 +164,15 @@ m1 <- "
 "
 ```
 
-<br />
 
 #### Fit the model and get the results
 
 To deal with strong metric invariance, set `group.equal = c("loadings", "intercepts")` in the `sem()` function.
 
-```{r echo = -3:-1, eval = FALSE}
+```{r echo = -3:-1}
 
 ## Fit the model and get the summary
-## Compare with "Method 1" in Table 2
+#  Compare with "Method 1" in Table 2
 m1_fit <- sem(m1, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m1_fit, standardized = TRUE, fit.measures = TRUE)
@@ -188,13 +180,12 @@ summary(m1_fit, standardized = TRUE, fit.measures = TRUE)
 
 Compare the output with "Method 1" in Table 2 (pp. 64-65).
 
-<br />
 
 #### A shortcut
 
 **Lavaan** can do reference-group scaling automatically - set `std.lv = TRUE` in the `sem()` function. The constraints are the same as above - in the first group, latent variances are constrained to one, and latent means are constrained to zero.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## Reference-Group Method - Shortcut
 m1_short <- "
@@ -211,18 +202,17 @@ summary(m1_short_fit, standardized = TRUE, fit.measures = TRUE)
 
 Check the output. It is the same as before except for one detail. It might be disconcerting for some that the latent means in the first group are not reported. Maybe it's not important because they are zero (remember the constraint). To see them in the output, set `remove.unused = FALSE` in the `summary()` function.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## To see all means including those set to zero
 summary(m1_short_fit, remove.unused = FALSE, standardized = TRUE,
    fit.measures = TRUE)
 ```
 
-<br />
 
-### Marker-Variable Method
+## Marker-Variable Method
 
-#### The model
+<h4 style='margin-top: 10px;'> The model</h4>
 
 The model with the constraints is shown below.
 
@@ -240,7 +230,7 @@ Third, again, there is no need to mention indicator variances - **lavaan** will 
 
 Finally, **lavaan**'s default marker-variable method has to be explicitely disabled for the POS construct by pre-multiplying the first indicator be `NA`.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## The model - Marker-Variable Method
 m2c <- "
@@ -272,29 +262,28 @@ m2c <- "
 "
 ```
 
-<br />
 
 #### Fit the model and get the results
 
 As before, the `group.equal = c("loadings", "intercepts")` statement in the `sem()` function forces corresponding loadings and intercepts to be equal across the groups.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -3:-1}
 
 ## Fit the model and get the summary
-## Compare with "Method 2c" in Table 2
+#  Compare with "Method 2c" in Table 2
 m2c_fit <- sem(m2c, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m2c_fit, standardized = TRUE, fit.measures = TRUE)
 ```
 
 Compare the output with "Method 2c" in Table 2 (pp. 64-65).
-<br />
+
 
 #### **Lavaan** default
 
 This is not **lavaan**'s default method of scaling. The default method constrains the loadings for the first indicator to one for both constructs and, because of the strong metric invariance, in both groups. When there is a mean structure in the model, **lavaan** sets the latent means to zero (in the first group only). In the `summary()` function set `remove.unused = FALSE` to see the latent means.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## Lavaan default method of scaling
 m2c_default <- "
@@ -309,11 +298,10 @@ summary(m2c_default_fit, remove.unused = FALSE,
    standardized = TRUE, fit.measures = TRUE)
 ```
 
-<br />
 
-### Effects-Coding Method
+## Effects-Coding Method
 
-#### The model
+<h4 style='margin-top: 10px;'> The model</h4>
 
 The model with the equality constraints is shown below.
 
@@ -323,7 +311,7 @@ In the model statement, the loadings and the intercepts are labelled (see the "M
 
 Same points as before: **lavaan** will add indicator variances automatically; constraints concerning strong metric invariance will be attended to in the next step; and the default marker-variable method has to be explicitely disabled.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## The model - Effects-Scaling Method
 m3 <- "
@@ -363,16 +351,15 @@ m3 <- "
 "
 ```
 
-<br />
 
 #### Fit the model and get the summary
 
 As before, the `group.equal = c("loadings", "intercepts")` statement in the `sem()` function forces corresponding loadings and intercepts to be equal across the groups.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -3:-1}
 
 ## Fit the model and get the summary
-## Compare with "Method 3" in Table 2
+#  Compare with "Method 3" in Table 2
 m3_fit <- sem(m3, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m3_fit, standardized = TRUE, fit.measures = TRUE)
@@ -380,13 +367,12 @@ summary(m3_fit, standardized = TRUE, fit.measures = TRUE)
 
 Compare the output with "Method 3" in Table 2 (pp. 64-65).
 
-<br />
 
 #### A shortcut
 
 **Lavaan** can do effects-scaling automatically -  set `effect.coding = TRUE` in the `sem()` function.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## Effects-Scaling Method - Shortcut
 m3_short <- "
@@ -401,21 +387,20 @@ m3_short_fit <- sem(m3_short, sample.cov = cov, sample.nobs = n,
 summary(m3_short_fit, standardized = TRUE, fit.measures = TRUE)
 ```
 
-<br />
 
-### Fit measures
+## Fit measures
 
 LS&C state that the models "produce overall model fit statistics that are identical" (p. 66). The following shows how to extract fit measures from all models presented here, and present them in a table.
 
-```{r echo = -2:-1, eval = FALSE}
+```{r echo = -2:-1}
 
 ## Get fit measures
-# A function to extract fit measures
+#  A function to extract fit measures
 GetFit <- function(fit, ...) {
    fitMeasures(fit, ...)
 }
 
-# Add the fitted lavaan objects to a list
+#  Add the fitted lavaan objects to a list
 models <- list(
    "Method 1"          = m1_fit,
    "Method 1 Shortcut" = m1_short_fit,
@@ -424,11 +409,11 @@ models <- list(
    "Method 3"          = m3_fit,
    "Method 3 Shortcut" = m3_short_fit)
 
-# Select the fit measures
+#  Select the fit measures
 measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea",
    "rmsea.ci.lower", "rmsea.ci.upper")
 
-# Get fit measures in a table
+#  Get fit measures in a table
 tab = sapply(models, GetFit, measures)
 tab = t(round(tab, 4)); tab
 ```
@@ -437,10 +422,22 @@ Compare the fit measures with those presented on page 66.
 
 <br />
 
-```{r, echo = FALSE, include = FALSE, eval = TRUE, purl = FALSE}
+```{r}
+#| echo: false
+#| include: false
+#| eval: true
+#| purl: false
 input <- knitr::current_input()
 output <- "Little_Scaling.r"
 knitr::purl(input, output, documentation = 0, quiet = TRUE)
 ```
 
-The R script with minimal commenting is available in [`{r} noquote(output)`](`{r} noquote(output)`).
+
+The R script with minimal commenting is available below:
+
+```{r}
+#| echo: true
+#| eval: false 
+#| code-fold: true 
+#| file: !expr "noquote(output)"
+```

@@ -5,8 +5,6 @@ Kurbanoglu, N. & Takunyaci, M. (2021). A structural equation modeling on
 relationship between self-efficacy, physics laboratory anxiety and
 attitudes. *Journal of Family, Counseling and Education*, *6*(1), 47-56.
 
-<br />
-
 This example shows how to obtain a basic three-variable mediation
 analysis using **lavaan**, and how to obtain indirect and total effects.
 The three variables are: Self-Efficacy; Physics Laboratory Attitudes;
@@ -23,8 +21,6 @@ are problems with the paper. Rather than being an examplar, this example
 is included to show how to run SEM using summary data in order to check
 published results.
 
-<br />
-
 #### Load relevant packages
 
 First, load the **lavaan** and **semmcci** packages.
@@ -33,8 +29,6 @@ First, load the **lavaan** and **semmcci** packages.
 library(lavaan)
 library(semmcci)  # For Monte Carlo CIs
 ```
-
-<br />
 
 #### Get the data
 
@@ -49,6 +43,7 @@ cor <- c(
    1,
    0.30,  1,
   -0.42, -0.32,  1)
+
 sds   <- c(8.81, 7.95, 18.30)
 means <- c(56.57, 40.39, 68.22)
 n     <- 513
@@ -71,8 +66,6 @@ co/variance matrix.
 ``` r
 cov <- lavaan::getCov(cor, sds = sds, names = names)
 ```
-
-<br />
 
 #### The model
 
@@ -102,8 +95,6 @@ model <- "
   total := cpr + (a * b)
 "
 ```
-
-<br />
 
 #### Fit the model and get the results
 
@@ -146,5 +137,72 @@ semmcci::MC(fit, R = 50000, alpha = 0.05)
 
 <br />
 
-The R script with minimal commenting is available in
-[Kurbanoglu_Mediation.r](Kurbanoglu_Mediation.r).
+The R script with minimal commenting is available below:
+
+<details class="code-fold">
+<summary>Code</summary>
+
+``` r
+## Kurbanoglu, N. & Takunyaci, M. (2021). A structural equation modeling
+## on relationship between self-efficacy, physics laboratory anxiety
+## and attitudes. Journal of Family, Counseling and Education, 6(1), 47-56.
+
+
+## Load packages
+library(lavaan)
+library(semmcci)  # For Monte Carlo CIs
+
+
+## Get the data from Table 1
+cor <- c(
+   1,
+   0.30,  1,
+  -0.42, -0.32,  1)
+
+sds   <- c(8.81, 7.95, 18.30)
+means <- c(56.57, 40.39, 68.22)
+n     <- 513
+
+
+## Get the variable names
+names <- c("Att", "SE", "Anx")
+
+
+## Get the co/variance matrix
+cov <- lavaan::getCov(cor, sds = sds, names = names)
+
+
+## The model from Figure 1
+model <- "
+  # direct effect
+  Anx ~ cpr * SE
+
+  # effects via the mediator
+  Att ~ a * SE
+  Anx ~ b * Att
+
+  # indirect effect (a * b)
+  ab := a * b
+
+  # total effect
+  total := cpr + (a * b)
+"
+
+
+## Fit the model and get the summary
+#  Compare with Figure 1
+fit <- sem(model, sample.cov = cov, sample.nobs = n)
+summary(fit, rsquare = TRUE, standardized = TRUE, fit.measures = TRUE)
+
+
+## To get intercepts
+fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n,
+   sample.mean = means)
+summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
+
+
+## To get Monte Carlo CIs
+semmcci::MC(fit, R = 50000, alpha = 0.05)
+```
+
+</details>

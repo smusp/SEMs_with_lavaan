@@ -1,8 +1,6 @@
-
-
-## Chapter 3 (Basic Mediation, pp. 43-92) in
-## Jose, P. (2013). Doing statistical mediation and moderation.
-## New York, NY: Guilford Press.
+## Chapter 3 (Basic Mediation, pp. 43-92) in:
+##   Jose, P. (2013). Doing statistical mediation and moderation.
+##   New York, NY: Guilford Press.
 
 
 ## Load packages
@@ -41,7 +39,7 @@ fit <- sem(model, data = dataset)
 summary(fit, rsquare = TRUE, standardized = TRUE)   # Check with Tables 3.2-3.5
 
 
-## To get the intercepts
+## To get intercepts
 fit_intercepts <- sem(model, data = dataset, meanstructure = TRUE)
 summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
 

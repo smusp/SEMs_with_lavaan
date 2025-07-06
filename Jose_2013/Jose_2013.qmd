@@ -5,25 +5,18 @@ code-block-border-left: "#FCC251"
 
 format:
   html:
+    css: "../styles.css"
     embed-resources: true
   gfm: default
-  
+
 execute:
   eval: false
 ---
 
-```{css, echo = FALSE, eval = TRUE, purl = FALSE}
-h1, h2, h3, h4 {
-  color: #CB6015;
-}
-```
-
 ```{r echo = FALSE}
-
-
-## Chapter 3 (Basic Mediation, pp. 43-92) in
-## Jose, P. (2013). Doing statistical mediation and moderation.
-## New York, NY: Guilford Press.
+## Chapter 3 (Basic Mediation, pp. 43-92) in:
+##   Jose, P. (2013). Doing statistical mediation and moderation.
+##   New York, NY: Guilford Press.
 ```
 
 Jose, P. (2013). *Doing statistical mediation and moderation*. New York, NY: Guilford Press.
@@ -111,7 +104,7 @@ The regression summary tables show the constants (that is, the intercepts). If i
 
 ```{r echo = -2:-1}
 
-## To get the intercepts
+## To get intercepts
 fit_intercepts <- sem(model, data = dataset, meanstructure = TRUE)
 summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
 ```
@@ -129,17 +122,16 @@ parameterEstimates(fit_boot, boot.ci.type = "perc")
 <br />
 
 ```{r}
-#| echo: FALSE
-#| include: FALSE
-#| eval: TRUE
-#| purl: FALSE
+#| echo: false
+#| include: false
+#| eval: true
+#| purl: false
 input <- knitr::current_input()
 output <- "Jose_Mediation.r"
 knitr::purl(input, output, documentation = 0, quiet = TRUE)
 ```
 
 The R script with minimal commenting is available below:
-
 
 ```{r}
 #| echo: true

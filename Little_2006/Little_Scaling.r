@@ -1,7 +1,5 @@
-
-
-## Little, T., Slegers, D., & Card, N. (2006). A non-arbitrary method of
-## identifying and scaling latent variables in SEM and MACS models.
+## Little, T., Slegers, D., & Card, N. (2006). A non-arbitrary method
+## of identifying and scaling latent variables in SEM and MACS models.
 ## Structural Equation Modeling, 13(1), 59-72.
 
 
@@ -81,7 +79,7 @@ m1 <- "
 
 
 ## Fit the model and get the summary
-## Compare with "Method 1" in Table 2
+#  Compare with "Method 1" in Table 2
 m1_fit <- sem(m1, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m1_fit, standardized = TRUE, fit.measures = TRUE)
@@ -136,7 +134,7 @@ m2c <- "
 
 
 ## Fit the model and get the summary
-## Compare with "Method 2c" in Table 2
+#  Compare with "Method 2c" in Table 2
 m2c_fit <- sem(m2c, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m2c_fit, standardized = TRUE, fit.measures = TRUE)
@@ -194,7 +192,7 @@ m3 <- "
 
 
 ## Fit the model and get the summary
-## Compare with "Method 3" in Table 2
+#  Compare with "Method 3" in Table 2
 m3_fit <- sem(m3, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m3_fit, standardized = TRUE, fit.measures = TRUE)
@@ -214,12 +212,12 @@ summary(m3_short_fit, standardized = TRUE, fit.measures = TRUE)
 
 
 ## Get fit measures
-# A function to extract fit measures
+#  A function to extract fit measures
 GetFit <- function(fit, ...) {
    fitMeasures(fit, ...)
 }
 
-# Add the fitted lavaan objects to a list
+#  Add the fitted lavaan objects to a list
 models <- list(
    "Method 1"          = m1_fit,
    "Method 1 Shortcut" = m1_short_fit,
@@ -228,10 +226,10 @@ models <- list(
    "Method 3"          = m3_fit,
    "Method 3 Shortcut" = m3_short_fit)
 
-# Select the fit measures
+#  Select the fit measures
 measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea",
    "rmsea.ci.lower", "rmsea.ci.upper")
 
-# Get fit measures in a table
+#  Get fit measures in a table
 tab = sapply(models, GetFit, measures)
 tab = t(round(tab, 4)); tab
