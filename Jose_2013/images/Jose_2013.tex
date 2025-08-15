@@ -1,0 +1,24 @@
+\documentclass[tikz, border = 10pt]{standalone}
+\input{SEMstyles.tex}
+
+\begin{document}
+\begin{tikzpicture}
+
+%% The manifest variables
+\node [manifest] (X) {ple};
+\node [manifest] (Y) [right = 5cm of X] {shs};
+\node [manifest] (M) [above = 4.33cm of $(X)!0.5!(Y)$] {grat};
+
+%% The regressions
+\path [regression] (X) edge ["c$'$"] (Y);
+\path [regression] (X.70) edge ["a"] (M.250);
+\path [regression] (M.290) edge ["b"] (Y.110);
+
+%% The residuals
+\node [residual1] (e2) [above right = 4mm and 4mm of Y] {e$_2$};
+\node [residual1] (e1) [above right = 4mm and 4mm of M] {e$_1$};
+\path [regression] (e2) edge (Y.north east);
+\path [regression] (e1) edge (M.north east);
+
+\end{tikzpicture}
+\end{document}
