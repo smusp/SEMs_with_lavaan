@@ -1,16 +1,17 @@
 ---
 title: "Three-variable mediation with cross-sectional data"
 highlight-style: solarized
-code-block-border-left: "#FCC251"
 
 format:
   html:
-    css: "../styles.css"
+    theme: "../styles.scss"
     embed-resources: true
   gfm: default
 
 execute:
   eval: false
+
+format-links: false
 ---
 
 ```{r echo = FALSE}
@@ -27,10 +28,9 @@ This example shows how to obtain a basic three-variable mediation analysis using
 
 #### Load relevant packages
 
-First, load the **lavaan** and **haven** packages.
+Load the **lavaan** and **haven** packages.
 
-```{r echo = -2:-1}
-
+```{r echo = -1}
 ## Load packages
 library(lavaan)
 library(haven)   # To read SPSS data files
@@ -41,8 +41,7 @@ library(haven)   # To read SPSS data files
 
 The data are available at the Guilford Press site (note: the url on page 48 is no longer a valid link). The data are contained in an SPSS data file. I use the **haven** package to read SPSS data files. Examine the file structure, in particular, noting the variable names. These will be needed by **lavaan**.
 
-```{r echo = -2:-1}
-
+```{r echo = -1}
 ## Get the data from Guilford Press web site
 url <- "http://www.guilford.com/add/jose/mediation_example.sav"
 dataset <- data.frame(haven::read_spss(url))
@@ -63,12 +62,11 @@ The names for the three variables are:
 
 The model is given in Figure 3.3 (p. 46), reproduced below.
 
-![](images/Mediation.svg){fig-align="left"}
+![](../../images/Jose_2013/Jose_2013.svg){fig-align="center"}
 
 In **lavaan**, mediation effects can be estimated using the `:=` operator. In the diagram, the effects are labelled a, b, and c$'$; in the model statement, they are labelled a, b, and cpr. The labels can then be used to obtain the indirect and total effects.
 
-```{r echo = -2:-1}
-
+```{r echo = -1}
 ## The model from Figure 3.3
 model <- "
   # direct effect
@@ -91,8 +89,7 @@ model <- "
 
 I've requested unstandardised and standardised effects, and R^2^ values. For the standardised effects, see the "std.all" column in the output.
 
-```{r echo = -2:-1}
-
+```{r echo = -1}
 ## Fit the model and get the summary
 fit <- sem(model, data = dataset)
 summary(fit, rsquare = TRUE, standardized = TRUE)   # Check with Tables 3.2-3.5
@@ -102,8 +99,7 @@ Jose conducts mediation analysis using regressions. The results are presented in
 
 The regression summary tables show the constants (that is, the intercepts). If intercepts are required, include `meanstructure = TRUE` in the `sem()` function.
 
-```{r echo = -2:-1}
-
+```{r echo = -1}
 ## To get intercepts
 fit_intercepts <- sem(model, data = dataset, meanstructure = TRUE)
 summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
@@ -111,8 +107,7 @@ summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
 
 On pages 53 and 54, Jose shows how to calculate and test the statistical significance of Sobel's z-value (that is, testing the significance of the indirect effect). Do not rely on that test. Also, do not rely of the t-test for the indirect effect given in the **lavaan** output. It is better to calculate confidence intervals, although the symmetric confidence interval presented in Table 3.7 (p. 55) is no better than the test for Sobel's z-value. The asymmetric CI presented in Table 3.8 (p. 56) is possibly better. In **lavaan**, bootstrap CIs can be calculated.
 
-```{r echo = -2:-1}
-
+```{r echo = -1}
 ## To get bootstrap CIs
 fit_boot <- sem(model, data = dataset, se = "bootstrap", bootstrap = 2000)
 summary(fit_boot, standardized = TRUE, ci = TRUE)
@@ -127,15 +122,15 @@ parameterEstimates(fit_boot, boot.ci.type = "perc")
 #| eval: true
 #| purl: false
 input <- knitr::current_input()
-output <- "Jose_Mediation.r"
+output <- "R/Jose_2013.r"
 knitr::purl(input, output, documentation = 0, quiet = TRUE)
+xfun::gsub_file(output, "^# NA", "")
+xfun::gsub_file(output, "^# ", "")
 ```
-
-The R script with minimal commenting is available below:
 
 ```{r}
 #| echo: true
-#| eval: false 
-#| code-fold: true 
+#| code-fold: true
+#| code-summary: "R code with minimal commenting"
 #| file: !expr "noquote(output)"
 ```
