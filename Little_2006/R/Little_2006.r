@@ -2,10 +2,8 @@
 ## of identifying and scaling latent variables in SEM and MACS models.
 ## Structural Equation Modeling, 13(1), 59-72.
 
-
 ## Load package
 library(lavaan)
-
 
 ## Get the data from Appendix A
 # 7th grade
@@ -34,10 +32,8 @@ mean8 <- c(3.07338, 2.84716, 2.97882, 1.71700, 1.57955, 1.55001)
 sd8   <- c(0.70299, 0.71780, 0.76208, 0.65011, 0.60168, 0.61420)
 n8    <- 379
 
-
 ## Get the variable names from Appendix A
 names = c("pos1", "pos2", "pos3", "neg1", "neg2", "neg3")
-
 
 ## Combine into lists
 cor  <- list("Grade 7" = cor7, "Grade 8" = cor8)
@@ -45,10 +41,8 @@ sd   <- list(sd7, sd8)
 mean <- list(mean7, mean8)
 n    <- list(n7, n8)
 
-
 ## Get the co/variance matrices
 cov <- Map(getCov, x = cor, sds = sd, names = list(names, names))
-
 
 ## The model - Reference-Group Method
 m1 <- "
@@ -77,13 +71,11 @@ m1 <- "
   NEG ~ c(0,NA)*1
 "
 
-
 ## Fit the model and get the summary
 #  Compare with "Method 1" in Table 2
 m1_fit <- sem(m1, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m1_fit, standardized = TRUE, fit.measures = TRUE)
-
 
 ## Reference-Group Method - Shortcut
 m1_short <- "
@@ -92,16 +84,14 @@ m1_short <- "
   NEG =~ neg1 + neg2 + neg3
 "
 
-m1_short_fit <- sem(m1_short, sample.cov = cov, sample.nobs = n, 
+m1_short_fit <- sem(m1_short, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, std.lv = TRUE,
    group.equal = c("loadings", "intercepts"))
 summary(m1_short_fit, standardized = TRUE, fit.measures = TRUE)
 
-
 ## To see all means including those set to zero
 summary(m1_short_fit, remove.unused = FALSE, standardized = TRUE,
    fit.measures = TRUE)
-
 
 ## The model - Marker-Variable Method
 m2c <- "
@@ -132,13 +122,11 @@ m2c <- "
   NEG ~ 1
 "
 
-
 ## Fit the model and get the summary
 #  Compare with "Method 2c" in Table 2
 m2c_fit <- sem(m2c, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m2c_fit, standardized = TRUE, fit.measures = TRUE)
-
 
 ## Lavaan default method of scaling
 m2c_default <- "
@@ -151,7 +139,6 @@ m2c_default_fit <- sem(m2c_default, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m2c_default_fit, remove.unused = FALSE,
    standardized = TRUE, fit.measures = TRUE)
-
 
 ## The model - Effects-Scaling Method
 m3 <- "
@@ -190,13 +177,11 @@ m3 <- "
   in1 + in2 + in3 == 0
 "
 
-
 ## Fit the model and get the summary
 #  Compare with "Method 3" in Table 2
 m3_fit <- sem(m3, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, group.equal = c("loadings", "intercepts"))
 summary(m3_fit, standardized = TRUE, fit.measures = TRUE)
-
 
 ## Effects-Scaling Method - Shortcut
 m3_short <- "
@@ -209,7 +194,6 @@ m3_short_fit <- sem(m3_short, sample.cov = cov, sample.nobs = n,
    sample.mean = mean, effect.coding = TRUE,
    group.equal = c("loadings", "intercepts"))
 summary(m3_short_fit, standardized = TRUE, fit.measures = TRUE)
-
 
 ## Get fit measures
 #  A function to extract fit measures
@@ -233,3 +217,7 @@ measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea",
 #  Get fit measures in a table
 tab = sapply(models, GetFit, measures)
 tab = t(round(tab, 4)); tab
+
+
+
+
