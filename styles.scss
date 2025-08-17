@@ -1,0 +1,24 @@
+/*-- scss:defaults --*/
+
+$code-block-border-left: #FCC251;
+
+
+/*-- scss:rules --*/
+
+h1, h2, h3, h4, h5 {
+  color: #CB6015;
+  opacity: 1;
+}
+
+h2, h3, h4, h5 {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-top: 50px;
+  margin-bottom: 10px;
+  border: none;}
+
+h2 + .level4 > h4 { 
+      margin-top: 10px;
+}
+
+ 
