@@ -1,22 +1,22 @@
 ---
 title: "One-Way ANCOVA"
 highlight-style: solarized
-code-block-border-left: "#FCC251"
 
 format:
-  html: default
+  html:
+    theme: "../styles.scss"
+    embed-resources: true
   gfm: default
+
+execute:
+  eval: false
+
+format-links: false
 ---
 
-```{css, echo = FALSE, purl = FALSE}
-h1, h2, h3, h4 {
-  color: #CB6015;
-}
-```
-
-```{r echo = FALSE, eval = FALSE}
-
-
+```{r echo = FALSE}
+## One-way ANCOVA
+##
 ## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
@@ -24,52 +24,48 @@ h1, h2, h3, h4 {
 
 Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling approaches for analyzing means. In R. Hoyle (Ed.), *Handbook of structural equation modeling* (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 
-<br />
 
 This example shows the SEM approach to Part 2: One-way ANCOVA. Results are reported in Table 21.2 (p. 393).
 
-The data file (`satisfactionI.csv` in the `data` folder) needs manipulation before it can be used: the format needs to be changed from "long" to "wide"; and the pre or before Life Satisfaction scores need to be centered. These manipulations are completed in `ANOVA_data.r`.
+The data file needs rearranging before it can be used: the format needs to be changed from "long" to "wide", and the pre or before Life Satisfaction scores need to be centered.
 
-<br />
 
-#### Load relevant packages and get the data
+#### Load package and get the data
 
-Load the relevant packages, and run `ANOVA_data.r` to get the data.
+Load the **lavaan** packages, and run `satisfactionI.r` and `ANOVA_data.r` to get and rearrange the data.
 
-```{r echo = c(-6, -2:-1), eval = FALSE}
-
-## Load packages
+```{r echo = c(-8, -4, -1)}
+## Load package
 library(lavaan)
-library(here)         # Relative paths
 
 ## Get the data
-path <- here::here("Green_2023", "data", "ANOVA_data.r")
-source(path)
+source("satisfactionI.r")
+head(df)
+
+## Rearrange the data file
+source("ANOVA_data.r")
 head(df)
 ```
 
 The variables used in this example are:
 
  - x - Coping Strategy ("a" - no strategy; "b" - discussion; "c" - exercise)
- - y - dependent variable ("after" self-satisfaction scores)
- - preC - pre-score grand mean centered
+ - y - dependent variable ("after" Life-Satisfaction scores)
+ - preC - pre-Life-Satisfaction scores grand mean centered
 
 The steps are the same as with the one_way_ANOVA. The only difference is the addition of the covariate, preC.
 
-<br />
 
-### Structural Equation Modeling using **lavaan**
+#### The models
 
 The SEM model for one-way ANCOVA is shown below. The diagram shows the "Less Constrained" model - the three means, represented by the label on the arrows connecting the "1" to the dependent variable, differ. To be consistent with the ANCOVA assumptions of homogeneity of variances and homogeneity of regression slopes, the residual variances and the coefficients for the covariate (preC) are each constrained to equality.
 
-![](images/one_way_ANCOVA.svg){fig-align="left"}
+![](images/one_way_ANCOVA.svg){fig-align="center"}
 
 The model statements are shown below. The "More Constrained" model constrains the means to equality. The "Less Constrained" model allows the means to differ across the groups. In both cases the residual variances and the coefficients for the covariate are constrained to equality.
 
-```{r echo = c(-3:-1), eval = FALSE}
-
-### One-way ANCOVA - SEM
-## Check results with "SEM" section of Table 21.2
+```{r echo = -1}
+## The models
 models <- list(
 "More Constrained" =
   "y ~  c(a, a, a)*1        # Means
@@ -83,18 +79,17 @@ models <- list(
 )
 ```
 
-<br />
 
 #### Fit the models and get the results
 
 The `lapply()` function applies the `sem()` function to the two elements of the `models` list (with `data` set to `df`, and `group` set to the `"x"` variable).
 
-```{r echo = c(-5, -2:-1), eval = FALSE}
-
+```{r echo = c(-5:-4, -1)}
 ## Fit the models
 fit <- lapply(models, sem, data = df, group = "x")
 
 ## Get model summaries
+## Check results with "SEM" section of Table 21.2
 lapply(fit, summary)
 ```
 
@@ -102,13 +97,12 @@ The "SEM" sections of Table 21.2 show the means, pooled error variances, and the
 
 Scroll through the summaries to find the "Intercepts", "Variances", and "Regressions"; or extract them from the list of estimates of model parameters.
 
-```{r echo = c(-2:-1), eval = FALSE}
-
+```{r echo = c(-1)}
 ## Extract means, variances, and regression coefficients from list of estimates
-# Get list of estimates
+## Get list of estimates
 estimates <- lapply(fit, lavInspect, "est"); estimates
 
-# Extract means - in element "alpha"
+## Extract means - in element "alpha"
 means <- list()
 for (i in names(models)){
    means[[i]] <- estimates[[i]] |>
@@ -117,7 +111,7 @@ for (i in names(models)){
 }
 means <- do.call(cbind, means); means
 
-# Extract error variances -  in element "psi"
+## Extract error variances -  in element "psi"
 ErrorVar <- list()
 for (i in names(models)){
    ErrorVar[[i]] <- estimates[[i]] |>
@@ -126,7 +120,7 @@ for (i in names(models)){
 }
 ErrorVar <- do.call(cbind, ErrorVar); ErrorVar
 
-# Extract regression coefficients -  in element "beta"
+## Extract regression coefficients -  in element "beta"
 RegCoef <- list()
 for (i in names(models)){
    RegCoef[[i]] <- estimates[[i]] |>
@@ -139,8 +133,7 @@ RegCoef <- do.call(cbind, RegCoef); RegCoef
 
 To perform the $\upchi$^2^ test (to compare the fit of the two models), apply the `anova()` function to the two models.
 
-```{r echo = -3:-1, eval = FALSE}
-
+```{r echo = -2:-1}
 ## Contrast model fits
 ## Check with chi sq statistic and p value in Table 21.2
 Reduce(anova, fit)
@@ -148,10 +141,9 @@ Reduce(anova, fit)
 
 Compare with the $\upchi$^2^ statistic and p value in Table 21.2.
 
-In Equation 21.9 (p. 394), TLG give calculations for R^2^. As was the case with the one-way ANOVA, the relevant SSEs can be obtained from the error variances (see `ErrorVar`) by multiplying error variance by sample size. But again, the multiplication is not needed because sample size will cancel out; that is, substitute the error variances into Equation 21.9.
+In Equation 21.9 (p. 394), Thompson, Lie & Green give calculations for R^2^. As was the case with the one-way ANOVA, the relevant SSEs can be obtained from the error variances (see `ErrorVar`) by multiplying error variance by sample size. But again, the multiplication is not needed because sample size will cancel out; that is, substitute the error variances into Equation 21.9.
 
-```{r echo = -3:-1, eval = FALSE}
-
+```{r echo = -2:-1}
 ## R square
 ## Check with Equation 21.9
 Rsquare <- ErrorVar["a", ] |>
@@ -161,10 +153,35 @@ Rsquare
 
 <br />
 
-```{r, echo = FALSE, include = FALSE, eval = TRUE, purl = FALSE}
+```{r}
+#| echo: false
+#| include: false
+#| eval: true
+#| purl: false
 input <- knitr::current_input()
-output <- "02_one_way_ANCOVA.r"
+output <- "R/one_way_ANCOVA.r"
 knitr::purl(input, output, documentation = 0, quiet = TRUE)
+xfun::gsub_file(output, "^# NA", "")
+xfun::gsub_file(output, "^# ", "")
 ```
 
-The R script with minimal commenting is available in [`{r} noquote(output)`](`{r} noquote(output)`).
+```{r}
+#| echo: true
+#| code-fold: true
+#| code-summary: "R code with minimal commenting"
+#| file: !expr "noquote(output)"
+```
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| code-summary: "R code to get data file - `satisfactionI.r`"
+#| file: "R/satisfactionI.r"
+```  
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| code-summary: "R code to rearrange data file - `ANOVA_data.r`"
+#| file: "R/ANOVA_data.r"
+```

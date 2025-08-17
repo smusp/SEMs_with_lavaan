@@ -1,22 +1,22 @@
 ---
 title: "One-Way ANOVA of latent variable"
 highlight-style: solarized
-code-block-border-left: "#FCC251"
 
 format:
-  html: default
+  html:
+    theme: "../styles.scss"
+    embed-resources: true
   gfm: default
+
+execute:
+  eval: false
+
+format-links: false
 ---
 
-```{css, echo = FALSE, purl = FALSE}
-h1, h2, h3, h4, h5 {
-  color: #CB6015;
-}
-```
-
-```{r echo = FALSE, eval = FALSE}
-
-
+```{r echo = FALSE}
+## One-way ANOVA of latent variable
+##
 ## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
@@ -24,44 +24,38 @@ h1, h2, h3, h4, h5 {
 
 Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling approaches for analyzing means. In R. Hoyle (Ed.), *Handbook of structural equation modeling* (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 
-<br />
 
 This example shows the SEM approach to Part 5: One-way ANOVA of a latent variable. Results are reported in Table 21.6 (p. 404).
 
 Any comparison of latent means assumes some level of measurement invariance. The first part of this example demonstrates SEM assuming strict measurement invariance. The second part demonstrates SEM under partial invariance of loadings and intercepts.
 
-The data file (`satisfactionII.csv`) is in the `data` folder.
-
-<br />
 
 #### Load package and get the data
 
-```{r echo = c(-6, -2:-1), eval = FALSE}
+Load the **lavaan** package, and run `satisfactionII.r` to get the data.
 
+```{r echo = c(-4, -1)}
 ## Load package
 library(lavaan)
-library(here)             # Relative paths
 
 ## Get the data
-path <- here::here("Green_2023", "data", "satisfactionII.csv")
-df <- read.csv(path, header = TRUE)
+source("satisfactionII.r")
 head(df)
 ```
 
 The variables used in this example are:
 
 - x - Coping Strategy ("a" - no strategy; "b" - discussion; "c" - exercise)
-- y1, y2, y3, y4 - multiple dependent variables (life-satisfaction scores)
+- y1, y2, y3, y4 - Multiple dependent variables (Life-Satisfaction scores)
 
-<br />
 
-### Structural Equation Modeling using **lavaan**
+#### The models
 
 The SEM model for the one-way ANOVA of a latent variable is shown in Fig 21.3 (p. 403), and is reproduced below. The diagram shows the "Less Constrained" model.
 
-![](images/one_way_LATENT.svg){fig-align="left"}
+![](images/one_way_LATENT.svg){fig-align="center"}
 
-For purposes of identification and scaling, the loading for the first indicator is constrained to one. (TLG claim that the loading for the 4th indicator is constrained to one. However, when the 4th loading is constrained to one, I do not get the same results as given in Table 21.6 (in particular the latent variance), nor do I get the means (given in the discussion on page 405); whereas I get agreement with the Table and the text when I constrain the 1st loading to one.)
+For purposes of identification and scaling, the loading for the first indicator is constrained to one. (Thompson, Lie & Green (TLG) claim that the loading for the 4th indicator is constrained to one. However, when the 4th loading is constrained to one, I do not get the same results as given in Table 21.6 (in particular the latent variance), nor do I get the means (given in the discussion on page 405); whereas I get agreement with the Table and the text when I constrain the 1st loading to one.)
 
 Also for the purposes of identification and scaling, the latent mean for the first group is constrained to zero. For the "Less Constrained" model, the latent means for the other groups (a2 and a3) are freely estimated.
 
@@ -76,10 +70,8 @@ The model statements are shown below. The only difference between the "More Cons
 
 The common parts of the two models are set up according to the bullet points above.
 
-```{r echo = c(-2:-1), eval = FALSE}
-
-## One-way ANOVA of latent variable
-# Model statements
+```{r echo = -1}
+## The models
 common <- "
    #  Measurement model
    F =~ y1 + c(l2,l2,l2)*y2 + c(l3,l3,l3)*y3 + c(l4,l4,l4)*y4 
@@ -120,20 +112,19 @@ models <- list(
 )
 ```
 
-<br />
 
 #### Fit the models and get the results
 
-```{r echo = c(-2:-1), eval = FALSE}
-
+```{r echo = -2:-1}
+## Fit the models and get the results
 ## Check results in "All measures" row in Table 21.6
-# Fit the models 
+## Fit the models 
 fit <- lapply(models, sem, data = df, group = "x")
 
-# Get model summaries
+## Get model summaries
 lapply(fit, summary)
 
-# Contrast model fits
+## Contrast model fits
 Reduce(anova, fit)
 ```
 
@@ -141,8 +132,7 @@ Compare with $\upchi$^2^ test in the "All measures" row in Table 21.6.
 
 One could scroll through the model summaries to find the latent means and error variances for the "Less Constrained" model, and compare them with Table 21.6. They are also needed to calculate effect sizes (given in the first column on page 405).
 
-```{r echo = c(-3:-1), eval = FALSE}
-
+```{r echo = -2:-1}
 ## Cut-and-paste means and variances to get effect sizes
 ## Compare with values given on page 405
 d1 <- (0.664 - 0) / sqrt(8.135); d1    # "no strategy" vs "discussion"
@@ -151,8 +141,7 @@ d2 <- (1.945 - 0) / sqrt(8.135); d2    # "no strategy" vs "exercise"
 
 But it is probably safer to extract latent means and error variances from a list of parameter estimates, then substitute into the formula for effect size.
 
-```{r echo = c(-12:-11, -3:-1), eval = FALSE}
-
+```{r echo = c(-11:-10, -2:-1)}
 ## Extract latent means and error variances from "Less Constrained" model
 ## Check with "All measures" row in Table 21.6
 estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
@@ -173,7 +162,6 @@ d2 <- (LatentMeans[3] - LatentMeans[1]) / sqrt(LatentVar[1]); d2
 
 Compare the effect sizes with those given on page 405, and the means and error variances with those in Table 21.6.
 
-<br />
 
 ### More Flexible Tests of Differences in Means on Latent Variables
 
@@ -196,14 +184,13 @@ For the "More Constrained" model, the latent means are constrained to equality a
 
 The purpose of these examples is to demonstrate that "if a latent variable has only a single referent variable, the means and variances of the latent variable are a function of only the means and variances of this variable" (p. 406).
 
-<br />
 
 #### Model that applies to the 2nd row in Table 21.6: "One measure - Y$_1$"
 
 The selected indicator is the first - "y1".
 
-```{r echo = c(-2:-1), eval = FALSE}
-
+```{r echo = -2:-1}
+## Relaxing some constraints
 ## ANOVA model for 2nd row in Table 21.6
 # Model statements
 common <- "
@@ -248,21 +235,21 @@ models <- list(
 
 Fit the models and get the latent means, latent error variances, and the $\upchi$^2^ test.
 
-```{r echo = c(-2:-1), eval = FALSE}
-
+```{r echo = -2:-1}
+## Fit the model and get the results
 ## Check with means, error variance, and chi square in 2nd row in Table 21.6
-# Fit the models 
+## Fit the models 
 fit <- lapply(models, sem, data = df, group = "x")
 
-# Model summaries
+## Model summaries
 lapply(fit, summary)
 
-# Get the latent means and latent error variances for "Less Constrained" model
+## Get the latent means and latent error variances for "Less Constrained" model
 estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
 LatentMeans <- sapply(estimates, "[[", "alpha"); LatentMeans
 LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
 
-# Contrast model fits
+## Contrast model fits
 Reduce(anova, fit)
 ```
 
@@ -272,8 +259,7 @@ Consider the three columns of Table 21.6 dealing with means, variances and resid
 
 I need sample means and covariances - they can be extract from a list of sample statistics. I need estimated indicator intercepts and residual variances - they can be extracted from `estimates`. Also I need estimated latent means and error variances - they have already been extracted.
 
-```{r echo = -3:-1, eval = FALSE}
-
+```{r echo = -2:-1}
 ## Columns of Table 21.6 dealing with means, variances and residual variances of "y1"
 ## Need sample statistics and model estimates
 # Get sample statistics
@@ -287,7 +273,6 @@ estimates
    # Intercepts for the measures are in element "nu"
 ```
 
-<br />
 
 ##### Means of the measures for each group (ie, the "y1" means).
 
@@ -297,8 +282,7 @@ estimates
 - Alternatively, the "y1" intercepts (which are constrained to equality) when added to the latent means give the "y1" means
 
 
-```{r echo = -1, eval = FALSE}
-
+```{r}
 # Extract y1 means from sampstats
 MeansY1 <- sapply(sampstat, "[[", "mean")
 MeansY1 <- MeansY1[1,]; MeansY1   # Compare with 2nd row in Table 21.6
@@ -316,7 +300,6 @@ intercepts <- sapply(estimates, "[[", "nu")[1,1]; intercepts
 intercepts + LatentMeans; MeansY1
 ```
 
-<br />
 
 ##### Variances of the measure for each group (ie, "y1" variances)
 
@@ -325,8 +308,7 @@ intercepts + LatentMeans; MeansY1
 - Latent error variances already extracted in `LatentVar`
 - Differences between "y1" variances and "y1" residual variances are the latent error variances
 
-```{r echo = -1, eval = FALSE}
-
+```{r}
 # Extract y1 variances from sampstats
 VarY1 <- sapply(lapply(sampstat, "[[", "cov"), diag)
 VarY1 <- VarY1[1,]; VarY1  # Compare with 2nd row in Table 21.6
@@ -342,7 +324,6 @@ VarY1 - ResidVarY1
 LatentVar
 ```
 
-<br />
 
 #### Model that applies to the 3rd row in Table 21.6: "One measure - Y$_2$"
 
@@ -350,8 +331,8 @@ The selected indicator is the second - "y2".
 
 This is the same as before, except the constraints on the loadings and intercepts apply to the second indicator.
 
-```{r echo = c(-2:-1), eval = FALSE}
-
+```{r echo = -2:-1}
+## Relaxing some constraints
 ## ANOVA model for 3rd row in Table 21.6
 # Model statements
 common <- "
@@ -396,8 +377,8 @@ models <- list(
 
 Fit the models and get the latent means, latent error variances, and the $\upchi$^2^ test.
 
-```{r echo = c(-2:-1), eval = FALSE}
-
+```{r echo = -2:-1}
+## Fit the model and get the results
 ## Check with means, error variance, and chi square in 3rd row in Table 21.6
 # Fit the models
 fit <- lapply(models, sem, data = df, group = "x")
@@ -420,8 +401,7 @@ Consider the three columns of Table 21.6 dealing with means, variances and resid
 
 I need sample means and covariances - they can be extract from a list of sample statistics. I need estimated indicator intercepts and residual variances - they can be extracted from `estimates`. Also I need estimated latent means and error variances - they have already been extracted.
 
-```{r echo = -3:-1, eval = FALSE}
-
+```{r echo = -2:-1}
 ## Columns of Table 21.6 dealing with means, variances and residual variances of "y2"
 ## Need sample statistics and model estimates
 # Get sample statistics
@@ -435,7 +415,6 @@ estimates
    # Intercepts for the measures are in element "nu"
 ```
 
-<br />
 
 ##### The means of the measures for each group (ie, the "y2" means).
 
@@ -444,8 +423,7 @@ estimates
 - The differences between the "y2" means are the differences between the latent means
 - Alternatively, the "y2" intercepts (which are constrained to equality) when added to the latent means give the "y2" means
 
-```{r echo = -1, eval = FALSE}
-
+```{r}
 # Extract y2 Means from sampstats
 MeansY2 <- sapply(sampstat, "[[", "mean")
 MeansY2 <- MeansY2[2,]; MeansY2   # Compare with 3rd row in Table 21.6
@@ -463,7 +441,6 @@ intercepts <- sapply(estimates, "[[", "nu")[2,1]; intercepts
 intercepts + LatentMeans; MeansY2
 ```
 
-<br />
 
 ##### The variances of the measure for each group (ie, "y2" variances)
 
@@ -472,8 +449,7 @@ intercepts + LatentMeans; MeansY2
 - Latent error variances already extracted in `LatentVar`
 - Differences between "y2" variances and "y2" residual variances are the latent error variances
 
-```{r echo = -1, eval = FALSE}
-
+```{r}
 # Extract y2 variances from sampstats
 VarY2 <- sapply(lapply(sampstat, "[[", "cov"), diag)
 VarY2 <- VarY2[2,]; VarY2  # Compare with 3rd row in Table 21.6
@@ -491,10 +467,28 @@ LatentVar
 
 <br />
 
-```{r, echo = FALSE, include = FALSE, eval = TRUE, purl = FALSE}
+```{r}
+#| echo: false
+#| include: false
+#| eval: true
+#| purl: false
 input <- knitr::current_input()
-output <- "05_one_way_LATENT.r"
+output <- "R/one_way_LATENT.r"
 knitr::purl(input, output, documentation = 0, quiet = TRUE)
+xfun::gsub_file(output, "^# NA", "")
+xfun::gsub_file(output, "^# ", "")
 ```
 
-The R script with minimal commenting is available in [`{r} noquote(output)`](`{r} noquote(output)`).
+```{r}
+#| echo: true
+#| code-fold: true
+#| code-summary: "R code with minimal commenting"
+#| file: !expr "noquote(output)"
+```
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| code-summary: "R code to get data file - `satisfactionII.r`"
+#| file: "R/satisfactionII.r"
+``` 

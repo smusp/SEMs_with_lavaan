@@ -12,30 +12,26 @@ modeling approaches for analyzing means. In R. Hoyle (Ed.), *Handbook of
 structural equation modeling* (2nd ed., pp. 385-408). New York, NY:
 Guilford Press.
 
-<br />
-
 This example shows the SEM approach to Part 3: Two-way ANOVA. Results
 are reported in Tables 21.3 and 21.4 (pp. 395, 396).
 
-The data file (`satisfactionI.csv` in the `data` folder) needs
-manipulation before it can be used: the format needs to be changed from
-“long” to “wide”; and the Gender X Coping Strategy interaction needs a
-grouping variable set up. These manipulations are completed in
-`ANOVA_data.r`.
+The data file needs rearranging before it can be used: the format needs
+to be changed from “long” to “wide”, and the Gender X Coping Strategy
+interaction needs a grouping variable set up.
 
-<br />
+#### Load packages and get the data
 
-#### Load relevant packages and get the data
-
-Load the relevant packages, and run `ANOVA_data.r` to get the data.
+Load the relevant packages, and run `satisfactionI.r` and `ANOVA_data.r`
+to get and rearrange the data.
 
 ``` r
 library(lavaan)
-library(here)         # Relative paths
 library(DescTools)    # Cramer's V
 
-path <- here::here("Green_2023", "data", "ANOVA_data.r")
-source(path)
+source("satisfactionI.r")
+head(df)
+
+source("ANOVA_data.r")
 head(df)
 ```
 
@@ -44,17 +40,15 @@ The variables used in this example are:
 - x - Coping Strategy (“a” - no strategy; “b” - discussion; “c” -
   exercise)
 - g - Gender
-- y - dependent variable (“after” self-satisfaction scores)
+- y - dependent variable (“after” Life-Satisfaction scores)
 - sg - Gender X Coping Strategy interaction
-
-<br />
 
 #### Preliminary results - Cramer’s V
 
-On page 394, TLG give Cramer’s V for the Gender X Coping Strategy
-crosstabulation. As far as I know, Cramer’s V is not available in base
-R, but **DescTools** is one of possibly many packages that has a
-function for Cramer’s V.
+On page 394, Thompson, Lie & Green give Cramer’s V for the Gender X
+Coping Strategy crosstabulation. As far as I know, Cramer’s V is not
+available in base R, but **DescTools** is one of possibly many packages
+that has a function for Cramer’s V.
 
 ``` r
 DescTools::CramerV(df$g, df$x)
@@ -72,7 +66,7 @@ number of columns.
 
 ``` r
 chisq <- unname(chisq.test(df$g, df$x)$statistic)
-n <- length(df$g)           # Sample size
+n <- nrow(df)               # Sample size
 r <- length(unique(df$g))   # Number of rows
 c <- length(unique(df$x))   # Number of columns
 
@@ -86,8 +80,6 @@ Standardised residuals will give the direction of the relationship
 chisq.test(df$g, df$x)$stdres
 ```
 
-<br />
-
 #### Preliminary results - Gender X Coping Strategy crosstabulation
 
 Table 21.3 (p. 395) gives the cell means and frequecies, and the
@@ -96,8 +88,8 @@ weighted and unweighted marginal means.
 Get the cell means and frequencies.
 
 ``` r
-means <- tapply(df$y, list(df$g, df$x), mean); means     # Cell means
-freq  <- table(df$g, df$x); freq                         # Cell frequencies
+means <- with(df, tapply(y, list(g, x), mean)); means     # Cell means
+freq  <- with(df, table(g, x)); freq                      # Cell frequencies
 ```
 
 Get the unweighted and weighted marginal means.
@@ -108,13 +100,11 @@ apply(means, 1, mean)      # Gender
 apply(means, 2, mean)      # Coping Strategy
  
 # Weighted marginal means
-tapply(df$y, df$g, mean)     # Gender
-tapply(df$y, df$x, mean)     # Coping Strategy
+with(df, tapply(y, g, mean))     # Gender
+with(df, tapply(y, x, mean))     # Coping Strategy
 ```
 
-<br />
-
-### Structural Equation Modeling using **lavaan**
+#### The models
 
 The SEM model for two-way ANOVA is shown below. The diagram shows the
 “Less Constrained” model - the six means, represented by the label on
@@ -122,7 +112,7 @@ the arrows connecting the “1” to the dependent variable, differ. To be
 consistent with the ANOVA assumption of homogeneity of variances, the
 residual variances are constrained to be equal.
 
-<img src="images/two_way_ANOVA.svg" data-fig-align="left" />
+<img src="images/two_way_ANOVA.svg" data-fig-align="center" />
 
 The model statements are shown below. The “Less Constrained” model
 allows the means (represented by the labels, am, af, …, cf) to differ
@@ -160,15 +150,14 @@ strategy equals the difference between “female” mean and “male” mean for
 the “c” strategy.
 
 ``` r
-# Less Constrained model
+## Less Constrained model
 lc <- "y ~  c(am, af, bm, bf, cm, cf)*1      # Means
        y ~~ c(e, e, e, e, e, e)*y            # Variances"
 
 lc.fit <- sem(lc, data = df, group = "sg")
 summary(lc.fit)
 
-
-# Gender main effect - unweighted means
+## Gender main effect - unweighted means
 constraints <- "af + bf + cf == am + bm + cm"
 gend_unw <- c(lc, constraints)
 
@@ -177,10 +166,9 @@ summary(gend_unw.fit)
 
 anova(gend_unw.fit, lc.fit)   # Compare the two models
 
-
-# Coping Strategy main effect - unweighted means
-constraints <- "
-   af + am == bf + bm 
+## Coping Strategy main effect - unweighted means
+constraints <- 
+  "af + am == bf + bm 
    af + am == cf + cm"
 strat_unw <- c(lc, constraints)
 
@@ -189,8 +177,7 @@ summary(strat_unw.fit)
 
 anova(strat_unw.fit, lc.fit)   # Compare the two models
 
-
-# Gender main effect - weighted means
+## Gender main effect - weighted means
 freq                     # To assist with constructing constraints
 constraints <- "(3*af + 3*bf + 6*cf)/12 == (6*am + 3*bm + 3*cm)/12"
 gend_w <- c(lc, constraints)
@@ -200,12 +187,11 @@ summary(gend_w.fit)
 
 anova(gend_w.fit, lc.fit)   # Compare the two models
 
-
-# Coping Strategy main effect - weighted means
-# Compare with SEM section in Table 21.4
+## Coping Strategy main effect - weighted means
+## Compare with SEM section in Table 21.4
 freq
-constraints <- "
-   (3*af + 6*am)/9 == (3*bf + 3*bm)/6 
+constraints <- 
+  "(3*af + 6*am)/9 == (3*bf + 3*bm)/6 
    (3*bf + 3*bm)/6 == (6*cf + 3*cm)/9"
 strat_w <- c(lc, constraints)
 
@@ -214,10 +200,9 @@ summary(strat_w.fit)
 
 anova(strat_w.fit, lc.fit)   # Compare the two models
 
-
-# Gender X Coping Strategy interaction
-constraints <- "
-   (af - am) == (bf - bm)
+## Gender X Coping Strategy interaction
+constraints <- 
+  "(af - am) == (bf - bm)
    (bf - bm) == (cf - cm)"
 inter <- c(lc, constraints)
 
@@ -229,5 +214,196 @@ anova(inter.fit, lc.fit)     # Compare the two models
 
 <br />
 
-The R script with minimal commenting is available in
-[03_two_way_ANOVA.r](03_two_way_ANOVA.r).
+<details class="code-fold">
+<summary>R code with minimal commenting</summary>
+
+``` r
+## Two-way ANOVA
+##
+## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling
+## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
+## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
+
+## Load packages
+library(lavaan)
+library(DescTools)    # Cramer's V
+
+## Get the data
+source("satisfactionI.r")
+head(df)
+
+## Rearrange the data file
+source("ANOVA_data.r")
+head(df)
+
+## Cramer's V
+## Check with page 394
+DescTools::CramerV(df$g, df$x)
+
+## Cramer's V by hand
+chisq <- unname(chisq.test(df$g, df$x)$statistic)
+n <- nrow(df)               # Sample size
+r <- length(unique(df$g))   # Number of rows
+c <- length(unique(df$x))   # Number of columns
+
+CV <- sqrt((chisq/n)/min(r-1, c-1)); CV
+
+## Direction of the relationship
+chisq.test(df$g, df$x)$stdres
+
+## Cell means and cell frequencies
+## Check cell means and frequencies in Table 21.3
+means <- with(df, tapply(y, list(g, x), mean)); means     # Cell means
+freq  <- with(df, table(g, x)); freq                      # Cell frequencies
+
+## Check unweighted and weighted means in Table 21.3
+# Unweighted marginal means
+apply(means, 1, mean)      # Gender
+apply(means, 2, mean)      # Coping Strategy
+
+# Weighted marginal means
+with(df, tapply(y, g, mean))     # Gender
+with(df, tapply(y, x, mean))     # Coping Strategy
+
+## Less Constrained model
+lc <- "y ~  c(am, af, bm, bf, cm, cf)*1      # Means
+       y ~~ c(e, e, e, e, e, e)*y            # Variances"
+
+lc.fit <- sem(lc, data = df, group = "sg")
+summary(lc.fit)
+
+## Gender main effect - unweighted means
+constraints <- "af + bf + cf == am + bm + cm"
+gend_unw <- c(lc, constraints)
+
+gend_unw.fit <- sem(gend_unw, data = df, group = "sg")
+summary(gend_unw.fit)
+
+anova(gend_unw.fit, lc.fit)   # Compare the two models
+
+## Coping Strategy main effect - unweighted means
+constraints <-
+  "af + am == bf + bm
+   af + am == cf + cm"
+strat_unw <- c(lc, constraints)
+
+strat_unw.fit <- sem(strat_unw, data = df, group = "sg")
+summary(strat_unw.fit)
+
+anova(strat_unw.fit, lc.fit)   # Compare the two models
+
+## Gender main effect - weighted means
+freq                     # To assist with constructing constraints
+constraints <- "(3*af + 3*bf + 6*cf)/12 == (6*am + 3*bm + 3*cm)/12"
+gend_w <- c(lc, constraints)
+
+gend_w.fit <- sem(gend_w, data = df, group = "sg")
+summary(gend_w.fit)
+
+anova(gend_w.fit, lc.fit)   # Compare the two models
+
+## Coping Strategy main effect - weighted means
+## Compare with SEM section in Table 21.4
+freq
+constraints <-
+  "(3*af + 6*am)/9 == (3*bf + 3*bm)/6
+   (3*bf + 3*bm)/6 == (6*cf + 3*cm)/9"
+strat_w <- c(lc, constraints)
+
+strat_w.fit <- sem(strat_w, data = df, group = "sg")
+summary(strat_w.fit)
+
+anova(strat_w.fit, lc.fit)   # Compare the two models
+
+## Gender X Coping Strategy interaction
+constraints <-
+  "(af - am) == (bf - bm)
+   (bf - bm) == (cf - cm)"
+inter <- c(lc, constraints)
+
+inter.fit <- sem(inter, data = df, group = "sg")
+summary(inter.fit)
+
+anova(inter.fit, lc.fit)     # Compare the two models
+```
+
+</details>
+
+<details class="code-fold">
+<summary>R code to get data file - `satisfactionI.r`</summary>
+
+``` r
+### Data for Tables 21.1, 21.2, 21.3, 21.4 ###
+
+df <- structure(list(x = c("a", "a", "a", "a", "a", "a", "a", "a", 
+"a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "b", "b", "b", 
+"b", "b", "b", "b", "b", "b", "b", "b", "b", "c", "c", "c", "c", 
+"c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", 
+"c"), g = c("m", "m", "m", "m", "m", "m", "f", "f", "f", "m", 
+"m", "m", "m", "m", "m", "f", "f", "f", "m", "m", "m", "f", "f", 
+"f", "m", "m", "m", "f", "f", "f", "m", "m", "m", "f", "f", "f", 
+"f", "f", "f", "m", "m", "m", "f", "f", "f", "f", "f", "f"), 
+    c = c("before", "before", "before", "before", "before", "before", 
+    "before", "before", "before", "after", "after", "after", 
+    "after", "after", "after", "after", "after", "after", "before", 
+    "before", "before", "before", "before", "before", "after", 
+    "after", "after", "after", "after", "after", "before", "before", 
+    "before", "before", "before", "before", "before", "before", 
+    "before", "after", "after", "after", "after", "after", "after", 
+    "after", "after", "after"), y = c(21, 19, 22, 21, 24, 23, 
+    21, 24, 23, 22, 22, 24, 25, 27, 30, 22, 23, 24, 23, 23, 21, 
+    19, 22, 21, 30, 26, 22, 25, 26, 27, 27, 25, 24, 25, 23, 22, 
+    23, 28, 26, 34, 30, 26, 26, 27, 28, 29, 40, 42)), class = "data.frame", row.names = c(NA, 
+-48L))
+
+
+head(df)
+
+## x - Coping Strategy (a - No strategy; b - Discussion; c - Exercise)
+## g - Gender
+## c - before/after 
+## y - dependent variable (Life Satisfaction)
+```
+
+</details>
+
+<details class="code-fold">
+<summary>R code to rearrange data file - `ANOVA_data.r`</summary>
+
+``` r
+### Data for Tables 21.1, 21.2, 21.3, 21.4 ###
+
+## Reshape data - long to wide
+tab <- 0.5 * table(df$x)  # in each condition
+df$id <- c(rep(1:tab[1], 2), rep(1:tab[2], 2), rep(1:tab[3], 2))  # id variable 
+
+df <- reshape(df, timevar = "c", idvar = c("id", "x", "g"), varying = c("pre", "y"), 
+   direction = "wide")
+
+
+df <- within(df, {
+## Grand mean centered "pre" - the before scores
+   preC <- scale(pre, scale = FALSE)
+
+## Drop the id variable
+   id <- NULL
+
+## Gender X Coping Strategy interaction
+  sg <- interaction(x, g, sep = "")
+
+## Dummy variables to use in regression analysis
+## Dummy variables for "Coping Startegy"
+   x1 <- ifelse(x == "a", 1, 0)
+   x2 <- ifelse(x == "b", 1, 0)
+   x3 <- ifelse(x == "c", 1, 0)
+
+## Dummy variables for interaction
+  dummies <- model.matrix(~ sg - 1)
+})
+
+## Unnest the nested 'dummies' matrix, and rename its colomns
+df <- do.call(data.frame, df)
+names(df) <- gsub("dummies.sg", "", names(df))
+```
+
+</details>

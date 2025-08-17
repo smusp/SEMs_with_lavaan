@@ -1,25 +1,20 @@
-
-
+## One-way ANOVA of latent variable
+##
 ## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 
-
 ## Load package
 library(lavaan)
-library(here)             # Relative paths
 
 ## Get the data
-path <- here::here("Green_2023", "data", "satisfactionII.csv")
-df <- read.csv(path, header = TRUE)
+source("satisfactionII.r")
 head(df)
 
-
-## One-way ANOVA of latent variable
-# Model statements
+## The models
 common <- "
    #  Measurement model
-   F =~ y1 + c(l2,l2,l2)*y2 + c(l3,l3,l3)*y3 + c(l4,l4,l4)*y4 
+   F =~ y1 + c(l2,l2,l2)*y2 + c(l3,l3,l3)*y3 + c(l4,l4,l4)*y4
 
    # Indicator intercepts
    y1 ~ c(a1,a1,a1)*1
@@ -56,23 +51,21 @@ models <- list(
    common)
 )
 
-
+## Fit the models and get the results
 ## Check results in "All measures" row in Table 21.6
-# Fit the models 
+## Fit the models
 fit <- lapply(models, sem, data = df, group = "x")
 
-# Get model summaries
+## Get model summaries
 lapply(fit, summary)
 
-# Contrast model fits
+## Contrast model fits
 Reduce(anova, fit)
-
 
 ## Cut-and-paste means and variances to get effect sizes
 ## Compare with values given on page 405
 d1 <- (0.664 - 0) / sqrt(8.135); d1    # "no strategy" vs "discussion"
 d2 <- (1.945 - 0) / sqrt(8.135); d2    # "no strategy" vs "exercise"
-
 
 ## Extract latent means and error variances from "Less Constrained" model
 ## Check with "All measures" row in Table 21.6
@@ -91,7 +84,7 @@ d1 <- (LatentMeans[2] - LatentMeans[1]) / sqrt(LatentVar[1]); d1
    # "no strategy" vs "exercise"
 d2 <- (LatentMeans[3] - LatentMeans[1]) / sqrt(LatentVar[1]); d2
 
-
+## Relaxing some constraints
 ## ANOVA model for 2nd row in Table 21.6
 # Model statements
 common <- "
@@ -120,7 +113,7 @@ models <- list(
 
    # Constraint
    m == 0",
-   
+
    common),
 
 "Less Constrained" =  c(
@@ -133,22 +126,21 @@ models <- list(
    common)
 )
 
-
+## Fit the model and get the results
 ## Check with means, error variance, and chi square in 2nd row in Table 21.6
-# Fit the models 
+## Fit the models
 fit <- lapply(models, sem, data = df, group = "x")
 
-# Model summaries
+## Model summaries
 lapply(fit, summary)
 
-# Get the latent means and latent error variances for "Less Constrained" model
+## Get the latent means and latent error variances for "Less Constrained" model
 estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
 LatentMeans <- sapply(estimates, "[[", "alpha"); LatentMeans
 LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
 
-# Contrast model fits
+## Contrast model fits
 Reduce(anova, fit)
-
 
 ## Columns of Table 21.6 dealing with means, variances and residual variances of "y1"
 ## Need sample statistics and model estimates
@@ -161,7 +153,6 @@ sampstat <- lavInspect(fit[["Less Constrained"]], "sampstat"); sampstat
 estimates
    # Residual variances for the measures are the diagonal elements in element "theta"
    # Intercepts for the measures are in element "nu"
-
 
 # Extract y1 means from sampstats
 MeansY1 <- sapply(sampstat, "[[", "mean")
@@ -179,7 +170,6 @@ LatentMeans
 intercepts <- sapply(estimates, "[[", "nu")[1,1]; intercepts
 intercepts + LatentMeans; MeansY1
 
-
 # Extract y1 variances from sampstats
 VarY1 <- sapply(lapply(sampstat, "[[", "cov"), diag)
 VarY1 <- VarY1[1,]; VarY1  # Compare with 2nd row in Table 21.6
@@ -194,14 +184,14 @@ VarY1 - ResidVarY1
 # Compare with the latent error variances
 LatentVar
 
-
+## Relaxing some constraints
 ## ANOVA model for 3rd row in Table 21.6
 # Model statements
 common <- "
    # Measurement model
-   F =~ NA*c(l11,l21,l31)*y1 + 1*y2 + c(l13,l23,l33)*y3 + c(l14,l24,l34)*y4 
+   F =~ NA*c(l11,l21,l31)*y1 + 1*y2 + c(l13,l23,l33)*y3 + c(l14,l24,l34)*y4
 
-   # Indicator intercepts 
+   # Indicator intercepts
    y1 ~ c(a11,a21,a31)*1
    y2 ~ c(a2,a2,a2)*1
    y3 ~ c(a13,a23,a33)*1
@@ -236,7 +226,7 @@ models <- list(
    common)
 )
 
-
+## Fit the model and get the results
 ## Check with means, error variance, and chi square in 3rd row in Table 21.6
 # Fit the models
 fit <- lapply(models, sem, data = df, group = "x")
@@ -252,7 +242,6 @@ LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
 # Contrast model fits
 Reduce(anova, fit)
 
-
 ## Columns of Table 21.6 dealing with means, variances and residual variances of "y2"
 ## Need sample statistics and model estimates
 # Get sample statistics
@@ -264,7 +253,6 @@ sampstat <- lavInspect(fit[["Less Constrained"]], "sampstat"); sampstat
 estimates
    # Residual variances for the measures are the diagonal elements in element "theta"
    # Intercepts for the measures are in element "nu"
-
 
 # Extract y2 Means from sampstats
 MeansY2 <- sapply(sampstat, "[[", "mean")
@@ -282,7 +270,6 @@ LatentMeans
 intercepts <- sapply(estimates, "[[", "nu")[2,1]; intercepts
 intercepts + LatentMeans; MeansY2
 
-
 # Extract y2 variances from sampstats
 VarY2 <- sapply(lapply(sampstat, "[[", "cov"), diag)
 VarY2 <- VarY2[2,]; VarY2  # Compare with 3rd row in Table 21.6
@@ -296,3 +283,9 @@ VarY2 - ResidVarY2
 
 # Compare with the latent error variances
 LatentVar
+
+
+
+
+
+
