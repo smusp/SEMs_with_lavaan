@@ -41,7 +41,7 @@ the addition of the covariate, preC.
 #### The models
 
 The SEM model for one-way ANCOVA is shown below. The diagram shows the
-“Less Constrained” model - the three means, represented by the label on
+“Less Constrained” model - the three means, represented by the labels on
 the arrows connecting the “1” to the dependent variable, differ. To be
 consistent with the ANCOVA assumptions of homogeneity of variances and
 homogeneity of regression slopes, the residual variances and the
@@ -57,15 +57,15 @@ equality.
 
 ``` r
 models <- list(
-"More Constrained" =
-  "y ~  c(a, a, a)*1        # Means
-   y ~  c(b, b, b)*preC     # Regression slopes
-   y ~~ c(e, e, e)*y        # Variances",
+  "More Constrained" =
+    "y ~  c(a, a, a)*1        # Means
+     y ~  c(b, b, b)*preC     # Regression slopes
+     y ~~ c(e, e, e)*y        # Variances",
 
-"Less Constrained" =
-  "y ~  c(a1, a2, a3)*1
-   y ~  c(b, b, b)*preC
-   y ~~ c(e, e, e)*y"
+  "Less Constrained" =
+    "y ~  c(a1, a2, a3)*1
+     y ~  c(b, b, b)*preC
+     y ~~ c(e, e, e)*y"
 )
 ```
 
@@ -169,15 +169,15 @@ head(df)
 
 ## The models
 models <- list(
-"More Constrained" =
-  "y ~  c(a, a, a)*1        # Means
-   y ~  c(b, b, b)*preC     # Regression slopes
-   y ~~ c(e, e, e)*y        # Variances",
+  "More Constrained" =
+    "y ~  c(a, a, a)*1        # Means
+     y ~  c(b, b, b)*preC     # Regression slopes
+     y ~~ c(e, e, e)*y        # Variances",
 
-"Less Constrained" =
-  "y ~  c(a1, a2, a3)*1
-   y ~  c(b, b, b)*preC
-   y ~~ c(e, e, e)*y"
+  "Less Constrained" =
+    "y ~  c(a1, a2, a3)*1
+     y ~  c(b, b, b)*preC
+     y ~~ c(e, e, e)*y"
 )
 
 ## Fit the models

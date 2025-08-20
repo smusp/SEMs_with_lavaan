@@ -32,23 +32,23 @@ common <- "
    F ~~ c(d,d,d)*F"
 
 models <- list(
-"More Constrained" = c(
-  "# Latent means
-   F ~ c(m,m,m)*1
+  "More Constrained" = c(
+    "# Latent means
+    F ~ c(m,m,m)*1
 
-   # Constraint
-   m == 0",
+     # Constraint
+     m == 0",
 
-   common),
+     common),
 
-"Less Constrained" =  c(
-  "# Latent means
-   F ~ c(m1,m2,m3)*1
+  "Less Constrained" =  c(
+    "# Latent means
+     F ~ c(m1,m2,m3)*1
 
-   # Constraint
-   m1 == 0",
+     # Constraint
+     m1 == 0",
 
-   common)
+    common)
 )
 
 ## Fit the models and get the results
@@ -87,8 +87,8 @@ d2 <- (LatentMeans[3] - LatentMeans[1]) / sqrt(LatentVar[1]); d2
 ## Relaxing some constraints
 ## ANOVA model for 2nd row in Table 21.6
 # Model statements
-common <- "
-   # Measurement model
+common <-
+  "# Measurement model
    F =~ y1 + c(l12,l22,l32)*y2 + c(l13,l23,l33)*y3 + c(l14,l24,l34)*y4
 
    # Indicator intercepts
@@ -107,23 +107,23 @@ common <- "
    F ~~ c(d1,d2,d3)*F"
 
 models <- list(
-"More Constrained" = c(
-  "# Latent means
-   F ~ c(m,m,m)*1
+  "More Constrained" = c(
+    "# Latent means
+     F ~ c(m,m,m)*1
 
-   # Constraint
-   m == 0",
+     # Constraint
+     m == 0",
 
-   common),
+     common),
 
-"Less Constrained" =  c(
-  "# Latent means
-   F ~ c(m1,m2,m3)*1
+  "Less Constrained" =  c(
+    "# Latent means
+     F ~ c(m1,m2,m3)*1
 
-   # Constraint
-   m1 == 0",
+     # Constraint
+     m1 == 0",
 
-   common)
+     common)
 )
 
 ## Fit the model and get the results
@@ -187,8 +187,8 @@ LatentVar
 ## Relaxing some constraints
 ## ANOVA model for 3rd row in Table 21.6
 # Model statements
-common <- "
-   # Measurement model
+common <-
+  "# Measurement model
    F =~ NA*c(l11,l21,l31)*y1 + 1*y2 + c(l13,l23,l33)*y3 + c(l14,l24,l34)*y4
 
    # Indicator intercepts
@@ -207,23 +207,23 @@ common <- "
    F ~~ c(d1,d2,d3)*F"
 
 models <- list(
-"Less Constrained" =  c(
-  "# Latent means
-   F ~ c(m1,m2,m3)*1
+  "Less Constrained" =  c(
+    "# Latent means
+     F ~ c(m1,m2,m3)*1
 
-   # Constraint
-   m1 == 0",
+     # Constraint
+     m1 == 0",
 
-   common),
+     common),
 
-"More Constrained" = c(
-  "# Latent means
-   F ~ c(m,m,m)*1
+  "More Constrained" = c(
+    "# Latent means
+     F ~ c(m,m,m)*1
 
-   # Constraint
-   m == 0",
+     # Constraint
+     m == 0",
 
-   common)
+     common)
 )
 
 ## Fit the model and get the results

@@ -64,21 +64,21 @@ vcov <-
     y3 ~~ c(e34, e34, e34)*y4"
 
 models <- list(
-"More Constrained" = c(
-# Means
-   "y1 ~ c(a1, a1, a1)*1
-    y2 ~ c(a2, a2, a2)*1
-    y3 ~ c(a3, a3, a3)*1
-    y4 ~ c(a4, a4, a4)*1",
-    vcov),
+  "More Constrained" = c(
+    # Means
+    "y1 ~ c(a1, a1, a1)*1
+     y2 ~ c(a2, a2, a2)*1
+     y3 ~ c(a3, a3, a3)*1
+     y4 ~ c(a4, a4, a4)*1",
+     vcov),
 
-"Less Constrained" =  c(
-# Means
-   "y1 ~ c(a1, b1, c1)*1
-    y2 ~ c(a2, b2, c2)*1
-    y3 ~ c(a3, b3, c3)*1
-    y4 ~ c(a4, b4, c4)*1",
-    vcov)
+  "Less Constrained" =  c(
+    # Means
+    "y1 ~ c(a1, b1, c1)*1
+     y2 ~ c(a2, b2, c2)*1
+     y3 ~ c(a3, b3, c3)*1
+     y4 ~ c(a4, b4, c4)*1",
+     vcov)
 )
 ```
 
@@ -147,28 +147,28 @@ covariance for each group.
 ``` r
 ## Model statements
 # Variances and covariances (for both models)
-vcov <- "
-   y1 ~~ y1 + y2 + y3 + y4
+vcov <- 
+  "y1 ~~ y1 + y2 + y3 + y4
    y2 ~~ y2 + y3 + y4
    y3 ~~ y3 + y4
    y4 ~~ y4"
 
 models <- list(
-"Less Constrained" =  c(
-# Means
-   "y1 ~ c(a1, b1, c1)*1
-    y2 ~ c(a2, b2, c2)*1
-    y3 ~ c(a3, b3, c3)*1
-    y4 ~ c(a4, b4, c4)*1",
-    vcov),
+  "Less Constrained" =  c(
+    # Means
+    "y1 ~ c(a1, b1, c1)*1
+     y2 ~ c(a2, b2, c2)*1
+     y3 ~ c(a3, b3, c3)*1
+     y4 ~ c(a4, b4, c4)*1",
+     vcov),
 
-"More Constrained" = c(
-# Means
-   "y1 ~ c(a1, a1, a1)*1
-    y2 ~ c(a2, a2, a2)*1
-    y3 ~ c(a3, a3, a3)*1
-    y4 ~ c(a4, a4, a4)*1",
-    vcov)
+  "More Constrained" = c(
+    # Means
+    "y1 ~ c(a1, a1, a1)*1
+     y2 ~ c(a2, a2, a2)*1
+     y3 ~ c(a3, a3, a3)*1
+     y4 ~ c(a4, a4, a4)*1",
+     vcov)
 )
 
 ## Fit the models
@@ -218,21 +218,21 @@ vcov <-
     y3 ~~ c(e34, e34, e34)*y4"
 
 models <- list(
-"More Constrained" = c(
-# Means
-   "y1 ~ c(a1, a1, a1)*1
-    y2 ~ c(a2, a2, a2)*1
-    y3 ~ c(a3, a3, a3)*1
-    y4 ~ c(a4, a4, a4)*1",
-    vcov),
+  "More Constrained" = c(
+    # Means
+    "y1 ~ c(a1, a1, a1)*1
+     y2 ~ c(a2, a2, a2)*1
+     y3 ~ c(a3, a3, a3)*1
+     y4 ~ c(a4, a4, a4)*1",
+     vcov),
 
-"Less Constrained" =  c(
-# Means
-   "y1 ~ c(a1, b1, c1)*1
-    y2 ~ c(a2, b2, c2)*1
-    y3 ~ c(a3, b3, c3)*1
-    y4 ~ c(a4, b4, c4)*1",
-    vcov)
+  "Less Constrained" =  c(
+    # Means
+    "y1 ~ c(a1, b1, c1)*1
+     y2 ~ c(a2, b2, c2)*1
+     y3 ~ c(a3, b3, c3)*1
+     y4 ~ c(a4, b4, c4)*1",
+     vcov)
 )
 
 ## Fit the models and get the results
@@ -273,28 +273,28 @@ E
 ## Check chi square on page 401
 ## Model statements
 # Variances and covariances (for both models)
-vcov <- "
-   y1 ~~ y1 + y2 + y3 + y4
+vcov <-
+  "y1 ~~ y1 + y2 + y3 + y4
    y2 ~~ y2 + y3 + y4
    y3 ~~ y3 + y4
    y4 ~~ y4"
 
 models <- list(
-"Less Constrained" =  c(
-# Means
-   "y1 ~ c(a1, b1, c1)*1
-    y2 ~ c(a2, b2, c2)*1
-    y3 ~ c(a3, b3, c3)*1
-    y4 ~ c(a4, b4, c4)*1",
-    vcov),
+  "Less Constrained" =  c(
+    # Means
+    "y1 ~ c(a1, b1, c1)*1
+     y2 ~ c(a2, b2, c2)*1
+     y3 ~ c(a3, b3, c3)*1
+     y4 ~ c(a4, b4, c4)*1",
+     vcov),
 
-"More Constrained" = c(
-# Means
-   "y1 ~ c(a1, a1, a1)*1
-    y2 ~ c(a2, a2, a2)*1
-    y3 ~ c(a3, a3, a3)*1
-    y4 ~ c(a4, a4, a4)*1",
-    vcov)
+  "More Constrained" = c(
+    # Means
+    "y1 ~ c(a1, a1, a1)*1
+     y2 ~ c(a2, a2, a2)*1
+     y3 ~ c(a3, a3, a3)*1
+     y4 ~ c(a4, a4, a4)*1",
+     vcov)
 )
 
 ## Fit the models

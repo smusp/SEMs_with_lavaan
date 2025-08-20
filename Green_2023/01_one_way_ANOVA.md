@@ -20,9 +20,9 @@ This example shows the SEM approach to Part 1: One-way ANOVA. Results
 are reported in Table 21.1 (p. 389).
 
 The data are described at the top of page 388. TLG claim that the data
-are available in supplementary material but I’m unable to locate it.
+are available in supplementary materials but I’m unable to locate it.
 However, the data are available in Mplus data files in supplementary
-material for the 1st edition. I’ve collected the data into a more
+materials for the 1st edition. I’ve collected the data into a more
 convenient format (see the next section for getting the data), but it is
 in a “long” format. It needs to be rearranged from “long” to “wide”.
 
@@ -53,7 +53,7 @@ The variables used in this example are:
 
 The SEM model for one-way ANOVA is shown in Fig 21.1 (p. 391), and is
 reproduced below. The diagram shows the “Less Constrained” model - the
-three means, represented by the label on the arrows connecting the “1”
+three means, represented by the labels on the arrows connecting the “1”
 to the dependent variable, differ. To be consistent with the ANOVA
 assumption of homogeneity of variances, the residual variances are
 constrained to be equal.

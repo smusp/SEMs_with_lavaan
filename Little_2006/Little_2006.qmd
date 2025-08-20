@@ -91,7 +91,7 @@ Variable names are also contained in the LISREL script, but I shorten the names 
 
 ```{r echo = -1}
 ## Get the variable names from Appendix A
-names = c("pos1", "pos2", "pos3", "neg1", "neg2", "neg3")
+names <- c("pos1", "pos2", "pos3", "neg1", "neg2", "neg3")
 ```
 
 Combine the correlations, means, and sample sizes into lists.
@@ -395,12 +395,12 @@ models <- list(
    "Method 3 Shortcut" = m3_short_fit)
 
 #  Select the fit measures
-measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea",
+measures <- c("chisq", "df", "pvalue", "cfi", "tli", "rmsea",
    "rmsea.ci.lower", "rmsea.ci.upper")
 
 #  Get fit measures in a table
-tab = sapply(models, GetFit, measures)
-tab = t(round(tab, 4)); tab
+tab <- sapply(models, GetFit, measures)
+tab <- t(round(tab, 4)); tab
 ```
 
 Compare the fit measures with those presented on page 66.

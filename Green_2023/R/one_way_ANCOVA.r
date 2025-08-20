@@ -17,15 +17,15 @@ head(df)
 
 ## The models
 models <- list(
-"More Constrained" =
-  "y ~  c(a, a, a)*1        # Means
-   y ~  c(b, b, b)*preC     # Regression slopes
-   y ~~ c(e, e, e)*y        # Variances",
+  "More Constrained" =
+    "y ~  c(a, a, a)*1        # Means
+     y ~  c(b, b, b)*preC     # Regression slopes
+     y ~~ c(e, e, e)*y        # Variances",
 
-"Less Constrained" =
-  "y ~  c(a1, a2, a3)*1
-   y ~  c(b, b, b)*preC
-   y ~~ c(e, e, e)*y"
+  "Less Constrained" =
+    "y ~  c(a1, a2, a3)*1
+     y ~  c(b, b, b)*preC
+     y ~~ c(e, e, e)*y"
 )
 
 ## Fit the models

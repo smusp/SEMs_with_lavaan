@@ -33,7 +33,7 @@ sd8   <- c(0.70299, 0.71780, 0.76208, 0.65011, 0.60168, 0.61420)
 n8    <- 379
 
 ## Get the variable names from Appendix A
-names = c("pos1", "pos2", "pos3", "neg1", "neg2", "neg3")
+names <- c("pos1", "pos2", "pos3", "neg1", "neg2", "neg3")
 
 ## Combine into lists
 cor  <- list("Grade 7" = cor7, "Grade 8" = cor8)
@@ -211,12 +211,12 @@ models <- list(
    "Method 3 Shortcut" = m3_short_fit)
 
 #  Select the fit measures
-measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea",
+measures <- c("chisq", "df", "pvalue", "cfi", "tli", "rmsea",
    "rmsea.ci.lower", "rmsea.ci.upper")
 
 #  Get fit measures in a table
-tab = sapply(models, GetFit, measures)
-tab = t(round(tab, 4)); tab
+tab <- sapply(models, GetFit, measures)
+tab <- t(round(tab, 4)); tab
 
 
 
