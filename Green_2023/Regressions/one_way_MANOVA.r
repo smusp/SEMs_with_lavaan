@@ -14,8 +14,8 @@ library(car)              # To test linear hypotheses
 library(here)             # Relative paths
 
 ## Get the data
-path <- here::here("Green_2023", "data", "satisfactionII.csv")
-df <- read.csv(path, header = TRUE)
+path <- here::here("Green_2023", "R", "satisfactionII.r")
+source(path)
 head(df)
 
 # The variables used in this example are:
@@ -103,8 +103,8 @@ pF(k, m, n)
 ##    "More Constrained" model - group means constrained to equality
 Y <- with(df, cbind(y1, y2, y3, y4))
 models <- list(
-   "More Constrained" = "Y ~ -1 + I(x1 + x2 + x3)",
-   "Less Constrained" = "Y ~ -1 + x1 + x2 + x3"
+   "More Constrained" = "Y ~ -1 + I(a + b + c)",
+   "Less Constrained" = "Y ~ -1 + a + b + c"
 )
 
 ## Fit the models
@@ -115,6 +115,7 @@ lapply(fit, coef)
 
 # F test
 anova(fit[[2]], fit[[1]], test = "Wilks")
+
 
 
 ### Alternative - linearHypothesis() function from car package
@@ -134,12 +135,12 @@ linearHypothesis(lc, constraints, test = "Wilks")
 
 ### Dummy variables
 ## Begin with the "Less Constrained" model
-lc <- lm(Y ~ -1 + x1 + x2 + x3, df)
+lc <- lm(Y ~ -1 + a + b + c, df)
 summary(lc)
 
 # Constrain means to equality
-constraints <- c("x1 = x2",
-                 "x2 = x3")
+constraints <- c("a = b",
+                 "b = c")
 
 # Apply contraints to "Less Constrained" model
 # and compare LC and MC models

@@ -8,7 +8,6 @@ df$id <- c(rep(1:tab[1], 2), rep(1:tab[2], 2), rep(1:tab[3], 2))  # id variable
 df <- reshape(df, timevar = "c", idvar = c("id", "x", "g"), varying = c("pre", "y"), 
    direction = "wide")
 
-
 df <- within(df, {
 ## Grand mean centered "pre" - the before scores
    preC <- scale(pre, scale = FALSE)
@@ -21,14 +20,13 @@ df <- within(df, {
 
 ## Dummy variables to use in regression analysis
 ## Dummy variables for "Coping Startegy"
-   x1 <- ifelse(x == "a", 1, 0)
-   x2 <- ifelse(x == "b", 1, 0)
-   x3 <- ifelse(x == "c", 1, 0)
+   dummies1 <- model.matrix(~ x - 1)
 
 ## Dummy variables for interaction
-  dummies <- model.matrix(~ sg - 1)
+   dummies2 <- model.matrix(~ sg - 1)
 })
 
-## Unnest the nested 'dummies' matrix, and rename its colomns
+## Unnest the nested 'dummies' matrices, and rename their colomns
 df <- do.call(data.frame, df)
-names(df) <- gsub("dummies.sg", "", names(df))
+names(df) <- gsub("dummies1.x", "", names(df))
+names(df) <- gsub("dummies2.sg", "", names(df))

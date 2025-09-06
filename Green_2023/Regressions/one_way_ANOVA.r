@@ -14,14 +14,17 @@ library(car)          # To test linear hypotheses
 library(here)         # Relative paths
 
 ## Get the data
-path = here::here("Green_2023", "data", "ANOVA_data.r")
+path <- here::here("Green_2023", "R", "satisfactionI.r")
+source(path)
+
+path <- here::here("Green_2023", "R", "ANOVA_data.r")
 source(path)
 head(df)
 
 # The variables used in this example are:
 #  - x - Coping Strategy ("a" - no strategy; "b" - discussion; "c" - exercise)
 #  - y - dependent variable ("after" self-satisfaction scores)
-#  - x1, x2, x3 - dummy coded variables (1, 0) for "Coping Strategy"
+#  - a, b, c - dummy coded variables (1, 0) for "Coping Strategy"
 
 
 # Two versions of OLS regression are shown:
@@ -124,8 +127,8 @@ linearHypothesis(lc, constraints)
 ##    "Less Constained" model - the group means differ;
 ##    "More Constrained" model - group means constrained to equality
 models <- list(
-   "More Constrained" = "y ~ -1 + I(x1 + x2 + x3)",
-   "Less Constrained" = "y ~ -1 + x1 + x2 + x3"
+   "More Constrained" = "y ~ -1 + I(a + b + c)",
+   "Less Constrained" = "y ~ -1 + a + b + c"
 )
 
 ## Get summaries
@@ -155,13 +158,13 @@ Reduce(anova, fit)
 
 ### Alternatives - using the car and restriktor packages
 ## Begin with the "Less Constrained" model
-lc <- lm(y ~ -1 + x1 + x2 + x3, df)
+lc <- lm(y ~ -1 + a + b + c, df)
 summary(lc)
 
 
 ## Using iht() from restriktor package
 # Constrain means to equality
-constraints <- "x1 = x2 = x3"
+constraints <- "a = b = c"
 
 # Apply contraints to "Less Constrained" model
 # and compare LC and MC models
@@ -171,8 +174,8 @@ test$df; test$df.residual    # df for F test
 
 ## Using linearHypothisis() from car package
 # Constrain means to equality
-constraints <- c("x1 = x2",
-                 "x2 = x3")
+constraints <- c("a = b",
+                 "b = c")
 
 # Apply contraints to "Less Constrained" model
 # and compare LC and MC models

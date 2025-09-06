@@ -14,7 +14,10 @@ library(restriktor)   # To test linear hypotheses
 library(here)         # Relative paths
 
 ## Get the data
-path <- here("Green_2023", "data", "ANOVA_data.r")
+path <- here::here("Green_2023", "R", "satisfactionI.r")
+source(path)
+
+path <- here("Green_2023", "R", "ANOVA_data.r")
 source(path)
 head(df)
 
