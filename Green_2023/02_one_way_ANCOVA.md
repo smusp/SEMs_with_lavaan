@@ -40,12 +40,13 @@ the addition of the covariate, preC.
 
 #### The models
 
-The SEM model for one-way ANCOVA is shown below. The diagram shows the
-“Less Constrained” model - the three means, represented by the labels on
-the arrows connecting the “1” to the dependent variable, differ. To be
-consistent with the ANCOVA assumptions of homogeneity of variances and
-homogeneity of regression slopes, the residual variances and the
-coefficients for the covariate (preC) are each constrained to equality.
+The SEM path diagram for a one-way ANCOVA is shown below. The diagram
+shows the “Less Constrained” model - the three means, represented by the
+labels on the arrows connecting the “1” to the dependent variable,
+differ. To be consistent with the ANCOVA assumptions of homogeneity of
+variances and homogeneity of regression slopes, the residual variances
+and the coefficients for the covariate (preC) are each constrained to
+equality.
 
 <img src="images/one_way_ANCOVA.svg" data-fig-align="center" />
 

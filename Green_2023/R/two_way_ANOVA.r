@@ -1,6 +1,6 @@
 ## Two-way ANOVA
 ##
-## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling
+## Thompson, M., Lie, Y. & Green, S. (2023). Flexible  structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 

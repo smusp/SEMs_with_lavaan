@@ -69,7 +69,7 @@ cov <- lavaan::getCov(cor, sds = sds, names = names)
 
 #### The model
 
-The model is given in Figure 1 (p. 51), reproduced below.
+The model path diagram is given in Figure 1 (p. 51), reproduced below.
 
 <img src="images/Kurbanoglu_2021.svg" data-fig-align="center" />
 

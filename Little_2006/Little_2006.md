@@ -30,13 +30,14 @@ The methods of identification and scaling discussed by Little, Slegers,
 
 LS&C present a two-group (7th grade and 8th grade), two-construct
 (positive affect and negative affact) model. Each construct is assessed
-with three manifest indicators. The SEM diagram below shows the model as
-it might apply to the whole sample (i.e., ignoring the groups). This
-one-group model is presented to explain the symbols used in the paper,
-and to show how they apply in the model diagrams. First, POS and NEG are
-the constructs; and pos<sub>1</sub>, …, neg<sub>3</sub> are the manifest
-indicators. The solid lines represent the covariance structure, and the
-gray lines represent the mean structure (ie, the means and intercepts).
+with three manifest indicators. The SEM path diagram below shows the
+model as it might apply to the whole sample (i.e., ignoring the groups).
+This one-group model is presented to explain the symbols used in the
+paper, and to show how they apply in the model diagrams. First, POS and
+NEG are the constructs; and pos<sub>1</sub>, …, neg<sub>3</sub> are the
+manifest indicators. The solid lines represent the covariance structure,
+and the gray lines represent the mean structure (ie, the means and
+intercepts).
 
 The symbols are:
 
@@ -122,10 +123,10 @@ cov <- Map(getCov, x = cor, sds = sd, names = list(names, names))
 
 #### The model
 
-The model with the constraints is shown below. Some points to note.
-There are two groups: Grade 7 and Grade 8. The corresponding loadings
-($\uplambda$) and intercepts ($\uptau$) are equal across the groups. The
-latent variances
+The model path diagram with the constraints is shown below. Some points
+to note. There are two groups: Grade 7 and Grade 8. The corresponding
+loadings ($\uplambda$) and intercepts ($\uptau$) are equal across the
+groups. The latent variances
 (<span style="white-space: nowrap">$\upphi$<sub>7,11</sub></span> and
 <span style="white-space: nowrap">$\upphi$<sub>7,22</sub>)</span> and
 latent means ($\upkappa$) are constrained to 1 and 0 respectively in the
@@ -242,7 +243,7 @@ summary(m1_short_fit, remove.unused = FALSE, standardized = TRUE,
 
 #### The model
 
-The model with the constraints is shown below.
+The model path diagram with the constraints is shown below.
 
 <img src="images/Scaling2.svg" data-fig-align="center" />
 
@@ -338,7 +339,7 @@ summary(m2c_default_fit, remove.unused = FALSE,
 
 #### The model
 
-The model with the equality constraints is shown below.
+The model path diagram with the equality constraints is shown below.
 
 <img src="images/Scaling3.svg" data-fig-align="center" />
 

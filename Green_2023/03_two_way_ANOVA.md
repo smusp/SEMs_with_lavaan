@@ -106,11 +106,11 @@ with(df, tapply(y, x, mean))     # Coping Strategy
 
 #### The models
 
-The SEM model for two-way ANOVA is shown below. The diagram shows the
-“Less Constrained” model - the six means, represented by the label on
-the arrows connecting the “1” to the dependent variable, differ. To be
-consistent with the ANOVA assumption of homogeneity of variances, the
-residual variances are constrained to be equal.
+The SEM path diagram for a two-way ANOVA is shown below. The diagram
+shows the “Less Constrained” model - the six means, represented by the
+label on the arrows connecting the “1” to the dependent variable,
+differ. To be consistent with the ANOVA assumption of homogeneity of
+variances, the residual variances are constrained to be equal.
 
 <img src="images/two_way_ANOVA.svg" data-fig-align="center" />
 
@@ -220,7 +220,7 @@ anova(inter.fit, lc.fit)     # Compare the two models
 ``` r
 ## Two-way ANOVA
 ##
-## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling
+## Thompson, M., Lie, Y. & Green, S. (2023). Flexible  structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 
