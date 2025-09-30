@@ -76,7 +76,7 @@ cov <- lavaan::getCov(cor, sds = sds, names = names)
 
 #### The model
 
-The model is given in Figure 1 (p. 51), reproduced below.
+The model path diamram is given in Figure 1 (p. 51), reproduced below.
 
 ![](images/Kurbanoglu_2021.svg){fig-align="center"}
 

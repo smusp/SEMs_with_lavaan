@@ -51,7 +51,7 @@ The variables used in this example are:
 
 #### The models
 
-The SEM model for the one-way ANOVA of a latent variable is shown in Fig 21.3 (p. 403), and is reproduced below. The diagram shows the "Less Constrained" model.
+The SEM path diagram for the a one-way ANOVA of a latent variable is shown in Fig 21.3 (p. 403), and is reproduced below. The diagram shows the "Less Constrained" model.
 
 ![](images/one_way_LATENT.svg){fig-align="center"}
 

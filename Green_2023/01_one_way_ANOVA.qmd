@@ -62,7 +62,7 @@ The variables used in this example are:
 
 #### The models
 
-The SEM model for one-way ANOVA is shown in Fig 21.1 (p. 391), and is reproduced below. The diagram shows the "Less Constrained" model - the three means, represented by the labels on the arrows connecting the "1" to the dependent variable, differ. To be consistent with the ANOVA assumption of homogeneity of variances, the residual variances are constrained to be equal.
+The SEM path diagram for a one-way ANOVA is shown in Fig 21.1 (p. 391), and is reproduced below. The diagram shows the "Less Constrained" model - the three means, represented by the labels on the arrows connecting the "1" to the dependent variable, differ. To be consistent with the ANOVA assumption of homogeneity of variances, the residual variances are constrained to be equal.
 
 ![](images/one_way_ANOVA.svg){fig-align="center"}
 
