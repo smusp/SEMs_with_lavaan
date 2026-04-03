@@ -7,7 +7,7 @@
 }
 </style>
 
-Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation
+Thompson, M., Liu, Y. & Green, S. (2023). Flexible structural equation
 modeling approaches for analyzing means. In R. Hoyle (Ed.), *Handbook of
 structural equation modeling* (2nd ed., pp. 385-408). New York, NY:
 Guilford Press.
@@ -45,7 +45,7 @@ The variables used in this example are:
 
 #### Preliminary results - Cramer’s V
 
-On page 394, Thompson, Lie & Green give Cramer’s V for the Gender X
+On page 394, Thompson, Liu & Green give Cramer’s V for the Gender X
 Coping Strategy crosstabulation. As far as I know, Cramer’s V is not
 available in base R, but **DescTools** is one of possibly many packages
 that has a function for Cramer’s V.
@@ -220,7 +220,7 @@ anova(inter.fit, lc.fit)     # Compare the two models
 ``` r
 ## Two-way ANOVA
 ##
-## Thompson, M., Lie, Y. & Green, S. (2023). Flexible  structural equation modeling
+## Thompson, M., Liu, Y. & Green, S. (2023). Flexible  structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 

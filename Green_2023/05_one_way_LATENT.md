@@ -1,7 +1,7 @@
 # One-Way ANOVA of latent variable
 
 
-Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation
+Thompson, M., Liu, Y. & Green, S. (2023). Flexible structural equation
 modeling approaches for analyzing means. In R. Hoyle (Ed.), *Handbook of
 structural equation modeling* (2nd ed., pp. 385-408). New York, NY:
 Guilford Press.
@@ -41,7 +41,7 @@ the “Less Constrained” model.
 <img src="images/one_way_LATENT.svg" data-fig-align="center" />
 
 For purposes of identification and scaling, the loading for the first
-indicator is constrained to one. (Thompson, Lie & Green (TLG) claim that
+indicator is constrained to one. (Thompson, Liu & Green (TLG) claim that
 the loading for the 4th indicator is constrained to one. However, when
 the 4th loading is constrained to one, I do not get the same results as
 given in Table 21.6 (in particular the latent variance), nor do I get
@@ -488,7 +488,7 @@ LatentVar
 ``` r
 ## One-way ANOVA of latent variable
 ##
-## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling
+## Thompson, M., Liu, Y. & Green, S. (2023). Flexible structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 

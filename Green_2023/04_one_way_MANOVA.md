@@ -1,7 +1,7 @@
 # One-Way MANOVA
 
 
-Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation
+Thompson, M., Liu, Y. & Green, S. (2023). Flexible structural equation
 modeling approaches for analyzing means. In R. Hoyle (Ed.), *Handbook of
 structural equation modeling* (2nd ed., pp. 385-408). New York, NY:
 Guilford Press.
@@ -117,10 +117,10 @@ means  # Typos among "Less Constrained" means in Table 21.5)
 
 Compare with the means in Table 21.5.
 
-By way of completeness, get the error SSCP matrices. (Thompson, Lie &
-Green state that, “the error SSCP matrices were perfectly reproduced by
-multiplying the variances and covariances in the SEM output by the total
-sample size” p. 398).
+By way of completeness, get the error SSCP matrices. (Thompson, Liu &
+Green (TLG) state that, “the error SSCP matrices were perfectly
+reproduced by multiplying the variances and covariances in the SEM
+output by the total sample size” p. 398).
 
 ``` r
 # Note: In the list of estimates, co/variances are in element "theta"
@@ -191,7 +191,7 @@ Compare with the $\upchi$<sup>2</sup> test on page 401.
 ``` r
 ## One-way MANOVA
 ##
-## Thompson, M., Lie, Y. & Green, S. (2023). Flexible structural equation modeling
+## Thompson, M., Liu, Y. & Green, S. (2023). Flexible structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 
