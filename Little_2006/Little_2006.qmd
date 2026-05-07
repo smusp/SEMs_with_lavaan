@@ -6,6 +6,7 @@ format:
   html:
     theme: "../styles.scss"
     embed-resources: true
+    keep md: true
   gfm: default
 
 execute:
@@ -20,10 +21,10 @@ format-links: false
 ## Structural Equation Modeling, 13(1), 59-72.
 ```
 
-Little, T., Slegers, D., & Card, N. (2006). A non-arbitrary method of identifying and scaling latent variables in SEM and MACS models. *Structural Equation Modeling*, *13*(1), 59-72.
+Little, T., Slegers, D., & Card, N. (2006). A  non-arbitrary method of identifying and scaling latent variables in SEM and MACS models. *Structural Equation Modeling*, *13*(1), 59-72.
 
 
-This example shows how to set constraints for different methods of identification and scaling in latent variable models, and, though invariance is not a topic of discussion, the example shows how to set constraints for strong metric invariance in a two-group model. Also, the example shows how to use summary data (correlations, standard deviations, and means) in a two-group model.
+This  shows how to set constraints for different methods of identification and scaling in latent variable models, and, though invariance is not a topic of discussion, the example shows how to set constraints for strong metric invariance in a two-group model. Also, the example shows how to use summary data (correlations, standard deviations, and means) in a two-group model.
 
 The methods of identification and scaling discussed by Little, Slegers, & Card (LS&C) are:
 

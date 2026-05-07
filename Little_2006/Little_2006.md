@@ -5,7 +5,7 @@ Little, T., Slegers, D., & Card, N. (2006). A non-arbitrary method of
 identifying and scaling latent variables in SEM and MACS models.
 *Structural Equation Modeling*, *13*(1), 59-72.
 
-This example shows how to set constraints for different methods of
+This shows how to set constraints for different methods of
 identification and scaling in latent variable models, and, though
 invariance is not a topic of discussion, the example shows how to set
 constraints for strong metric invariance in a two-group model. Also, the
