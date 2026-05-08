@@ -6,7 +6,6 @@ format:
   html:
     theme: "../styles.scss"
     embed-resources: true
-    keep md: true
   gfm: default
 
 execute:
