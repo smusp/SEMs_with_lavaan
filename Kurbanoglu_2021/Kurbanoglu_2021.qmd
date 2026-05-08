@@ -78,9 +78,9 @@ cov <- lavaan::getCov(cor, sds = sds, names = names)
 
 The model path diagram is given in Figure 1 (p. 51), reproduced below.
 
-![](images/Kurbanoglu_2021.svg){fig-align="center"}
+![](images/Kurbanoglu.svg){fig-align="center"}
 
-Kurbanoglu & Takunyaci (K&T) do not estimate the indirect effect; only the "a" and "b" paths. In **lavaan**, indirect effects can be estimated using the `:=` operator. In the diagram, the effects are labelled a, b, and c$'$; in the model statement, they are labelled a, b, and cpr. The labels can then be used to obtain the indirect and total effects.
+Kurbanoglu & Takunyaci (K&T) do not estimate the indirect effect; only the "a" and "b" paths. In **lavaan**, indirect effects can be estimated using the `:=` operator. In the diagram, the effects are labelled a, b, and c^$\prime$^; in the model statement, they are labelled a, b, and cpr. The labels can then be used to obtain the indirect and total effects.
 
 ```{r echo = -1}
 ## The model from Figure 1
