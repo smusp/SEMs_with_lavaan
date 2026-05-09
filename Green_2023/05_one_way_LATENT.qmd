@@ -53,7 +53,7 @@ The variables used in this example are:
 
 The SEM path diagram for the a one-way ANOVA of a latent variable is shown in Fig 21.3 (p. 403), and is reproduced below. The diagram shows the "Less Constrained" model.
 
-![](images/one_way_LATEN.svg){fig-align="center"}
+![](images/one_way_LATENT.svg){fig-align="center"}
 
 For purposes of identification and scaling, the loading for the first indicator is constrained to one. (Thompson, Liu & Green (TLG) claim that the loading for the 4th indicator is constrained to one. However, when the 4th loading is constrained to one, I do not get the same results as given in Table 21.6 (in particular the latent variance), nor do I get the means (given in the discussion on page 405); whereas I get agreement with the Table and the text when I constrain the 1st loading to one.)
 

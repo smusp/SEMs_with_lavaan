@@ -131,7 +131,7 @@ with(df, tapply(y, x, mean))     # Coping Strategy
 
 The SEM path diagram for a two-way ANOVA is shown below. The diagram shows the "Less Constrained" model - the six means, represented by the label on the arrows connecting the "1" to the dependent variable, differ. To be consistent with the ANOVA assumption of homogeneity of variances, the residual variances are constrained to be equal.
 
-![](images/two_way_ANOV.svg){fig-align="center"}
+![](images/two_way_ANOVA.svg){fig-align="center"}
 
 The model statements are shown below. The "Less Constrained" model allows the means (represented by the labels, am, af, ..., cf) to differ across the groups. The constraints statements are added to the "Less Constrained" statement to give the "More Constrained" models. The "More Constrained" models are contrasted with the "Less Constrained" model to test for the Gender and Coping Strategy main effects (weighted and unweighted) and the Gender X Coping Strategy interaction. In each case the residual variances are constrained to equality.
 

@@ -38,7 +38,7 @@ The SEM path diagram for the a one-way ANOVA of a latent variable is
 shown in Fig 21.3 (p. 403), and is reproduced below. The diagram shows
 the “Less Constrained” model.
 
-<img src="images/one_way_LATEN.svg" data-fig-align="center" />
+<img src="images/one_way_LATENT.svg" data-fig-align="center" />
 
 For purposes of identification and scaling, the loading for the first
 indicator is constrained to one. (Thompson, Liu & Green (TLG) claim that
