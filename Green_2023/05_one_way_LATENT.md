@@ -38,7 +38,7 @@ The SEM path diagram for the a one-way ANOVA of a latent variable is
 shown in Fig 21.3 (p. 403), and is reproduced below. The diagram shows
 the “Less Constrained” model.
 
-<img src="images/one_way_LATENT.svg" data-fig-align="center" />
+<img src="images/one_way_LATEN.svg" data-fig-align="center" />
 
 For purposes of identification and scaling, the loading for the first
 indicator is constrained to one. (Thompson, Liu & Green (TLG) claim that
@@ -50,8 +50,8 @@ with the Table and the text when I constrain the 1st loading to one.)
 
 Also for the purposes of identification and scaling, the latent mean for
 the first group is constrained to zero. For the “Less Constrained”
-model, the latent means for the other groups (a2 and a3) are freely
-estimated.
+model, the latent means for the other groups (a<sub>2</sub> and
+a<sub>3</sub>) are freely estimated.
 
 TLG assume strict measurement invariance:
 
@@ -197,7 +197,7 @@ variable has only a single referent variable, the means and variances of
 the latent variable are a function of only the means and variances of
 this variable” (p. 406).
 
-#### Model that applies to the 2nd row in Table 21.6: “One measure - Y$_1$”
+#### Model that applies to the 2nd row in Table 21.6: “One measure - Y<sub>1</sub>”
 
 The selected indicator is the first - “y1”.
 
@@ -337,7 +337,7 @@ VarY1 - ResidVarY1
 LatentVar
 ```
 
-#### Model that applies to the 3rd row in Table 21.6: “One measure - Y$_2$”
+#### Model that applies to the 3rd row in Table 21.6: “One measure - Y<sub>2</sub>”
 
 The selected indicator is the second - “y2”.
 

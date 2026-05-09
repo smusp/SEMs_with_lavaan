@@ -112,7 +112,7 @@ label on the arrows connecting the “1” to the dependent variable,
 differ. To be consistent with the ANOVA assumption of homogeneity of
 variances, the residual variances are constrained to be equal.
 
-<img src="images/two_way_ANOVA.svg" data-fig-align="center" />
+<img src="images/two_way_ANOV.svg" data-fig-align="center" />
 
 The model statements are shown below. The “Less Constrained” model
 allows the means (represented by the labels, am, af, …, cf) to differ
