@@ -20,9 +20,9 @@ n     <- 513
 names <- c("Att", "SE", "Anx")
 
 ## Get the co/variance matrix
-cov <- lavaan::getCov(cor, sds = sds, names = names)
+cov <- lavaan::lav_getcov(cor, sds = sds, names = names)
 
-## The model from Figure 1
+## The model
 model <- "
   # direct effect
   Anx ~ cpr * SE
@@ -44,8 +44,7 @@ fit <- sem(model, sample.cov = cov, sample.nobs = n)
 summary(fit, rsquare = TRUE, standardized = TRUE, fit.measures = TRUE)
 
 ## To get intercepts
-fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n,
-   sample.mean = means)
+fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n, sample.mean = means)
 summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
 
 ## To get Monte Carlo CIs

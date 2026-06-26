@@ -14,7 +14,7 @@ str(dataset)
 head(dataset)
 summary(dataset)
 
-## The model from Figure 3.3
+## The model
 model <- "
   # direct effect
   shs ~ cpr * ple

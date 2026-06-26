@@ -16,10 +16,10 @@ variances and covariances from the summary data (correlations and
 standard deviations), and then how to use the co/variance matrix to
 replicate the analysis.
 
-Except in this case, the results cannot be replicated (see below). There
-are problems with the paper. Rather than being an examplar, this example
-is included to show how to run SEM using summary data in order to check
-published results.
+Except in this case, the analysis cannot be replicated (see below).
+There are problems with the paper. Rather than being an examplar, this
+example is included to show how to run SEM using summary data in order
+to check published results.
 
 #### Load relevant packages
 
@@ -60,25 +60,24 @@ Table 1. The names used here are:
 names <- c("Att", "SE", "Anx")
 ```
 
-The `getCov()` function from the **lavaan** package is used to get the
-co/variance matrix.
+The `lav_getcov()` function from the **lavaan** package is used to get
+the co/variance matrix.
 
 ``` r
-cov <- lavaan::getCov(cor, sds = sds, names = names)
+cov <- lavaan::lav_getcov(cor, sds = sds, names = names)
 ```
 
 #### The model
 
 The model path diagram is given in Figure 1 (p. 51), reproduced below.
 
-<img src="images/Kurbanoglu_2021.svg" data-fig-align="center" />
+![](images/Kurbanoglu_2021.svg)
 
 Kurbanoglu & Takunyaci (K&T) do not estimate the indirect effect; only
 the “a” and “b” paths. In **lavaan**, indirect effects can be estimated
 using the `:=` operator. In the diagram, the effects are labelled a, b,
-and c<sup>$\prime$</sup>; in the model statement, they are labelled a,
-b, and cpr. The labels can then be used to obtain the indirect and total
-effects.
+and c$'$; in the model statement, they are labelled a, b, and cpr. The
+labels can then be used to obtain the indirect and total effects.
 
 ``` r
 model <- "
@@ -121,8 +120,7 @@ If the intercepts are required, include `sample.mean = means` in the
 `sem()` function.
 
 ``` r
-fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n,
-   sample.mean = means)
+fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n, sample.mean = means)
 summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
 ```
 
@@ -136,7 +134,7 @@ package.
 semmcci::MC(fit, R = 50000, alpha = 0.05)
 ```
 
-<br />
+<br>
 
 <details class="code-fold">
 <summary>R code with minimal commenting</summary>
@@ -164,9 +162,9 @@ n     <- 513
 names <- c("Att", "SE", "Anx")
 
 ## Get the co/variance matrix
-cov <- lavaan::getCov(cor, sds = sds, names = names)
+cov <- lavaan::lav_getcov(cor, sds = sds, names = names)
 
-## The model from Figure 1
+## The model
 model <- "
   # direct effect
   Anx ~ cpr * SE
@@ -188,8 +186,7 @@ fit <- sem(model, sample.cov = cov, sample.nobs = n)
 summary(fit, rsquare = TRUE, standardized = TRUE, fit.measures = TRUE)
 
 ## To get intercepts
-fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n,
-   sample.mean = means)
+fit_intercepts <- sem(model, sample.cov = cov, sample.nobs = n, sample.mean = means)
 summary(fit_intercepts, rsquare = TRUE, standardized = TRUE)
 
 ## To get Monte Carlo CIs
