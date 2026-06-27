@@ -46,7 +46,7 @@ The symbols are:
 - $\upkappa$ - latent means
 - $\uptau$ - indicator intercepts
 
-![](images/Scaling11.svg)
+![](images/Scaling.svg)
 
 #### Load relevant packages
 
@@ -135,7 +135,7 @@ estimated in each group, and the latent covariances
 <span style="white-space: nowrap">$\upphi$<sub>8,12</sub>)</span> are
 freely estimated.
 
-![](images/Scaling11.svg)
+![](images/Scaling1.svg)
 
 When constructing the model statment, there are some points to be
 considered.
@@ -244,7 +244,7 @@ summary(m1_short_fit, remove.unused = FALSE, standardized = TRUE,
 
 The model path diagram with the constraints is shown below.
 
-![](images/Scaling21.svg)
+![](images/Scaling2.svg)
 
 Results for three versions of Method 2 are presented in Table 2 - in
 each case, constraints are applied to different indicator variables.
@@ -340,7 +340,7 @@ summary(m2c_default_fit, remove.unused = FALSE,
 
 The model path diagram with the equality constraints is shown below.
 
-![](images/Scaling31.svg)
+![](images/Scaling3.svg)
 
 In the model statement, the loadings and the intercepts are labelled
 (see the “Measurement Model” and the “Indicator intercepts” sections in

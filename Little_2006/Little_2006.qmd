@@ -41,7 +41,7 @@ The symbols are:
  - $\upkappa$ - latent means
  - $\uptau$ - indicator intercepts
 
-![](images/Scaling11.svg)
+![](images/Scaling.svg)
 
 
 #### Load relevant packages
@@ -118,7 +118,7 @@ cov <- Map(lav_getcov, x = cor, sds = sd, names = list(names, names))
 
 The model path diagram with the constraints is shown below. Some points to note. There are two groups: Grade 7 and Grade 8. The corresponding loadings ($\uplambda$) and intercepts ($\uptau$) are equal across the groups. The latent variances (<span style="white-space: nowrap">$\upphi$~7,11~</span> and <span style="white-space: nowrap">$\upphi$~7,22~)</span> and latent means ($\upkappa$) are constrained to 1 and 0 respectively in the first group only. The residual variances ($\uptheta$) are freely estimated in each group, and the latent covariances (<span style="white-space: nowrap">$\upphi$~7,12~</span> and <span style="white-space: nowrap">$\upphi$~8,12~)</span> are freely estimated. 
 
-![](images/Scaling11.svg)
+![](images/Scaling1.svg)
 
 When constructing the model statment, there are some points to be considered.
 
@@ -208,7 +208,7 @@ summary(m1_short_fit, remove.unused = FALSE, standardized = TRUE,
 
 The model path diagram with the constraints is shown below.
 
-![](images/Scaling21.svg)
+![](images/Scaling2.svg)
 
 Results for three versions of Method 2 are presented in Table 2 - in each case, constraints are applied to different indicator variables. Here, only the third is considered - constraints apply to loadings and intercepts for the third indicator in the POS construct, and to the first indicator in the NEG construct.
 
@@ -294,7 +294,7 @@ summary(m2c_default_fit, remove.unused = FALSE,
 
 The model path diagram with the equality constraints is shown below.
 
-![](images/Scaling31.svg)
+![](images/Scaling3.svg)
 
 In the model statement, the loadings and the intercepts are labelled (see the "Measurement Model" and the "Indicator intercepts" sections in the model statement) so that the labels can be used to impose the constraints. Constraints are imposed on the loadings and the intercepts using the `==` operator - see the "Constraints" section in the model statement.
 
