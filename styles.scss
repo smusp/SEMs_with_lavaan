@@ -22,4 +22,17 @@ h2 + .level4 > h4 {
       margin-top: 10px;
 }
 
- 
+div.sourceCode {
+margin-left: 0.1rem;
+}
+
+.cell-output-display img,
+p img.img-fluid {
+  display: block;
+  margin-left: 2rem;
+  margin-right: auto;
+}
+
+details > summary {
+  color: black;
+}
