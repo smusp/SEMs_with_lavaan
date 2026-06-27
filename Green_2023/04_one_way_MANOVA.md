@@ -32,14 +32,14 @@ The variables used in this example are:
 
 #### The models
 
-The SEM path diagram for the a one-way MANOVA is shown in Fig 21.2
+The model path diagram for the one-way MANOVA is shown in Fig 21.2
 (p. 400), and is reproduced below. The diagram shows the “Less
 Constrained” model. The means are represented by the labels on the
 arrows connecting the “1” to the dependent variables. The means for each
 variable are allowed to differ across the groups. The residual variances
 and covariances are constrained to equality.
 
-<img src="images/one_way_MANOVA.svg" data-fig-align="center" />
+![](images/one_way_MANOVA1.svg)
 
 The model statements are shown below. The “More Constrained” model
 constrains the means to equality. The “Less Constrained” model allows
@@ -183,7 +183,7 @@ Reduce(anova, fit)
 
 Compare with the $\upchi$<sup>2</sup> test on page 401.
 
-<br />
+<br>
 
 <details class="code-fold">
 <summary>R code with minimal commenting</summary>

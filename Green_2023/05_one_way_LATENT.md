@@ -34,11 +34,11 @@ The variables used in this example are:
 
 #### The models
 
-The SEM path diagram for the a one-way ANOVA of a latent variable is
+The model path diagram for the one-way ANOVA of a latent variable is
 shown in Fig 21.3 (p. 403), and is reproduced below. The diagram shows
 the “Less Constrained” model.
 
-<img src="images/one_way_LATENT.svg" data-fig-align="center" />
+![](images/one_way_LATENT1.svg)
 
 For purposes of identification and scaling, the loading for the first
 indicator is constrained to one. (Thompson, Liu & Green (TLG) claim that
@@ -62,10 +62,13 @@ TLG assume strict measurement invariance:
 - the indicator residual variances (e) and covariances are constrained
   to equality (covariances are set to zero by default, and thus they are
   equal);
-- TLG impose one last constraint - latent error variances are
-  constrained to equality across the groups (they do this to obtain a
-  pooled variance to calculate an effect size for the differences
-  between latent means).
+- TLG impose one last constraint - latent variances are constrained to
+  equality across the groups (they do this to obtain a pooled variance
+  to calculate an effect size for the differences between latent means).
+
+(Note: TLG refer to “disturbances” and “error variances” for the latent
+variable, and their path diagram shows a disturbance for the latent. I
+don’t know that this is correct.)
 
 The model statements are shown below. The only difference between the
 “More Constrained” model and the “Less Constrained” model is in the
@@ -95,13 +98,13 @@ common <- "
    y3 ~~ c(e3,e3,e3)*y3
    y4 ~~ c(e4,e4,e4)*y4
 
-   # Latent error variances
+   # Latent variances
    F ~~ c(d,d,d)*F"
 
 models <- list(
   "More Constrained" = c(
     "# Latent means
-    F ~ c(m,m,m)*1
+     F ~ c(m,m,m)*1
 
      # Constraint
      m == 0",
@@ -115,7 +118,7 @@ models <- list(
      # Constraint
      m1 == 0",
 
-    common)
+     common)
 )
 ```
 
@@ -136,23 +139,23 @@ Compare with $\upchi$<sup>2</sup> test in the “All measures” row in
 Table 21.6.
 
 One could scroll through the model summaries to find the latent means
-and error variances for the “Less Constrained” model, and compare them
-with Table 21.6. They are also needed to calculate effect sizes (given
-in the first column on page 405).
+and variances for the “Less Constrained” model, and compare them with
+Table 21.6. They are also needed to calculate effect sizes (given in the
+first column on page 405).
 
 ``` r
 d1 <- (0.664 - 0) / sqrt(8.135); d1    # "no strategy" vs "discussion"
 d2 <- (1.945 - 0) / sqrt(8.135); d2    # "no strategy" vs "exercise"
 ```
 
-But it is probably safer to extract latent means and error variances
-from a list of parameter estimates, then substitute into the formula for
-effect size.
+But it is probably safer to extract latent means and variances from a
+list of parameter estimates, then substitute into the formula for effect
+size.
 
 ``` r
 estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
    # Note: latent means are in element "alpha"
-   #       latent error variances are in element "psi"
+   #       latent variances are in element "psi"
 
 LatentMeans <- sapply(estimates, "[[", "alpha"); LatentMeans
 LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
@@ -165,7 +168,7 @@ d2 <- (LatentMeans[3] - LatentMeans[1]) / sqrt(LatentVar[1]); d2
 ```
 
 Compare the effect sizes with those given on page 405, and the means and
-error variances with those in Table 21.6.
+variances with those in Table 21.6.
 
 ### More Flexible Tests of Differences in Means on Latent Variables
 
@@ -185,8 +188,8 @@ For purposes of identification:
 - Latent mean in the first group is constrained to zero
 
 Note that the residual variances are freely estimated across groups, as
-are the latent error variances. The indicator covariances are by default
-set to zero (unless there is good reason to have one or more estimated).
+are the latent variances. The indicator covariances are by default set
+to zero (unless there is good reason to have one or more estimated).
 
 For the “More Constrained” model, the latent means are constrained to
 equality across the groups; for the “Less Constrained” model, the latent
@@ -219,7 +222,7 @@ common <-
    y3 ~~ c(e13,e23,e33)*y3
    y4 ~~ c(e14,e24,e34)*y4
 
-   # Latent error variances
+   # Latent variances
    F ~~ c(d1,d2,d3)*F"
 
 models <- list(
@@ -243,7 +246,7 @@ models <- list(
 )
 ```
 
-Fit the models and get the latent means, latent error variances, and the
+Fit the models and get the latent means, latent variances, and the
 $\upchi$<sup>2</sup> test.
 
 ``` r
@@ -253,7 +256,7 @@ fit <- lapply(models, sem, data = df, group = "x")
 ## Model summaries
 lapply(fit, summary)
 
-## Get the latent means and latent error variances for "Less Constrained" model
+## Get the latent means and latent variances for "Less Constrained" model
 estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
 LatentMeans <- sapply(estimates, "[[", "alpha"); LatentMeans
 LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
@@ -262,7 +265,7 @@ LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
 Reduce(anova, fit)
 ```
 
-Compare with the latent means and error variances, and the
+Compare with the latent means and variances, and the
 $\upchi$<sup>2</sup> test in the 2nd row in Table 21.6.
 
 Consider the three columns of Table 21.6 dealing with means, variances
@@ -271,8 +274,7 @@ and residual variances of one measure - in this case, “y1”.
 I need sample means and covariances - they can be extract from a list of
 sample statistics. I need estimated indicator intercepts and residual
 variances - they can be extracted from `estimates`. Also I need
-estimated latent means and error variances - they have already been
-extracted.
+estimated latent means and variances - they have already been extracted.
 
 ``` r
 # Get sample statistics
@@ -317,9 +319,9 @@ intercepts + LatentMeans; MeansY1
 
 - Extract the “y1” variances from `sampstats`
 - Extract residual variances for “y1” from `estimates`
-- Latent error variances already extracted in `LatentVar`
+- Latent variances already extracted in `LatentVar`
 - Differences between “y1” variances and “y1” residual variances are the
-  latent error variances
+  latent variances
 
 ``` r
 # Extract y1 variances from sampstats
@@ -328,12 +330,12 @@ VarY1 <- VarY1[1,]; VarY1  # Compare with 2nd row in Table 21.6
 
 # Extract residual variances for y1 from estimates
 ResidVarY1 <- sapply(lapply(estimates, "[[", "theta"), diag)
-ResidVarY1 <- ResidVarY1[1,]; ResidVarY1 # Compare with 2nd row in Table 21.6
+ResidVarY1 <- ResidVarY1[1,]; ResidVarY1   # Compare with 2nd row in Table 21.6
 
-# Differences between y1 variances and y1 residual variances are latent error variances
+# Differences between y1 variances and y1 residual variances are latent variances
 VarY1 - ResidVarY1
 
-# Compare with the latent error variances
+# Compare with the latent variances
 LatentVar
 ```
 
@@ -362,7 +364,7 @@ common <-
    y3 ~~ c(e13,e23,e33)*y3
    y4 ~~ c(e14,e24,e34)*y4
 
-   # Latent error variances
+   # Latent variances
    F ~~ c(d1,d2,d3)*F"
 
 models <- list(
@@ -386,7 +388,7 @@ models <- list(
 )
 ```
 
-Fit the models and get the latent means, latent error variances, and the
+Fit the models and get the latent means, latent variances, and the
 $\upchi$<sup>2</sup> test.
 
 ``` r
@@ -396,7 +398,7 @@ fit <- lapply(models, sem, data = df, group = "x")
 # Model summaries
 lapply(fit, summary)
 
-# Get the latent means and latent error variances for "Less Constrained" model
+# Get the latent means and latent variances for "Less Constrained" model
 estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
 LatentMeans <- sapply(estimates, "[[", "alpha"); LatentMeans
 LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
@@ -405,7 +407,7 @@ LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
 Reduce(anova, fit)
 ```
 
-Compare with the latent means and error variances, and the
+Compare with the latent means and variances, and the
 $\upchi$<sup>2</sup> test in the 3rd row in Table 21.6.
 
 Consider the three columns of Table 21.6 dealing with means, variances
@@ -414,8 +416,7 @@ and residual variances of one measure - in this case, “y2”.
 I need sample means and covariances - they can be extract from a list of
 sample statistics. I need estimated indicator intercepts and residual
 variances - they can be extracted from `estimates`. Also I need
-estimated latent means and error variances - they have already been
-extracted.
+estimated latent means and variances - they have already been extracted.
 
 ``` r
 # Get sample statistics
@@ -460,9 +461,9 @@ intercepts + LatentMeans; MeansY2
 
 - Extract the “y2” variances from `sampstats`
 - Extract residual variances for “y2” from `estimates`
-- Latent error variances already extracted in `LatentVar`
+- Latent variances already extracted in `LatentVar`
 - Differences between “y2” variances and “y2” residual variances are the
-  latent error variances
+  latent variances
 
 ``` r
 # Extract y2 variances from sampstats
@@ -471,16 +472,16 @@ VarY2 <- VarY2[2,]; VarY2  # Compare with 3rd row in Table 21.6
 
 # Extract residual variances for y2 from estimates
 ResidVarY2 <- sapply(lapply(estimates, "[[", "theta"), diag)
-ResidVarY2 <- ResidVarY2[2, ]; ResidVarY2 # Compare with 3rd row in Table 21.6
+ResidVarY2 <- ResidVarY2[2, ]; ResidVarY2  # Compare with 3rd row in Table 21.6
 
-# Differences between y2 variances and y2 residual variances are latent error variances
+# Differences between y2 variances and y2 residual variances are latent variances
 VarY2 - ResidVarY2
 
-# Compare with the latent error variances
+# Compare with the latent variances
 LatentVar
 ```
 
-<br />
+<br>
 
 <details class="code-fold">
 <summary>R code with minimal commenting</summary>
@@ -516,13 +517,13 @@ common <- "
    y3 ~~ c(e3,e3,e3)*y3
    y4 ~~ c(e4,e4,e4)*y4
 
-   # Latent error variances
+   # Latent variances
    F ~~ c(d,d,d)*F"
 
 models <- list(
   "More Constrained" = c(
     "# Latent means
-    F ~ c(m,m,m)*1
+     F ~ c(m,m,m)*1
 
      # Constraint
      m == 0",
@@ -536,7 +537,7 @@ models <- list(
      # Constraint
      m1 == 0",
 
-    common)
+     common)
 )
 
 ## Fit the models and get the results
@@ -555,11 +556,11 @@ Reduce(anova, fit)
 d1 <- (0.664 - 0) / sqrt(8.135); d1    # "no strategy" vs "discussion"
 d2 <- (1.945 - 0) / sqrt(8.135); d2    # "no strategy" vs "exercise"
 
-## Extract latent means and error variances from "Less Constrained" model
+## Extract latent means and variances from "Less Constrained" model
 ## Check with "All measures" row in Table 21.6
 estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
    # Note: latent means are in element "alpha"
-   #       latent error variances are in element "psi"
+   #       latent variances are in element "psi"
 
 LatentMeans <- sapply(estimates, "[[", "alpha"); LatentMeans
 LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
@@ -591,7 +592,7 @@ common <-
    y3 ~~ c(e13,e23,e33)*y3
    y4 ~~ c(e14,e24,e34)*y4
 
-   # Latent error variances
+   # Latent variances
    F ~~ c(d1,d2,d3)*F"
 
 models <- list(
@@ -615,14 +616,14 @@ models <- list(
 )
 
 ## Fit the model and get the results
-## Check with means, error variance, and chi square in 2nd row in Table 21.6
+## Check with means, variance, and chi square in 2nd row in Table 21.6
 ## Fit the models
 fit <- lapply(models, sem, data = df, group = "x")
 
 ## Model summaries
 lapply(fit, summary)
 
-## Get the latent means and latent error variances for "Less Constrained" model
+## Get the latent means and latent variances for "Less Constrained" model
 estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
 LatentMeans <- sapply(estimates, "[[", "alpha"); LatentMeans
 LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
@@ -664,12 +665,12 @@ VarY1 <- VarY1[1,]; VarY1  # Compare with 2nd row in Table 21.6
 
 # Extract residual variances for y1 from estimates
 ResidVarY1 <- sapply(lapply(estimates, "[[", "theta"), diag)
-ResidVarY1 <- ResidVarY1[1,]; ResidVarY1 # Compare with 2nd row in Table 21.6
+ResidVarY1 <- ResidVarY1[1,]; ResidVarY1   # Compare with 2nd row in Table 21.6
 
-# Differences between y1 variances and y1 residual variances are latent error variances
+# Differences between y1 variances and y1 residual variances are latent variances
 VarY1 - ResidVarY1
 
-# Compare with the latent error variances
+# Compare with the latent variances
 LatentVar
 
 ## Relaxing some constraints
@@ -691,7 +692,7 @@ common <-
    y3 ~~ c(e13,e23,e33)*y3
    y4 ~~ c(e14,e24,e34)*y4
 
-   # Latent error variances
+   # Latent variances
    F ~~ c(d1,d2,d3)*F"
 
 models <- list(
@@ -715,14 +716,14 @@ models <- list(
 )
 
 ## Fit the model and get the results
-## Check with means, error variance, and chi square in 3rd row in Table 21.6
+## Check with means, variance, and chi square in 3rd row in Table 21.6
 # Fit the models
 fit <- lapply(models, sem, data = df, group = "x")
 
 # Model summaries
 lapply(fit, summary)
 
-# Get the latent means and latent error variances for "Less Constrained" model
+# Get the latent means and latent variances for "Less Constrained" model
 estimates <- lavInspect(fit[["Less Constrained"]], "est"); estimates
 LatentMeans <- sapply(estimates, "[[", "alpha"); LatentMeans
 LatentVar   <- sapply(estimates, "[[", "psi"); LatentVar
@@ -764,12 +765,12 @@ VarY2 <- VarY2[2,]; VarY2  # Compare with 3rd row in Table 21.6
 
 # Extract residual variances for y2 from estimates
 ResidVarY2 <- sapply(lapply(estimates, "[[", "theta"), diag)
-ResidVarY2 <- ResidVarY2[2, ]; ResidVarY2 # Compare with 3rd row in Table 21.6
+ResidVarY2 <- ResidVarY2[2, ]; ResidVarY2  # Compare with 3rd row in Table 21.6
 
-# Differences between y2 variances and y2 residual variances are latent error variances
+# Differences between y2 variances and y2 residual variances are latent variances
 VarY2 - ResidVarY2
 
-# Compare with the latent error variances
+# Compare with the latent variances
 LatentVar
 ```
 

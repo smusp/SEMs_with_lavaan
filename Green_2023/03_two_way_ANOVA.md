@@ -106,13 +106,13 @@ with(df, tapply(y, x, mean))     # Coping Strategy
 
 #### The models
 
-The SEM path diagram for a two-way ANOVA is shown below. The diagram
+The model path diagram for the two-way ANOVA is shown below. The diagram
 shows the “Less Constrained” model - the six means, represented by the
 label on the arrows connecting the “1” to the dependent variable,
 differ. To be consistent with the ANOVA assumption of homogeneity of
 variances, the residual variances are constrained to be equal.
 
-<img src="images/two_way_ANOVA.svg" data-fig-align="center" />
+![](images/two_way_ANOVA1.svg)
 
 The model statements are shown below. The “Less Constrained” model
 allows the means (represented by the labels, am, af, …, cf) to differ
@@ -151,6 +151,7 @@ the “c” strategy.
 
 ``` r
 ## Less Constrained model
+## Compare with SEM section in Table 21.4
 lc <- "y ~  c(am, af, bm, bf, cm, cf)*1      # Means
        y ~~ c(e, e, e, e, e, e)*y            # Variances"
 
@@ -212,7 +213,7 @@ summary(inter.fit)
 anova(inter.fit, lc.fit)     # Compare the two models
 ```
 
-<br />
+<br>
 
 <details class="code-fold">
 <summary>R code with minimal commenting</summary>
@@ -220,7 +221,7 @@ anova(inter.fit, lc.fit)     # Compare the two models
 ``` r
 ## Two-way ANOVA
 ##
-## Thompson, M., Liu, Y. & Green, S. (2023). Flexible  structural equation modeling
+## Thompson, M., Liu, Y. & Green, S. (2023). Flexible structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 
@@ -266,6 +267,7 @@ with(df, tapply(y, g, mean))     # Gender
 with(df, tapply(y, x, mean))     # Coping Strategy
 
 ## Less Constrained model
+## Compare with SEM section in Table 21.4
 lc <- "y ~  c(am, af, bm, bf, cm, cf)*1      # Means
        y ~~ c(e, e, e, e, e, e)*y            # Variances"
 

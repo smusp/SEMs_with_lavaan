@@ -51,14 +51,14 @@ The variables used in this example are:
 
 #### The models
 
-The SEM path diagram for a one-way ANOVA is shown in Fig 21.1 (p. 391),
-and is reproduced below. The diagram shows the “Less Constrained”
-model - the three means, represented by the labels on the arrows
-connecting the “1” to the dependent variable, differ. To be consistent
-with the ANOVA assumption of homogeneity of variances, the residual
-variances are constrained to be equal.
+The model path diagram for tthe one-way ANOVA is shown in Fig 21.1
+(p. 391), and is reproduced below. The diagram shows the “Less
+Constrained” model - the three means, represented by the labels on the
+arrows connecting the “1” to the dependent variable, differ. To be
+consistent with the ANOVA assumption of homogeneity of variances, the
+residual variances are constrained to be equal.
 
-<img src="images/one_way_ANOVA.svg" data-fig-align="center" />
+![](images/one_way_ANOVA1.svg)
 
 Two models are fitted. The model statements are shown below. The “More
 Constrained” model constrains the means (each with the same label “a”)
@@ -205,7 +205,7 @@ lapply(fit, summary)
 This time, the “Less Constrained” model is just identified - a perfect
 fit.
 
-<br />
+<br>
 
 <details class="code-fold">
 <summary>R code with minimal commenting</summary>

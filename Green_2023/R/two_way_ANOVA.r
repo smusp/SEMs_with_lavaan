@@ -1,6 +1,6 @@
 ## Two-way ANOVA
 ##
-## Thompson, M., Liu, Y. & Green, S. (2023). Flexible  structural equation modeling
+## Thompson, M., Liu, Y. & Green, S. (2023). Flexible structural equation modeling
 ## approaches for analyzing means. In R. Hoyle (Ed.), Handbook of structural
 ## equation modeling (2nd ed., pp. 385-408). New York, NY: Guilford Press.
 
@@ -46,6 +46,7 @@ with(df, tapply(y, g, mean))     # Gender
 with(df, tapply(y, x, mean))     # Coping Strategy
 
 ## Less Constrained model
+## Compare with SEM section in Table 21.4
 lc <- "y ~  c(am, af, bm, bf, cm, cf)*1      # Means
        y ~~ c(e, e, e, e, e, e)*y            # Variances"
 
