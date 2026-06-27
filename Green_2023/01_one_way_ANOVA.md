@@ -58,7 +58,7 @@ arrows connecting the “1” to the dependent variable, differ. To be
 consistent with the ANOVA assumption of homogeneity of variances, the
 residual variances are constrained to be equal.
 
-![](images/one_way_ANOVA1.svg)
+![](images/one_way_ANOVA.svg)
 
 Two models are fitted. The model statements are shown below. The “More
 Constrained” model constrains the means (each with the same label “a”)

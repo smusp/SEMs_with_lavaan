@@ -48,7 +48,7 @@ of homogeneity of variances and homogeneity of regression slopes, the
 residual variances and the coefficients for the covariate (preC) are
 each constrained to equality.
 
-![](images/one_way_ANCOVA1.svg)
+![](images/one_way_ANCOVA.svg)
 
 The model statements are shown below. The “More Constrained” model
 constrains the means to equality. The “Less Constrained” model allows

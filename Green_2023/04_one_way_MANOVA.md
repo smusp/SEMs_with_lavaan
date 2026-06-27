@@ -39,7 +39,7 @@ arrows connecting the “1” to the dependent variables. The means for each
 variable are allowed to differ across the groups. The residual variances
 and covariances are constrained to equality.
 
-![](images/one_way_MANOVA1.svg)
+![](images/one_way_MANOVA.svg)
 
 The model statements are shown below. The “More Constrained” model
 constrains the means to equality. The “Less Constrained” model allows
