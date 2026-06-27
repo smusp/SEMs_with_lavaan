@@ -31,7 +31,7 @@ The methods of identification and scaling discussed by Little, Slegers, & Card (
   - Marker Variable Method - For each construct, the loading of one indicator is fixed to one, and the intercept for the chosen indicator is fixed to zero. With strong metric invariance, these constraints apply in both groups.
   - Effects Coding Method - For each construct, constrain loadings to add to the number of indicators, and constrain indicator intercepts to add to zero. With strong metric invariance, these constraints apply in both groups.
 
-LS&C present a two-group (7th grade and 8th grade), two-construct (positive affect and negative affact) model. Each construct is assessed with three manifest indicators. The SEM path diagram below shows the model as it might apply to the whole sample (i.e., ignoring the groups). This one-group model is presented to explain the symbols used in the paper, and to show how they apply in the model diagrams. First, POS and NEG are the constructs; and pos~1~, ..., neg~3~ are the manifest indicators. The solid lines represent the covariance structure, and the gray lines represent the mean structure (ie, the means and intercepts).
+LS&C present a two-group (7th grade and 8th grade), two-construct (positive affect and negative affact) model. Each construct is assessed with three manifest indicators. The path diagram below shows the model as it might apply to the whole sample (i.e., ignoring the groups). This one-group model is presented to explain the symbols used in the paper, and to show how they apply in the model diagrams. First, POS and NEG are the constructs; and pos~1~, ..., neg~3~ are the manifest indicators. The solid lines represent the covariance structure, and the gray lines represent the mean structure (ie, the means and intercepts).
 
 The symbols are:
 
@@ -41,7 +41,7 @@ The symbols are:
  - $\upkappa$ - latent means
  - $\uptau$ - indicator intercepts
 
-![](images/Scaling.svg){fig-align="center"}
+![](images/Scaling11.svg)
 
 
 #### Load relevant packages
@@ -104,11 +104,11 @@ mean <- list(mean7, mean8)
 n    <- list(n7, n8)
 ```
 
-Use the `getCov()` function from the **lavaan** package to obtain the full co/variance matrix for each group (using the `Map()` function to apply the `getCov()` function to the lists, and to return the two co/variance matrices in a list).
+Use the `lav_getcov()` function from the **lavaan** package to obtain the full co/variance matrix for each group (using the `Map()` function to apply the `lav_getcov()` function to the lists, and to return the two co/variance matrices in a list).
 
 ```{r echo = -1}
 ## Get the co/variance matrices
-cov <- Map(getCov, x = cor, sds = sd, names = list(names, names))
+cov <- Map(lav_getcov, x = cor, sds = sd, names = list(names, names))
 ```
 
 
@@ -118,7 +118,7 @@ cov <- Map(getCov, x = cor, sds = sd, names = list(names, names))
 
 The model path diagram with the constraints is shown below. Some points to note. There are two groups: Grade 7 and Grade 8. The corresponding loadings ($\uplambda$) and intercepts ($\uptau$) are equal across the groups. The latent variances (<span style="white-space: nowrap">$\upphi$~7,11~</span> and <span style="white-space: nowrap">$\upphi$~7,22~)</span> and latent means ($\upkappa$) are constrained to 1 and 0 respectively in the first group only. The residual variances ($\uptheta$) are freely estimated in each group, and the latent covariances (<span style="white-space: nowrap">$\upphi$~7,12~</span> and <span style="white-space: nowrap">$\upphi$~8,12~)</span> are freely estimated. 
 
-![](images/Scaling1.svg){fig-align="center"}
+![](images/Scaling11.svg)
 
 When constructing the model statment, there are some points to be considered.
 
@@ -208,7 +208,7 @@ summary(m1_short_fit, remove.unused = FALSE, standardized = TRUE,
 
 The model path diagram with the constraints is shown below.
 
-![](images/Scaling2.svg){fig-align="center"}
+![](images/Scaling21.svg)
 
 Results for three versions of Method 2 are presented in Table 2 - in each case, constraints are applied to different indicator variables. Here, only the third is considered - constraints apply to loadings and intercepts for the third indicator in the POS construct, and to the first indicator in the NEG construct.
 
@@ -294,7 +294,7 @@ summary(m2c_default_fit, remove.unused = FALSE,
 
 The model path diagram with the equality constraints is shown below.
 
-![](images/Scaling3.svg){fig-align="center"}
+![](images/Scaling31.svg)
 
 In the model statement, the loadings and the intercepts are labelled (see the "Measurement Model" and the "Indicator intercepts" sections in the model statement) so that the labels can be used to impose the constraints. Constraints are imposed on the loadings and the intercepts using the `==` operator - see the "Constraints" section in the model statement.
 
@@ -398,14 +398,14 @@ models <- list(
 measures <- c("chisq", "df", "pvalue", "cfi", "tli", "rmsea",
    "rmsea.ci.lower", "rmsea.ci.upper")
 
-#  Get fit measures in a table
+#  Get fit measures in a table (check with p. 66)
 tab <- sapply(models, GetFit, measures)
 tab <- t(round(tab, 4)); tab
 ```
 
 Compare the fit measures with those presented on page 66.
 
-<br />
+<br>
 
 ```{r}
 #| echo: false

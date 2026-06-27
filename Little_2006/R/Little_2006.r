@@ -42,7 +42,7 @@ mean <- list(mean7, mean8)
 n    <- list(n7, n8)
 
 ## Get the co/variance matrices
-cov <- Map(getCov, x = cor, sds = sd, names = list(names, names))
+cov <- Map(lav_getcov, x = cor, sds = sd, names = list(names, names))
 
 ## The model - Reference-Group Method
 m1 <- "
@@ -214,7 +214,7 @@ models <- list(
 measures <- c("chisq", "df", "pvalue", "cfi", "tli", "rmsea",
    "rmsea.ci.lower", "rmsea.ci.upper")
 
-#  Get fit measures in a table
+#  Get fit measures in a table (check with p. 66)
 tab <- sapply(models, GetFit, measures)
 tab <- t(round(tab, 4)); tab
 

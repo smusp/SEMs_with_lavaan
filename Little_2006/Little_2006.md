@@ -30,14 +30,13 @@ The methods of identification and scaling discussed by Little, Slegers,
 
 LS&C present a two-group (7th grade and 8th grade), two-construct
 (positive affect and negative affact) model. Each construct is assessed
-with three manifest indicators. The SEM path diagram below shows the
-model as it might apply to the whole sample (i.e., ignoring the groups).
-This one-group model is presented to explain the symbols used in the
-paper, and to show how they apply in the model diagrams. First, POS and
-NEG are the constructs; and pos<sub>1</sub>, …, neg<sub>3</sub> are the
-manifest indicators. The solid lines represent the covariance structure,
-and the gray lines represent the mean structure (ie, the means and
-intercepts).
+with three manifest indicators. The path diagram below shows the model
+as it might apply to the whole sample (i.e., ignoring the groups). This
+one-group model is presented to explain the symbols used in the paper,
+and to show how they apply in the model diagrams. First, POS and NEG are
+the constructs; and pos<sub>1</sub>, …, neg<sub>3</sub> are the manifest
+indicators. The solid lines represent the covariance structure, and the
+gray lines represent the mean structure (ie, the means and intercepts).
 
 The symbols are:
 
@@ -47,7 +46,7 @@ The symbols are:
 - $\upkappa$ - latent means
 - $\uptau$ - indicator intercepts
 
-<img src="images/Scaling.svg" data-fig-align="center" />
+![](images/Scaling11.svg)
 
 #### Load relevant packages
 
@@ -110,13 +109,13 @@ mean <- list(mean7, mean8)
 n    <- list(n7, n8)
 ```
 
-Use the `getCov()` function from the **lavaan** package to obtain the
-full co/variance matrix for each group (using the `Map()` function to
-apply the `getCov()` function to the lists, and to return the two
+Use the `lav_getcov()` function from the **lavaan** package to obtain
+the full co/variance matrix for each group (using the `Map()` function
+to apply the `lav_getcov()` function to the lists, and to return the two
 co/variance matrices in a list).
 
 ``` r
-cov <- Map(getCov, x = cor, sds = sd, names = list(names, names))
+cov <- Map(lav_getcov, x = cor, sds = sd, names = list(names, names))
 ```
 
 ## Reference-Group Method
@@ -136,7 +135,7 @@ estimated in each group, and the latent covariances
 <span style="white-space: nowrap">$\upphi$<sub>8,12</sub>)</span> are
 freely estimated.
 
-<img src="images/Scaling1.svg" data-fig-align="center" />
+![](images/Scaling11.svg)
 
 When constructing the model statment, there are some points to be
 considered.
@@ -245,7 +244,7 @@ summary(m1_short_fit, remove.unused = FALSE, standardized = TRUE,
 
 The model path diagram with the constraints is shown below.
 
-<img src="images/Scaling2.svg" data-fig-align="center" />
+![](images/Scaling21.svg)
 
 Results for three versions of Method 2 are presented in Table 2 - in
 each case, constraints are applied to different indicator variables.
@@ -341,7 +340,7 @@ summary(m2c_default_fit, remove.unused = FALSE,
 
 The model path diagram with the equality constraints is shown below.
 
-<img src="images/Scaling3.svg" data-fig-align="center" />
+![](images/Scaling31.svg)
 
 In the model statement, the loadings and the intercepts are labelled
 (see the “Measurement Model” and the “Indicator intercepts” sections in
@@ -450,14 +449,14 @@ models <- list(
 measures <- c("chisq", "df", "pvalue", "cfi", "tli", "rmsea",
    "rmsea.ci.lower", "rmsea.ci.upper")
 
-#  Get fit measures in a table
+#  Get fit measures in a table (check with p. 66)
 tab <- sapply(models, GetFit, measures)
 tab <- t(round(tab, 4)); tab
 ```
 
 Compare the fit measures with those presented on page 66.
 
-<br />
+<br>
 
 <details class="code-fold">
 <summary>R code with minimal commenting</summary>
@@ -507,7 +506,7 @@ mean <- list(mean7, mean8)
 n    <- list(n7, n8)
 
 ## Get the co/variance matrices
-cov <- Map(getCov, x = cor, sds = sd, names = list(names, names))
+cov <- Map(lav_getcov, x = cor, sds = sd, names = list(names, names))
 
 ## The model - Reference-Group Method
 m1 <- "
@@ -679,7 +678,7 @@ models <- list(
 measures <- c("chisq", "df", "pvalue", "cfi", "tli", "rmsea",
    "rmsea.ci.lower", "rmsea.ci.upper")
 
-#  Get fit measures in a table
+#  Get fit measures in a table (check with p. 66)
 tab <- sapply(models, GetFit, measures)
 tab <- t(round(tab, 4)); tab
 ```
